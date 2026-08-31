@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="creotex-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A1A" />
+      <stop offset="50%" stop-color="#EA580C" />
+      <stop offset="100%" stop-color="#9A3412" />
+    </linearGradient>
+    <linearGradient id="layer-fill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.05" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Background Base with subtle border -->
+  <rect width="64" height="64" rx="16" fill="url(#creotex-bg)" />
+  <rect x="1" y="1" width="62" height="62" rx="15" stroke="rgba(255, 255, 255, 0.2)" stroke-width="2" />
+
+  <!-- Creotex Robotics Layered Tech Mark -->
+  <g filter="url(#shadow)">
+    <!-- Top polygon (Facet) -->
+    <polygon points="32 12 12 21.5 32 31 52 21.5" fill="url(#layer-fill)" stroke="#FFFFFF" stroke-width="3.5" stroke-linejoin="round" />
+    
+    <!-- Middle Layer -->
+    <polyline points="12 31 32 40.5 52 31" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Bottom Layer -->
+    <polyline points="12 40.5 32 50 52 40.5" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Center Core Glow Dot -->
+  <circle cx="32" cy="21.5" r="2.5" fill="#FFFFFF" opacity="0.9" />
+</svg>
