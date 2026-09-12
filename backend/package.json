@@ -1,0 +1,39 @@
+{
+  "name": "creotex-shop-backend",
+  "version": "1.0.0",
+  "description": "Backend API for CreotexShop Robotics & Electronics E-Commerce Platform",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node seeder.js",
+    "seed:destroy": "node seeder.js -d"
+  },
+  "keywords": [
+    "creotex",
+    "robotics",
+    "ecommerce",
+    "express",
+    "mongodb",
+    "mongoose",
+    "nodejs"
+  ],
+  "author": "Creotex Engineering",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "compression": "^1.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-handler": "^1.2.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

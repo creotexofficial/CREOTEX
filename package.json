@@ -1,21 +1,26 @@
 {
-  "name": "creotex-shop",
-  "private": true,
+  "name": "creotex-shop-monorepo",
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
+  "description": "CreotexShop Robotics & Electronics E-Commerce Platform (Frontend + Backend)",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev": "npm run dev:frontend",
+    "start:backend": "npm run start --prefix backend",
+    "seed:backend": "npm run seed --prefix backend",
+    "build:frontend": "npm run build --prefix frontend",
+    "install:all": "npm install --prefix frontend && npm install --prefix backend"
   },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.1.0"
-  }
+  "keywords": [
+    "creotex",
+    "robotics",
+    "ecommerce",
+    "react",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "Creotex Engineering",
+  "license": "ISC"
 }

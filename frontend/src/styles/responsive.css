@@ -1,0 +1,639 @@
+/* ==========================================================================
+   CREOTEXSHOP - COMPLETE MULTI-BREAKPOINT RESPONSIVE DESIGN SYSTEM
+   Mobile First, Tablet, Laptop, Desktop & Ultrawide Responsive Optimization
+   ========================================================================== */
+
+/* ================= GLOBAL VIEWPORT & OVERFLOW RESILIENCE ================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;
+}
+
+#root,
+.creotex-app-root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+}
+
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Universal Smooth Touch Scroll Without Ugly Native Scrollbars */
+.materials-strip,
+.nav-categories,
+.nav-bar .container,
+.filament-swatches-strip,
+.overview-filter-bar,
+.admin-filter-pills,
+.admin-table-container,
+.quick-palette-strip,
+.custom-scroll-touch {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.materials-strip::-webkit-scrollbar,
+.nav-categories::-webkit-scrollbar,
+.nav-bar .container::-webkit-scrollbar,
+.filament-swatches-strip::-webkit-scrollbar,
+.overview-filter-bar::-webkit-scrollbar,
+.admin-filter-pills::-webkit-scrollbar,
+.admin-table-container::-webkit-scrollbar,
+.quick-palette-strip::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* ================= 1. DESKTOP & LARGE DISPLAYS (1200px - 1440px) ================= */
+@media (max-width: 1200px) {
+  .hero-grid {
+    grid-template-columns: 1fr 300px;
+  }
+
+  .builder-layout {
+    grid-template-columns: 1fr 360px;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .deals-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .newsletter-box {
+    grid-column: span 3;
+    margin-top: 10px;
+  }
+}
+
+/* ================= 2. TABLET LANDSCAPE & MEDIUM SCREENS (992px - 1199px) ================= */
+@media (max-width: 992px) {
+  .top-bar .container {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+
+  /* Header structure on tablet */
+  .header-main {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .brand-logo {
+    order: 1;
+  }
+
+  .header-actions {
+    order: 2;
+  }
+
+  .header-search-box {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  /* MegaNav horizontal swipe strip */
+  .nav-bar .container {
+    overflow-x: auto;
+    padding: 0 12px;
+  }
+
+  .nav-categories {
+    white-space: nowrap;
+    gap: 4px;
+  }
+
+  .nav-link {
+    padding: 10px 12px;
+    font-size: 0.84rem;
+  }
+
+  .nav-tools-link {
+    display: none;
+  }
+
+  /* Hero section on tablet */
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .hero-side-cards {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .hero-slide {
+    padding: 30px 24px;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-visual-box {
+    width: 200px;
+  }
+
+  /* Filament Hub Page & Customizer */
+  .filament-customizer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  .filament-customizer-card {
+    padding: 24px !important;
+  }
+
+  /* Robot Builder on tablet */
+  .builder-layout {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+
+  .builder-summary-panel {
+    order: 2;
+  }
+
+  .blueprint-card {
+    position: static;
+  }
+
+  /* Product & Deals Grid */
+  .products-grid,
+  .deals-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* Quickview & Modals */
+  .quickview-layout {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  /* Footer */
+  .footer-top-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .newsletter-box {
+    grid-column: span 2;
+  }
+}
+
+/* ================= 3. TABLET PORTRAIT & MOBILE (Below 768px) ================= */
+@media (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+
+  .container {
+    padding: 0 14px;
+  }
+
+  /* Top Bar */
+  .top-bar {
+    padding: 6px 0;
+    font-size: 0.78rem;
+  }
+
+  .top-links {
+    display: none;
+  }
+
+  /* Compact Header */
+  .header-main {
+    padding: 8px 0;
+    gap: 8px;
+  }
+
+  .brand-logo {
+    gap: 8px;
+  }
+
+  .logo-icon-box {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-title {
+    font-size: 1.18rem;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  /* Header action icons (hide text label on mobile, show icon + badge) */
+  .header-actions {
+    gap: 6px;
+  }
+
+  .header-action-btn {
+    padding: 7px 10px;
+    min-width: 38px;
+    height: 38px;
+    font-size: 0.75rem;
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .header-action-btn span:not(.action-badge) {
+    display: none;
+  }
+
+  .theme-toggle-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* Search bar full width row on mobile */
+  .header-search-box {
+    margin-top: 2px;
+  }
+
+  .search-input-group {
+    border-radius: 10px;
+  }
+
+  .search-category-select {
+    display: none;
+  }
+
+  .search-input {
+    padding: 8px 12px;
+    font-size: 0.84rem;
+  }
+
+  .search-btn {
+    padding: 8px 14px;
+  }
+
+  /* MegaNav touch strip */
+  .nav-bar {
+    border-top: 1px solid var(--border-color);
+  }
+
+  .nav-categories {
+    padding: 4px 0;
+  }
+
+  .nav-link {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Hero Slider on Mobile */
+  .hero-slider-box {
+    border-radius: 14px;
+    min-height: 280px;
+  }
+
+  .hero-slide {
+    flex-direction: column-reverse !important;
+    text-align: center;
+    padding: 22px 16px !important;
+    gap: 14px;
+  }
+
+  .hero-badge {
+    align-self: center;
+  }
+
+  .hero-title {
+    font-size: 1.45rem !important;
+    line-height: 1.25;
+  }
+
+  .hero-desc {
+    font-size: 0.84rem;
+  }
+
+  .hero-actions {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .hero-actions .btn {
+    padding: 9px 18px;
+    font-size: 0.82rem;
+  }
+
+  .hero-visual-box {
+    width: 140px !important;
+    min-width: 120px;
+    height: 140px;
+    margin: 0 auto;
+  }
+
+  .hero-slider-dots {
+    left: 50% !important;
+    transform: translateX(-50%);
+    bottom: 8px;
+  }
+
+  .hero-side-cards {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  /* 3D Filament Spool Zone & Customizer Page */
+  .deals-banner-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .deals-title-box {
+    gap: 10px;
+  }
+
+  .filament-hub-header-bar {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .filament-hub-actions-bar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .filament-customizer-card {
+    padding: 16px !important;
+    border-radius: 16px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .filament-customizer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 22px !important;
+  }
+
+  .filament-title-h1 {
+    font-size: 22px !important;
+  }
+
+  .filament-price-row {
+    flex-wrap: wrap;
+    gap: 8px !important;
+  }
+
+  .filament-actions-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .filament-stepper-box {
+    grid-column: span 2;
+    justify-content: center;
+    width: 100% !important;
+  }
+
+  .filament-add-cart-btn,
+  .filament-buy-now-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+  }
+
+  .filament-swatches-grid {
+    max-width: 100% !important;
+    grid-template-columns: repeat(auto-fill, minmax(26px, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .filament-thumbs-gallery {
+    gap: 6px !important;
+    margin-top: 10px !important;
+  }
+
+  /* Filament Subcategory Cards Grid on Mobile */
+  .filament-subcats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .filament-subcat-card {
+    padding: 10px !important;
+  }
+
+  .filament-subcat-img-box {
+    height: 140px !important;
+  }
+
+  /* Catalog Toolbar */
+  .catalog-toolbar-full {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .toolbar-left-group,
+  .toolbar-right-group {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .toolbar-control-item {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  /* Product Cards Grid: 2 Clean Compact Columns on Mobile */
+  .products-grid,
+  .deals-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .product-card {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .product-img-box {
+    height: 140px;
+    border-radius: 8px;
+  }
+
+  .product-title {
+    font-size: 0.84rem;
+    min-height: 2.3em;
+    -webkit-line-clamp: 2;
+  }
+
+  .current-price {
+    font-size: 1.05rem;
+  }
+
+  .btn-add-cart {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Features Row */
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .feature-box {
+    padding: 14px;
+  }
+
+  /* Slide-Out Cart Drawer on Mobile */
+  .cart-drawer {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .cart-drawer-header {
+    padding: 14px 16px;
+  }
+
+  .cart-items-list {
+    padding: 12px 14px;
+  }
+
+  .cart-item-row {
+    gap: 10px;
+    padding: 10px 0;
+  }
+
+  .cart-item-thumb {
+    width: 50px;
+    height: 50px;
+  }
+
+  .cart-drawer-footer {
+    padding: 14px 16px;
+  }
+
+  /* Modals & Dialogs */
+  .modal-overlay {
+    padding: 10px;
+  }
+
+  .quickview-layout {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  /* Footer */
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .payment-badges {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* ================= 4. EXTRA SMALL PHONES (Below 420px) ================= */
+@media (max-width: 420px) {
+  html {
+    font-size: 14px;
+  }
+
+  .brand-title {
+    font-size: 1.05rem;
+  }
+
+  .logo-icon-box {
+    width: 32px;
+    height: 32px;
+  }
+
+  .header-action-btn {
+    padding: 5px 8px;
+    min-width: 34px;
+    height: 34px;
+  }
+
+  .theme-toggle-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .products-grid,
+  .deals-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .product-card {
+    padding: 8px;
+  }
+
+  .product-img-box {
+    height: 120px;
+  }
+
+  .filament-subcat-img-box {
+    height: 115px !important;
+  }
+
+  .product-title {
+    font-size: 0.78rem;
+  }
+
+  .current-price {
+    font-size: 0.95rem;
+  }
+}
+
+/* ================= 5. SUPER ADMIN PORTAL RESPONSIVE OVERRIDES ================= */
+@media (max-width: 992px) {
+  .admin-filament-studio-grid {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+}

@@ -1,90 +1,324 @@
-# CreotexShop - Robotics & Maker Superstore 🤖⚡ (React + Vite)
+# CreotexShop — Robotics & Maker Superstore 🤖⚡
 
-CreotexShop is a dynamic, high-performance, and responsive e-commerce web platform specialized in selling robotics competition parts, mechanical hardware, 3D printing filaments, motors, drivers, and chassis kits — built with **React 19 + Vite**.
+> A premium, full-stack e-commerce platform for robotics competition parts, 3D printing filaments, motors, drivers, and chassis kits — built with **React 19 + Vite** (frontend) and **Node.js + Express + MongoDB** (backend).
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Install Dependencies
+### Prerequisites
+- **Node.js** ≥ 18.x
+- **npm** ≥ 9.x
+- **MongoDB** (local or Atlas cloud instance)
+
+### 1. Install All Dependencies
 ```bash
-npm install
+# From root (installs both frontend & backend)
+npm run install:all
 ```
 
-### 2. Run Development Server
+### 2. Configure Environment
 ```bash
+# Copy the example env file
+cp backend/.env.example backend/.env
+# Edit backend/.env with your MongoDB URI, JWT secret, etc.
+```
+
+### 3. Seed Demo Data (Optional)
+```bash
+npm run seed:backend
+```
+
+### 4. Run Development Servers
+```bash
+# Frontend only (default)
 npm run dev
+
+# Backend only
+npm run dev:backend
+
+# Or run both in separate terminals
+npm run dev:frontend
+npm run dev:backend
 ```
 
-### 3. Build for Production
+### 5. Build for Production
 ```bash
-npm run build
+npm run build:frontend
 ```
 
 ---
 
-## 🌟 Key Features & Product Categories
+## 📁 Project Structure
 
-### 1. 🔩 Nut Bolt & Screws (Fasteners & Hardware)
-- **M3 Stainless Steel 304 Socket Cap Screws Kit (300 Pcs)**: Hex button head, hex nuts, spring washers with organizer case.
-- **M2 / M2.5 / M3 Knurled Brass Hex Standoff Spacers Assortment (180 Pcs)**: PCB & flight controller stacking.
-- **M4 Grade 12.9 High-Tensile Black Oxide Allen Bolts & Nyloc Self-Locking Nuts**: High vibration resistance for battle bots.
-- **M5 CNC Anodized Aluminum Countersunk Washers & Screws (20 Pcs)**: Lightweight race styling.
-
-### 2. 🧵 3D Printing & Filaments
-- **Creotex Hyper-Speed PLA (1.75mm, 1KG)**: Ultra-flow formulation capable of speeds up to 600mm/s.
-- **Carbon Fiber Infused PETG-CF (1KG)**: 20% high-modulus chopped carbon fiber with zero warp and high stiffness.
-- **Creotex Flex Ultra TPU 95A (0.5KG)**: High elasticity wear-resistant filament for soft robot tires & shock bumpers.
-- **Hardened Tool Steel Volcano & V6 Nozzles Set (0.4mm, 0.6mm, 0.8mm)**: Abrasion proof for carbon fiber printing.
-
-### 3. ⚙️ Gearbox & Motors
-- **12V PG-36 High-Torque All-Metal Planetary Geared DC Motor (600RPM)**: Precision ball bearings, 6mm D-shaft.
-- **NEMA 17 High-Torque Bipolar Stepper Motor (59 Ncm / 2.0A)**: 3D printers, CNC routers & robotic arms.
-- **Micro N20 Metal Gearmotor 1000RPM with Magnetic Hall Encoder**: High-speed line follower master standard.
-- **MG996R 13KG Metal Gear Digital Servo 180°**: Heavy brass/aluminum gear train for steering & robotic arms.
-- **A2212 1400KV Brushless Outrunner BLDC Motor**: High thrust for drones & battle bot spinning weapons.
-
-### 4. 🔌 Motor Drivers & ESCs
-- **Cytron MDD10A 10A (30A Peak) Dual DC Motor Driver**: PWM/DIR MOSFET H-bridge with test buttons.
-- **TB6612FNG Dual MOSFET Driver Module (1.2A Continuous / 3.2A Peak)**: Ultra-compact, low heat.
-- **TMC2209 V2.0 Ultra-Silent Stepper Driver Set**: StealthChop2 & StallGuard4 sensorless homing.
-- **40A Bidirectional Brushless ESC**: Instant forward/reverse for agile soccer robots.
-
-### 5. 🔄 Bearings & Linear Motion
-- **608ZZ High-Speed Miniature Deep Groove Ball Bearings (10 Pcs)**: ABEC-7 rated with dual metal dust shields.
-- **LM8UU 8mm Linear Motion Ball Bushings (4 Pcs)**: Recirculating ball rows for 8mm guide shafts.
-- **T8 Stainless Lead Screw (300mm / 8mm Lead) with Anti-Backlash Brass Nut & Coupler**.
-- **KFL08 8mm Zinc-Aluminum Pillow Block Flange Bearings (2 Pcs)**: Self-aligning drive shaft holders.
-
-### 6. 🏁 Competition Line Follower Robot (LFR) Kits
-- **Phantom PRO High-Speed LFR Complete Kit (PID Tuned)**: CNC Aluminum chassis, 8-channel IR sensor array, 1000RPM N20s, TB6612 driver, OLED telemetry screen, 2S LiPo.
-- **QTR-8RC / 8A Reflective IR Sensor Array Bar**: 8-channel emitter/receiver with sub-millimeter tracking.
-- **Creotex LFR Mini Starter Kit**: Dual BO motors, 5-channel TCRT5000 sensor, Arduino compatible.
-
-### 7. 🏎️ Robo Race Chassis & Wheels
-- **AeroForce 100% 3K Carbon Fiber Race Chassis (3.0mm Aero Plate)**: 125g ultra-lightweight power-to-weight.
-- **SuperGrip Sticky Silicone Race Wheels (65mm x 30mm Pair) with 6mm Brass Hubs**: Shore 20A soft zero-slip traction.
-- **Monster Torque 80mm Knobby All-Terrain Rubber Wheels (Pair)**: Mud and ramp obstacle traction.
-- **Brass Extended 30mm Wheel Hex Hub Couplers (4 Pcs)**: Anti-roll wide track extension.
-
-### 8. ⚽ Soccer Robot Chassis, Mecanum Wheels & Kickers
-- **StrikePro 3-Wheel Omni-Directional Soccer Chassis Kit**: 200mm regulation tournament size, 120° tri-omni drive.
-- **60mm CNC Aluminum Mecanum Wheels Set of 4 with 6mm Couplers**: 45° angled polyurethane rollers for 360° holonomic translation.
-- **100mm Dual-Plate Nylon Omni Wheels (Pair)**: 18 soft rubber perpendicular rollers.
-- **12V High-Impact Solenoid Ball Kicker Mechanism**: 15m/s strike velocity with flyback MOSFET board.
-
-### 9. 🔋 Batteries, Sensors & Power
-- **Creotex 11.1V 3S 2200mAh 60C High-Burst LiPo Battery (XT60)**.
-- **MPU-6050 6-Axis Gyroscope & Accelerometer Module (I2C)**.
-- **HC-SR04 Ultrasonic Distance Sensor Module**.
+```
+CreotexShop/
+├── package.json                  # Monorepo root scripts
+├── README.md
+│
+├── frontend/                     # React 19 + Vite SPA
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── index.html
+│   └── src/
+│       ├── App.jsx               # Root component & routing
+│       ├── main.jsx              # React DOM entry point
+│       │
+│       ├── components/
+│       │   ├── admin/            # Super Admin Panel (16 modules)
+│       │   │   ├── AdminLayout.jsx
+│       │   │   ├── AdminLogin.jsx
+│       │   │   ├── AdminDashboard.jsx
+│       │   │   ├── AdminProducts.jsx
+│       │   │   ├── AdminProductModal.jsx
+│       │   │   ├── AdminCategories.jsx
+│       │   │   ├── AdminOrders.jsx
+│       │   │   ├── AdminOrderDetailModal.jsx
+│       │   │   ├── AdminCustomers.jsx
+│       │   │   ├── AdminUsers.jsx
+│       │   │   ├── AdminCoupons.jsx
+│       │   │   ├── AdminDatasheets.jsx
+│       │   │   ├── AdminSettings.jsx
+│       │   │   ├── AdminHeroBanners.jsx
+│       │   │   ├── AdminRobotBuilder.jsx
+│       │   │   └── AdminFilamentHub.jsx     ⭐ NEW
+│       │   │
+│       │   ├── home/             # Storefront pages
+│       │   │   ├── HeroSlider.jsx
+│       │   │   ├── FlashDeals.jsx
+│       │   │   ├── FilamentSection.jsx      ⭐ UPDATED
+│       │   │   ├── FilamentHubPage.jsx      ⭐ UPDATED
+│       │   │   ├── FilamentSpoolViewer.jsx
+│       │   │   ├── CatalogSection.jsx
+│       │   │   ├── RobotBuilder.jsx
+│       │   │   ├── DatasheetsHub.jsx
+│       │   │   ├── ProductCard.jsx
+│       │   │   └── ValueStrip.jsx
+│       │   │
+│       │   ├── layout/           # Shared layout
+│       │   │   ├── Header.jsx
+│       │   │   ├── MegaNav.jsx
+│       │   │   ├── NeuralBackground.jsx
+│       │   │   └── Footer.jsx
+│       │   │
+│       │   └── modals/           # Global modals & overlays
+│       │       ├── AuthModal.jsx
+│       │       ├── CartDrawer.jsx
+│       │       ├── CheckoutModal.jsx
+│       │       ├── QuickViewModal.jsx
+│       │       ├── CompareModal.jsx
+│       │       └── ToastContainer.jsx
+│       │
+│       ├── context/
+│       │   └── CartContext.jsx              ⭐ UPDATED (filament CRUD)
+│       │
+│       ├── data/
+│       │   ├── productsData.js              # Full product catalog
+│       │   ├── productImages.jsx            # Inline SVG product images
+│       │   ├── adminDemoData.js             # Admin demo seed data
+│       │   └── robotBuilderData.js          # Robot builder presets
+│       │
+│       ├── services/
+│       │   └── api.js                       # Backend API client
+│       │
+│       └── styles/
+│           ├── style.css                    # Main stylesheet
+│           ├── components.css               # Component-specific styles
+│           ├── responsive.css               ⭐ UPDATED (full responsive)
+│           └── admin.css                    # Admin panel styles
+│
+└── backend/                      # Node.js + Express REST API
+    ├── package.json
+    ├── server.js                 # Express entry point
+    ├── seeder.js                 # Database seeder
+    ├── .env / .env.example
+    ├── config/                   # DB connection config
+    ├── controllers/              # Route handlers
+    ├── models/                   # Mongoose schemas
+    ├── routes/                   # Express routes
+    ├── middleware/               # Auth, error handling
+    ├── utils/                    # Helpers & utilities
+    └── data/                     # Seed data JSON
+```
 
 ---
 
-## 🛠️ Interactive Tools & Features
+## 🌟 Key Features
 
-1. **Custom Competition Robot Builder**: Real-time 2D chassis blueprint schematic visualizer, presets for Robo Race, Line Follower, and Soccer Bot, component customization, and automatic 10% bundle discount with 1-click cart addition.
-2. **Slide-Out Cart Drawer**: Free Express Shipping progress bar towards ₹999 threshold, coupon engine (`ROBO10`, `MAKER50`), and quantity controls.
-3. **3-Step Checkout Wizard**: Address details -> Payout selection (UPI, Cards, NetBanking, COD) -> Order Confirmation & Receipt Generator.
-4. **Live Search with Autocomplete**: Instant search popup matching names, SKUs, and tags across categories.
-5. **Technical Specs Comparison**: Side-by-side spec comparison table for up to 4 components.
-6. **Dark / Light Maker Themes**: Instant theme toggle with local storage persistence.
+### 🛒 Storefront
+
+| Feature | Description |
+|---------|-------------|
+| **Hero Slider** | Full-width animated banner carousel with CTA buttons |
+| **Flash Deals** | Time-limited deal cards with countdown timers and discount badges |
+| **Product Catalog** | Category-filtered grid with quick-view, compare, and add-to-cart |
+| **Filament Zone** | Dedicated 3D printing filament section with spool viewer & color variants |
+| **Robot Builder** | Interactive 2D chassis blueprint with component customization & bundle pricing |
+| **Datasheets Hub** | Technical specification library with PDF downloads |
+| **Live Search** | Instant autocomplete popup matching names, SKUs, and tags |
+| **Spec Compare** | Side-by-side comparison table for up to 4 components |
+| **Dark/Light Theme** | Toggle with localStorage persistence |
+
+### 🛍️ Shopping Experience
+
+| Feature | Description |
+|---------|-------------|
+| **Slide-Out Cart** | Free Express Shipping progress bar (₹999 threshold), coupon engine (`ROBO10`, `MAKER50`), quantity controls |
+| **3-Step Checkout** | Address → Payment (UPI, Cards, NetBanking, COD) → Order Confirmation & Receipt |
+| **Auth System** | Login/Register modal with form validation |
+
+### 🔐 Super Admin Panel
+
+| Module | Description |
+|--------|-------------|
+| **Dashboard** | Sales analytics, order stats, revenue charts |
+| **Products** | Full CRUD with rich product modal editor |
+| **Categories** | Category management with image uploads |
+| **Orders** | Order list with detail modal & status management |
+| **Customers** | Customer directory with order history |
+| **Users** | Admin user management & role assignment |
+| **Coupons** | Discount code creation & management |
+| **Datasheets** | Technical document uploads |
+| **Hero Banners** | Storefront banner management with drag-reorder |
+| **Robot Builder** | Admin config for builder presets & components |
+| **Filament Hub** | ⭐ **NEW** — Full filament subcategory management (see below) |
+| **Settings** | Store configuration & preferences |
+
+---
+
+## ⭐ Recent Changes & Improvements
+
+### 🧵 Filament Hub — Super Admin (NEW)
+
+A complete filament subcategory management system accessible from the admin sidebar.
+
+#### Capabilities
+- **Create Subcategory** — Modal with name, description, and preset spool image selection
+- **Studio Editor** — Advanced editing interface for each subcategory:
+  - Edit name, description, price, weight, diameter, and material specs
+  - **Color Variant Manager** — Add/remove color variants with:
+    - Color picker for spool tinting
+    - Custom photo upload per color variant
+    - Color name and hex code assignment
+  - Live preview of the spool with selected color tint
+- **Publish/Draft Toggle** — Control storefront visibility per subcategory
+  - Published subcategories appear on the storefront
+  - Draft subcategories are hidden from customers but visible in admin
+- **Delete Subcategory** — Remove with confirmation dialog
+
+#### How It Works (State Management)
+- All filament subcategory data is managed via `CartContext.jsx`
+- State is persisted to `localStorage` for offline/demo use
+- The `updateFilamentSubcategory()` function performs dual updates:
+  1. Updates the subcategory metadata list
+  2. Syncs changes to the main product catalog
+- Storefront components (`FilamentSection.jsx`, `FilamentHubPage.jsx`) automatically filter out unpublished subcategories
+
+### 🎨 Filament Storefront UI — "Flash-Scale" Design
+
+The filament section on the homepage was completely redesigned with a premium card layout:
+
+- **Large spool images** with hover zoom effect
+- **Clean titles** — no clutter, no long descriptions on cards
+- **Professional badge system** — material type indicators
+- **Color dot indicators** — showing available colors at a glance
+- **2-column mobile grid** — responsive layout for small screens
+
+### 📱 Full Responsive Overhaul
+
+All pages and the admin panel are now fully responsive across all viewports:
+
+| Viewport | Breakpoint | Optimizations |
+|----------|------------|---------------|
+| Desktop | > 1024px | Full-width layouts, multi-column grids |
+| Tablet | 768px–1024px | Adjusted grids, collapsible sidebars |
+| Mobile | < 768px | Single/2-column stacked layouts, touch-friendly targets |
+| Small Mobile | < 480px | Compact cards, reduced padding, optimized typography |
+
+**Key responsive fixes:**
+- Admin panel sidebar collapses to hamburger menu on mobile
+- Product grids switch to 2-column on mobile, 1-column on small screens
+- Cart drawer is full-width on mobile
+- Filament hub page uses stacked layout on narrow screens
+- All modals are viewport-aware with proper max-height and scrolling
+- Header navigation collapses to mobile menu
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| React | 19.x | UI framework |
+| Vite | 6.x | Build tool & dev server |
+| Vanilla CSS | — | Styling (no CSS framework) |
+| localStorage | — | Client-side state persistence |
+
+### Backend
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| Node.js | 18+ | Runtime |
+| Express | 4.x | REST API framework |
+| MongoDB + Mongoose | 8.x | Database & ODM |
+| JWT | — | Authentication tokens |
+| bcryptjs | — | Password hashing |
+| Helmet | — | Security headers |
+| Morgan | — | HTTP request logging |
+| Compression | — | Response compression |
+| CORS | — | Cross-origin support |
+
+---
+
+## 🏷️ Product Categories
+
+1. **🔩 Nut Bolt & Screws** — M3/M4/M5 stainless steel kits, brass standoffs, knurled spacers, anodized aluminum washers
+2. **🧵 3D Printing & Filaments** — Hyper-Speed PLA (600mm/s), Carbon Fiber PETG-CF, Flex TPU 95A, hardened nozzle sets
+3. **⚙️ Gearbox & Motors** — PG-36 planetary DC motors, NEMA 17 steppers, N20 gearmotors, MG996R servos, A2212 BLDC
+4. **🔌 Motor Drivers & ESCs** — Cytron MDD10A, TB6612FNG, TMC2209 stepper drivers, 40A bidirectional ESCs
+5. **🔄 Bearings & Linear Motion** — 608ZZ ball bearings, LM8UU linear bushings, T8 lead screws, KFL08 pillow blocks
+6. **🏁 Line Follower Robot Kits** — Phantom PRO complete kit, QTR-8RC sensor arrays, mini starter kits
+7. **🏎️ Robo Race Chassis & Wheels** — Carbon fiber plates, silicone race wheels, knobby all-terrain wheels, hex hub couplers
+8. **⚽ Soccer Robot** — Omni-directional chassis, mecanum wheels, nylon omni wheels, solenoid ball kickers
+9. **🔋 Batteries, Sensors & Power** — 3S LiPo batteries, MPU-6050 IMU, HC-SR04 ultrasonic sensors
+
+---
+
+## 🔑 Important Notes for Developers
+
+### State Management
+- The app uses **React Context API** (`CartContext.jsx`) for global state
+- Cart, user auth, theme, filament data, and admin state are all managed through context
+- `localStorage` is used for persistence across page reloads
+- No external state management library (Redux, Zustand, etc.) is used
+
+### Admin Access
+- Navigate to the admin login page from the header user menu
+- Super Admin credentials are managed via the backend auth system
+- The admin panel has a collapsible sidebar with all management modules
+
+### Filament Data Flow
+```
+AdminFilamentHub.jsx  →  CartContext.jsx  →  localStorage
+                                           ↓
+                         FilamentSection.jsx (homepage)
+                         FilamentHubPage.jsx (dedicated page)
+                         (Both filter: published === true)
+```
+
+### CSS Architecture
+- `style.css` — Main global styles, layout, and design tokens
+- `components.css` — Component-specific styles (cards, badges, buttons)
+- `responsive.css` — All media queries and responsive overrides
+- `admin.css` — Admin panel-specific styles
+
+### SVG Product Images
+- All product images are **inline SVGs** generated in `productImages.jsx`
+- This eliminates external image dependencies and ensures instant loading
+- SVGs are color-themed and resolution-independent
+
+---
+
+## 📄 License
+
+ISC © Creotex Engineering
