@@ -4,14 +4,14 @@
   "private": true,
   "description": "CreotexShop Robotics & Electronics E-Commerce Platform (Frontend + Backend)",
   "scripts": {
-    "build": "npm install --prefix frontend && npm run build --prefix frontend",
+    "build": "npm install --prefix frontend && npm run build --prefix frontend && node scripts/prepare-dist.cjs",
     "start": "node backend/server.js",
     "dev:frontend": "npm run dev --prefix frontend",
     "dev:backend": "npm run dev --prefix backend",
     "dev": "npm run dev:frontend",
     "start:backend": "npm run start --prefix backend",
     "seed:backend": "npm run seed --prefix backend",
-    "build:frontend": "npm install --prefix frontend && npm run build --prefix frontend",
+    "build:frontend": "npm install --prefix frontend && npm run build --prefix frontend && node scripts/prepare-dist.cjs",
     "install:all": "npm install --prefix frontend && npm install --prefix backend"
   },
   "keywords": [
