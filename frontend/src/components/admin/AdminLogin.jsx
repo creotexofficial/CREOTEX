@@ -1,12 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../context/CartContext';
+import { api } from '../../services/api';
+import {
+  ArrowLeft,
+  Sun,
+  Moon,
+  ShieldCheck,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  LogIn,
+  AlertCircle,
+  Activity
+} from 'lucide-react';
 
 export const AdminLogin = () => {
   const { login, navigateToStorefront, theme, toggleTheme } = useCart();
   
   // State
   const [email, setEmail] = useState('admin@creotex.in');
-  const [password, setPassword] = useState('admin123');
+  const [password, setPassword] = useState('Admin@123');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -128,15 +142,24 @@ export const AdminLogin = () => {
     setErrorMessage('');
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = login(email, password);
-      setIsLoading(false);
-      if (!res.success) {
-        setErrorMessage(res.message || 'Invalid root credentials.');
+    setTimeout(async () => {
+      try {
+        const authResponse = await api.auth.login({ email, password });
+        if (authResponse.data?.role !== 'super_admin') {
+          throw new Error('Access Denied: Account lacks Super Admin privileges.');
+        }
+
+        localStorage.setItem('creotex_auth_token', authResponse.data.token);
+        const res = login(email, password, authResponse.data);
+        if (!res.success) {
+          throw new Error(res.message || 'Invalid root credentials.');
+        }
+      } catch (error) {
+        localStorage.removeItem('creotex_auth_token');
+        setErrorMessage(error.message || 'Invalid root credentials.');
         triggerShake();
-      } else if (res.user?.role !== 'super_admin') {
-        setErrorMessage('Access Denied: Account lacks Super Admin privileges.');
-        triggerShake();
+      } finally {
+        setIsLoading(false);
       }
     }, 450);
   };
@@ -264,9 +287,7 @@ export const AdminLogin = () => {
             e.currentTarget.style.transform = 'translateX(0)';
           }}
         >
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
+          <ArrowLeft size={16} />
           <span>Storefront Preview</span>
         </button>
 
@@ -296,7 +317,9 @@ export const AdminLogin = () => {
           <span style={{ opacity: 0.3 }}>|</span>
           <span>{currentTime}</span>
           <span style={{ opacity: 0.3 }}>|</span>
-          <span style={{ color: '#38BDF8' }}>⚡ {pingMs}ms</span>
+          <span style={{ color: '#38BDF8', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            <Activity size={12} /> {pingMs}ms
+          </span>
 
           <button
             onClick={toggleTheme}
@@ -312,17 +335,7 @@ export const AdminLogin = () => {
             }}
             title="Toggle theme mode"
           >
-            {theme === 'dark' ? (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="5" />
-                <line x1="12" y1="1" x2="12" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="23" />
-              </svg>
-            ) : (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              </svg>
-            )}
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           </button>
         </div>
       </header>
@@ -418,11 +431,7 @@ export const AdminLogin = () => {
               boxShadow: '0 0 25px rgba(249, 115, 22, 0.65)',
               zIndex: 2
             }}>
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
-                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                <polyline points="2 17 12 22 22 17"></polyline>
-                <polyline points="2 12 12 17 22 12"></polyline>
-              </svg>
+              <ShieldCheck size={26} color="#FFFFFF" />
             </div>
           </div>
 
@@ -485,11 +494,7 @@ export const AdminLogin = () => {
             alignItems: 'center',
             gap: '10px'
           }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.2">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
+            <AlertCircle size={18} color="#EF4444" style={{ flexShrink: 0 }} />
             <span>{errorMessage}</span>
           </div>
         )}
@@ -535,10 +540,7 @@ export const AdminLogin = () => {
                 pointerEvents: 'none',
                 display: 'flex'
               }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
+                <Mail size={18} color="#71717A" />
               </div>
             </div>
           </div>
@@ -563,10 +565,23 @@ export const AdminLogin = () => {
                   fontSize: '0.74rem',
                   cursor: 'pointer',
                   fontWeight: '600',
-                  padding: 0
+                  padding: 0,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
                 }}
               >
-                {showPassword ? 'Hide Key' : 'Reveal Key'}
+                {showPassword ? (
+                  <>
+                    <EyeOff size={13} />
+                    <span>Hide Key</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye size={13} />
+                    <span>Reveal Key</span>
+                  </>
+                )}
               </button>
             </div>
             <div style={{ position: 'relative' }}>
@@ -597,10 +612,7 @@ export const AdminLogin = () => {
                 pointerEvents: 'none',
                 display: 'flex'
               }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
+                <Lock size={18} color="#71717A" />
               </div>
             </div>
 
@@ -665,11 +677,7 @@ export const AdminLogin = () => {
               </>
             ) : (
               <>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                  <polyline points="10 17 15 12 10 7" />
-                  <line x1="15" y1="12" x2="3" y2="12" />
-                </svg>
+                <LogIn size={18} />
                 <span>Login</span>
               </>
             )}

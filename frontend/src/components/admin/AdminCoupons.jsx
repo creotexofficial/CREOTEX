@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
+import {
+  TicketPercent,
+  Plus,
+  Trash2,
+  X,
+  Tag,
+  Check
+} from 'lucide-react';
 
 export const AdminCoupons = () => {
   const { coupons, addCoupon, deleteCoupon } = useCart();
@@ -39,10 +47,8 @@ export const AdminCoupons = () => {
       <div className="admin-card">
         <div className="admin-card-header">
           <div>
-            <h2 className="admin-card-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-              </svg>
+            <h2 className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <TicketPercent size={20} strokeWidth={2} style={{ color: 'var(--primary)' }} />
               Promotions &amp; Coupon Engine
             </h2>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -50,11 +56,8 @@ export const AdminCoupons = () => {
             </div>
           </div>
 
-          <button className="admin-action-pill-btn primary" onClick={() => setIsModalOpen(true)}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+          <button className="admin-action-pill-btn primary" onClick={() => setIsModalOpen(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Plus size={16} strokeWidth={2.5} />
             Create Coupon
           </button>
         </div>
@@ -82,8 +85,12 @@ export const AdminCoupons = () => {
                       borderRadius: '6px',
                       background: 'rgba(249, 115, 22, 0.15)',
                       color: 'var(--primary)',
-                      border: '1px dashed var(--primary)'
+                      border: '1px dashed var(--primary)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px'
                     }}>
+                      <Tag size={12} strokeWidth={2} />
                       {c.code}
                     </span>
                   </td>
@@ -107,10 +114,7 @@ export const AdminCoupons = () => {
                         }
                       }}
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                      </svg>
+                      <Trash2 size={14} strokeWidth={2} />
                     </button>
                   </td>
                 </tr>
@@ -125,8 +129,13 @@ export const AdminCoupons = () => {
         <div className="admin-modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="admin-modal-box" style={{ maxWidth: '520px' }} onClick={e => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h3 className="admin-modal-title">✨ Create New Coupon Code</h3>
-              <button className="btn-table-icon" onClick={() => setIsModalOpen(false)}>✕</button>
+              <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <TicketPercent size={18} strokeWidth={2} style={{ color: 'var(--primary)' }} />
+                Create New Coupon Code
+              </h3>
+              <button className="btn-table-icon" onClick={() => setIsModalOpen(false)} aria-label="Close">
+                <X size={16} strokeWidth={2} />
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="admin-modal-body">
@@ -194,7 +203,10 @@ export const AdminCoupons = () => {
 
               <div className="admin-modal-footer" style={{ margin: '24px -24px -24px', padding: '16px 24px' }}>
                 <button type="button" className="admin-action-pill-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                <button type="submit" className="admin-action-pill-btn primary">Save &amp; Activate</button>
+                <button type="submit" className="admin-action-pill-btn primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <Check size={15} strokeWidth={2.2} />
+                  Save &amp; Activate
+                </button>
               </div>
             </form>
           </div>

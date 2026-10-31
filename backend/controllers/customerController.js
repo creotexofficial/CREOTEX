@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import asyncHandler from '../utils/asyncHandler.js';
 import Customer from '../models/Customer.js';
 
@@ -119,7 +120,15 @@ export const updateCustomer = asyncHandler(async (req, res) => {
 // @route   DELETE /api/customers/:id
 // @access  Private/Admin
 export const deleteCustomer = asyncHandler(async (req, res) => {
-  const customer = await Customer.findById(req.params.id);
+  const identifier = req.params.id;
+  let customer;
+
+  if (mongoose.Types.ObjectId.isValid(identifier)) {
+    customer = await Customer.findById(identifier);
+  }
+  if (!customer) {
+    customer = await Customer.findOne({ customId: identifier });
+  }
 
   if (!customer) {
     res.status(404);

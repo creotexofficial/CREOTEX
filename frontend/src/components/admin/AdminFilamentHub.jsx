@@ -1,6 +1,29 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { useCart } from '../../context/CartContext';
 import { DEFAULT_FILAMENT_COLORS, FILAMENT_SUBCATEGORIES } from '../../data/productsData';
+import {
+  CircleDot,
+  Layers,
+  Plus,
+  Edit3,
+  Trash2,
+  UploadCloud,
+  Search,
+  Check,
+  X,
+  Save,
+  ExternalLink,
+  RotateCcw,
+  Flame,
+  ArrowLeft,
+  Image as ImageIcon,
+  Eye,
+  EyeOff,
+  Palette,
+  Sparkles,
+  Info,
+  CheckCircle2
+} from 'lucide-react';
 
 // 11 Photorealistic 3D Spool Presets
 const PRESET_SPOOL_IMAGES = [
@@ -114,6 +137,7 @@ export const AdminFilamentHub = () => {
     deleteFilamentSubcategory,
     resetFilamentSubcategoriesDefaults,
     navigateToFilaments,
+    setAdminActiveTab,
     showToast
   } = useCart();
 
@@ -249,7 +273,7 @@ export const AdminFilamentHub = () => {
   // Handle Delete Subcategory with confirmation
   const handleDeleteSubcategory = (subKey, displayName, e) => {
     if (e) e.stopPropagation();
-    if (window.confirm(`⚠️ Are you sure you want to permanently delete subcategory "${displayName || subKey}" and remove its products from the store?`)) {
+    if (window.confirm(`Are you sure you want to permanently delete subcategory "${displayName || subKey}" and remove its products from the store?`)) {
       deleteFilamentSubcategory(subKey);
       if (activeSubKey && activeSubKey.toLowerCase() === subKey.toLowerCase()) {
         setActiveSubKey(null);
@@ -341,7 +365,7 @@ export const AdminFilamentHub = () => {
       colors: subForm.colors
     });
 
-    showToast(`✅ "${subForm.displayName}" and ${subForm.colors.length} colors saved successfully!`, 'success');
+    showToast(`"${subForm.displayName}" and ${subForm.colors.length} colors saved successfully!`, 'success');
   };
 
   // Active color currently selected in the Live Studio
@@ -544,9 +568,9 @@ export const AdminFilamentHub = () => {
               type="button"
               onClick={handleBackToList}
               className="admin-action-pill-btn secondary"
-              style={{ padding: '7px 14px', fontSize: '13px', fontWeight: '700' }}
+              style={{ padding: '7px 14px', fontSize: '13px', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             >
-              ← All Subcategories
+              <ArrowLeft size={14} /> All Subcategories
             </button>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
@@ -583,20 +607,30 @@ export const AdminFilamentHub = () => {
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '4px'
+                  gap: '6px'
                 }}
                 title="Click to toggle publish status on storefront"
               >
-                <span>{subForm.published ? '🟢 Published (Live)' : '⚪ Draft (Hidden)'}</span>
+                {subForm.published ? (
+                  <>
+                    <CircleDot size={12} color="#16A34A" />
+                    <span>Published (Live)</span>
+                  </>
+                ) : (
+                  <>
+                    <EyeOff size={12} color="#94A3B8" />
+                    <span>Draft (Hidden)</span>
+                  </>
+                )}
               </button>
 
               <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>•</span>
-              <span style={{ fontSize: '12px', color: '#16A34A', fontWeight: '700' }}>
-                ✓ {subForm.colors.length} Colors Total
+              <span style={{ fontSize: '12px', color: '#16A34A', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Check size={13} /> {subForm.colors.length} Colors Total
               </span>
               <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>•</span>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                📷 {withPhotosCount} With Dedicated Photos
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                <ImageIcon size={13} /> {withPhotosCount} With Dedicated Photos
               </span>
             </div>
           </div>
@@ -606,28 +640,28 @@ export const AdminFilamentHub = () => {
               type="button"
               onClick={() => handleDeleteSubcategory(subForm.subCategoryKey, subForm.displayName)}
               className="admin-action-pill-btn secondary"
-              style={{ padding: '8px 14px', fontSize: '12px', color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.4)' }}
+              style={{ padding: '8px 14px', fontSize: '12px', color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.4)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               title="Permanently remove this subcategory"
             >
-              🗑️ Delete Subcategory
+              <Trash2 size={13} /> Delete Subcategory
             </button>
 
             <button
               type="button"
               onClick={() => navigateToFilaments(subForm.subCategoryKey)}
               className="admin-action-pill-btn secondary"
-              style={{ padding: '8px 16px', fontSize: '12px' }}
+              style={{ padding: '8px 16px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             >
-              👁️ View on Store
+              <ExternalLink size={13} /> View on Store
             </button>
 
             <button
               type="button"
               onClick={handleSaveSubcategory}
               className="admin-action-pill-btn primary"
-              style={{ padding: '8px 24px', fontSize: '13px', fontWeight: '800' }}
+              style={{ padding: '8px 24px', fontSize: '13px', fontWeight: '800', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             >
-              💾 Save All Changes
+              <Save size={14} /> Save All Changes
             </button>
           </div>
         </div>
@@ -811,7 +845,7 @@ export const AdminFilamentHub = () => {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
                 <div>
                   <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '900', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span>🎨</span> Color Palette Directory
+                    <Palette size={18} style={{ color: '#0066CC' }} /> Color Palette Directory
                   </h3>
                   <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                     Click any color row to preview and manage its dedicated spool photo in the right studio.
@@ -822,9 +856,9 @@ export const AdminFilamentHub = () => {
                   type="button"
                   onClick={() => setIsAddingColor(!isAddingColor)}
                   className="admin-action-pill-btn primary"
-                  style={{ fontSize: '12px', padding: '6px 14px' }}
+                  style={{ fontSize: '12px', padding: '6px 14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
-                  {isAddingColor ? '✕ Close' : '➕ Add Color'}
+                  {isAddingColor ? <><X size={13} /> Close</> : <><Plus size={13} /> Add Color</>}
                 </button>
               </div>
 
@@ -832,7 +866,7 @@ export const AdminFilamentHub = () => {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '14px', background: 'var(--bg-surface)', padding: '8px 12px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
                 {/* Search input */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: '180px' }}>
-                  <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>🔍</span>
+                  <Search size={14} color="var(--text-secondary)" />
                   <input
                     type="text"
                     placeholder="Filter colors by name or #hex..."
@@ -851,9 +885,9 @@ export const AdminFilamentHub = () => {
                     <button
                       type="button"
                       onClick={() => setColorSearchQuery('')}
-                      style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '12px' }}
+                      style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '2px' }}
                     >
-                      ✕
+                      <X size={13} />
                     </button>
                   )}
                 </div>
@@ -887,10 +921,13 @@ export const AdminFilamentHub = () => {
                       padding: '4px 10px',
                       fontSize: '11px',
                       fontWeight: '700',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px'
                     }}
                   >
-                    📷 Photos ({withPhotosCount})
+                    <ImageIcon size={11} /> Photos ({withPhotosCount})
                   </button>
                   <button
                     type="button"
@@ -903,10 +940,13 @@ export const AdminFilamentHub = () => {
                       padding: '4px 10px',
                       fontSize: '11px',
                       fontWeight: '700',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px'
                     }}
                   >
-                    🎨 Auto-Tint ({autoTintCount})
+                    <Palette size={11} /> Auto-Tint ({autoTintCount})
                   </button>
                 </div>
               </div>
@@ -923,8 +963,8 @@ export const AdminFilamentHub = () => {
                     boxShadow: '0 4px 14px rgba(0, 102, 204, 0.1)'
                   }}
                 >
-                  <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '10px' }}>
-                    ➕ Add a New Color Variant
+                  <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Plus size={14} color="#0066CC" /> Add a New Color Variant
                   </div>
 
                   <input
@@ -983,9 +1023,9 @@ export const AdminFilamentHub = () => {
                           type="button"
                           onClick={() => newColorFileInputRef.current?.click()}
                           className="admin-action-pill-btn secondary"
-                          style={{ fontSize: '11px', padding: '5px 10px', height: '32px' }}
+                          style={{ fontSize: '11px', padding: '5px 10px', height: '32px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                         >
-                          📁 {colorFileName ? 'Uploaded' : 'Upload File'}
+                          <UploadCloud size={12} /> {colorFileName ? 'Uploaded' : 'Upload File'}
                         </button>
                         <select
                           className="admin-select"
@@ -1008,9 +1048,9 @@ export const AdminFilamentHub = () => {
                       type="button"
                       onClick={handleAddNewColor}
                       className="admin-action-pill-btn primary"
-                      style={{ padding: '7px 16px', fontSize: '12px', height: '32px' }}
+                      style={{ padding: '7px 16px', fontSize: '12px', height: '32px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                     >
-                      ✓ Add
+                      <Plus size={13} /> Add
                     </button>
                   </div>
                 </div>
@@ -1128,13 +1168,13 @@ export const AdminFilamentHub = () => {
                                       border: '1px solid var(--border-color)'
                                     }}
                                   />
-                                  <span style={{ fontSize: '11px', color: '#16A34A', fontWeight: '800' }}>
-                                    📷 Photo
+                                  <span style={{ fontSize: '11px', color: '#16A34A', fontWeight: '800', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                    <ImageIcon size={11} /> Photo
                                   </span>
                                 </div>
                               ) : (
-                                <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
-                                  🎨 Auto-Tint
+                                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                  <Palette size={11} /> Auto-Tint
                                 </span>
                               )}
                             </td>
@@ -1155,10 +1195,17 @@ export const AdminFilamentHub = () => {
                                   padding: '4px 8px',
                                   fontSize: '11px',
                                   fontWeight: '700',
-                                  cursor: 'pointer'
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px'
                                 }}
                               >
-                                {isSelected ? '✨ Active' : 'Select'}
+                                {isSelected ? (
+                                  <>
+                                    <Check size={11} /> Active
+                                  </>
+                                ) : 'Select'}
                               </button>
                             </td>
 
@@ -1168,9 +1215,9 @@ export const AdminFilamentHub = () => {
                                 type="button"
                                 onClick={(e) => handleDeleteColor(col.originalIndex, e)}
                                 title="Delete color"
-                                style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '13px', cursor: 'pointer', padding: '2px' }}
+                                style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '13px', cursor: 'pointer', padding: '2px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                               >
-                                🗑️
+                                <Trash2 size={13} />
                               </button>
                             </td>
                           </tr>
@@ -1183,7 +1230,9 @@ export const AdminFilamentHub = () => {
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px', fontSize: '11px', color: 'var(--text-secondary)' }}>
                 <span>Showing {filteredColors.length} of {subForm.colors.length} colors</span>
-                <span>💡 Tip: Click any row to preview and edit photo in the right Studio</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <Info size={12} /> Click any row to preview and edit photo in Studio
+                </span>
               </div>
             </div>
           </div>
@@ -1202,7 +1251,7 @@ export const AdminFilamentHub = () => {
               {/* Studio Header */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
                 <div style={{ fontSize: '13px', fontWeight: '900', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span>✨</span> Live Spool Studio
+                  <Sparkles size={16} color="#0066CC" /> Live Spool Studio
                 </div>
                 <span style={{ fontSize: '11px', fontWeight: '800', color: '#0066CC', background: 'rgba(0, 102, 204, 0.1)', padding: '2px 8px', borderRadius: '4px' }}>
                   Selected: #{selectedColorIndex + 1}
@@ -1229,8 +1278,8 @@ export const AdminFilamentHub = () => {
               >
                 {/* Spool Badges */}
                 <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
-                  <span style={{ background: 'rgba(0, 0, 0, 0.75)', color: '#38BDF8', padding: '3px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: '800', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-                    🧵 1.75mm PRECISION
+                  <span style={{ background: 'rgba(0, 0, 0, 0.75)', color: '#38BDF8', padding: '3px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: '800', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <CircleDot size={10} /> 1.75mm PRECISION
                   </span>
                 </div>
 
@@ -1312,7 +1361,9 @@ export const AdminFilamentHub = () => {
                 }}
               >
                 <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span>📷 Photo for: {activeColor.name}</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <ImageIcon size={14} color="#0066CC" /> Photo for: {activeColor.name}
+                  </span>
                   {activeColor.image ? (
                     <button
                       type="button"
@@ -1332,9 +1383,9 @@ export const AdminFilamentHub = () => {
                     type="button"
                     onClick={() => studioFileInputRef.current?.click()}
                     className="admin-action-pill-btn secondary"
-                    style={{ flex: 1, fontSize: '11px', padding: '7px', justifyContent: 'center' }}
+                    style={{ flex: 1, fontSize: '11px', padding: '7px', justifyContent: 'center', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                   >
-                    📁 Upload Custom Photo
+                    <UploadCloud size={13} /> Upload Custom Photo
                   </button>
                 </div>
 
@@ -1385,9 +1436,9 @@ export const AdminFilamentHub = () => {
                 type="button"
                 onClick={handleSaveSubcategory}
                 className="admin-action-pill-btn primary"
-                style={{ width: '100%', padding: '11px', fontSize: '13px', fontWeight: '800', justifyContent: 'center' }}
+                style={{ width: '100%', padding: '11px', fontSize: '13px', fontWeight: '800', justifyContent: 'center', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
-                💾 Save All Changes
+                <Save size={14} /> Save All Changes
               </button>
             </div>
           </div>
@@ -1424,8 +1475,19 @@ export const AdminFilamentHub = () => {
       <div className="admin-card" style={{ marginBottom: '20px', padding: '22px 26px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '28px' }}>🧵</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '12px',
+                background: 'rgba(0, 102, 204, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#0066CC'
+              }}>
+                <CircleDot size={24} />
+              </div>
               <div>
                 <h2 className="admin-card-title" style={{ margin: 0, fontSize: '22px' }}>
                   3D Filament Subcategories &amp; Color Hub
@@ -1440,28 +1502,50 @@ export const AdminFilamentHub = () => {
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
             <button
               type="button"
+              className="admin-action-pill-btn"
+              onClick={() => setAdminActiveTab('deals-filaments')}
+              style={{
+                background: 'rgba(234, 88, 12, 0.15)',
+                border: '1.5px solid #EA580C',
+                color: '#FF7A29',
+                fontWeight: '700',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+              title="Manage Homepage Flash Deals & Filament Spool Zone"
+            >
+              <Flame size={14} />
+              <span>Manage Spool Zone &amp; Deals</span>
+            </button>
+
+            <button
+              type="button"
               className="admin-action-pill-btn primary"
               onClick={() => setIsCreateModalOpen(true)}
-              style={{ padding: '9px 20px', fontSize: '13px', fontWeight: '800', background: 'linear-gradient(135deg, #0066CC, #004C99)' }}
+              style={{ padding: '9px 20px', fontSize: '13px', fontWeight: '800', background: 'linear-gradient(135deg, #0066CC, #004C99)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             >
-              <span>➕ Add New Subcategory</span>
+              <Plus size={14} />
+              <span>Add New Subcategory</span>
             </button>
 
             <button
               type="button"
               className="admin-action-pill-btn secondary"
               onClick={resetFilamentSubcategoriesDefaults}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               title="Reset all subcategories and default colors to system factory defaults"
             >
-              🔄 Reset Defaults
+              <RotateCcw size={13} /> Reset Defaults
             </button>
 
             <button
               type="button"
               className="admin-action-pill-btn secondary"
               onClick={() => navigateToFilaments('all')}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             >
-              👁️ View Storefront Hub
+              <ExternalLink size={13} /> View Storefront Hub
             </button>
           </div>
         </div>
@@ -1470,8 +1554,8 @@ export const AdminFilamentHub = () => {
         <div style={{ display: 'flex', gap: '8px', marginTop: '18px', borderTop: '1px solid var(--border-color)', paddingTop: '14px', flexWrap: 'wrap' }}>
           {[
             { id: 'all', label: `All Materials (${subcategoriesList.length})` },
-            { id: 'published', label: `🟢 Published (${publishedCount})` },
-            { id: 'draft', label: `⚪ Draft / Hidden (${draftCount})` },
+            { id: 'published', label: `Published (${publishedCount})` },
+            { id: 'draft', label: `Draft / Hidden (${draftCount})` },
             { id: 'pla', label: 'PLA & Specialty Silk' },
             { id: 'petg', label: 'PETG Series' },
             { id: 'engineering', label: 'Engineering ABS & ASA' }
@@ -1578,11 +1662,21 @@ export const AdminFilamentHub = () => {
                       cursor: 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '4px'
+                      gap: '5px'
                     }}
                     title={isPublished ? "Click to unpublish/hide from customer storefront" : "Click to publish and show on customer storefront"}
                   >
-                    <span>{isPublished ? '🟢 Published' : '⚪ Draft (Hidden)'}</span>
+                    {isPublished ? (
+                      <>
+                        <CircleDot size={11} color="#16A34A" />
+                        <span>Published</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff size={11} color="#94A3B8" />
+                        <span>Draft (Hidden)</span>
+                      </>
+                    )}
                   </button>
                 </div>
 
@@ -1627,8 +1721,12 @@ export const AdminFilamentHub = () => {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>
-                    <span>🎨 {colorsList.length} Colors</span>
-                    <span style={{ color: '#16A34A' }}>✓ {colorsWithPhotos} with photos</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                      <Palette size={12} color="#0066CC" /> {colorsList.length} Colors
+                    </span>
+                    <span style={{ color: '#16A34A', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Check size={12} /> {colorsWithPhotos} with photos
+                    </span>
                   </div>
 
                   <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', maxHeight: '42px', overflow: 'hidden' }}>
@@ -1661,19 +1759,19 @@ export const AdminFilamentHub = () => {
                   type="button"
                   onClick={() => handleOpenEditor(sub)}
                   className="admin-action-pill-btn primary"
-                  style={{ flex: 1, justifyContent: 'center', padding: '9px', fontSize: '13px', fontWeight: '800' }}
+                  style={{ flex: 1, justifyContent: 'center', padding: '9px', fontSize: '13px', fontWeight: '800', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
-                  ✏️ Edit Colors &amp; Settings
+                  <Edit3 size={13} /> Edit Colors &amp; Settings
                 </button>
 
                 <button
                   type="button"
                   onClick={(e) => handleDeleteSubcategory(sub.subCategoryKey, sub.displayName, e)}
                   className="admin-action-pill-btn secondary"
-                  style={{ padding: '9px 12px', color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.4)' }}
+                  style={{ padding: '9px 12px', color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.4)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                   title={`Delete subcategory "${sub.displayName}"`}
                 >
-                  🗑️
+                  <Trash2 size={13} />
                 </button>
               </div>
             </div>
@@ -1718,7 +1816,7 @@ export const AdminFilamentHub = () => {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '900', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span>🧵</span> Create New 3D Filament Subcategory
+                  <Layers size={18} color="#0066CC" /> Create New 3D Filament Subcategory
                 </h3>
                 <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                   Add a new material formulation to your storefront catalog with custom pricing and technical profiles.
@@ -1728,9 +1826,9 @@ export const AdminFilamentHub = () => {
               <button
                 type="button"
                 onClick={() => setIsCreateModalOpen(false)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '20px', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', padding: '4px' }}
               >
-                ✕
+                <X size={18} />
               </button>
             </div>
 
@@ -1933,9 +2031,9 @@ export const AdminFilamentHub = () => {
                 <button
                   type="submit"
                   className="admin-action-pill-btn primary"
-                  style={{ padding: '9px 24px', fontSize: '13px', fontWeight: '800' }}
+                  style={{ padding: '9px 24px', fontSize: '13px', fontWeight: '800', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
-                  ✓ Create &amp; Open Color Studio
+                  <Plus size={14} /> Create &amp; Open Color Studio
                 </button>
               </div>
             </form>

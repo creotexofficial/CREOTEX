@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import dns from 'node:dns';
 
 /**
  * Connect to MongoDB with Mongoose
@@ -18,6 +19,13 @@ const connectDB = async () => {
   }
 
   try {
+    // Some Windows/router DNS configurations reject Atlas SRV lookups even
+    // though the cluster nodes are reachable. Use reliable public resolvers
+    // only for mongodb+srv connections.
+    if (mongoURI.startsWith('mongodb+srv://')) {
+      dns.setServers(['8.8.8.8', '1.1.1.1']);
+    }
+
     const conn = await mongoose.connect(mongoURI, {
       serverSelectionTimeoutMS: 5000,
     });

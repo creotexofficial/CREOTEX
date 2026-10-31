@@ -18,7 +18,10 @@ export const Header = () => {
     setCurrentCategory,
     setCurrentTag,
     currentUser,
-    openAuthModal
+    openAuthModal,
+    navigateToHome,
+    navigateToCustom3DPrint,
+    currentView
   } = useCart();
 
   const [searchCat, setSearchCat] = useState("all");
@@ -57,7 +60,7 @@ export const Header = () => {
       <div className="container">
         <div className="header-main">
           {/* Logo */}
-          <a href="#" className="brand-logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+          <a href="#" className="brand-logo" onClick={(e) => { e.preventDefault(); navigateToHome(); }}>
             <div className="logo-icon-box">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
@@ -67,7 +70,7 @@ export const Header = () => {
             </div>
             <div className="logo-text-box">
               <span className="brand-title">CREOTEX<span>SHOP</span></span>
-              <span className="brand-tagline">Robotics &amp; Maker Superstore</span>
+              <span className="brand-tagline">3D Filaments, Prints &amp; Custom Studio</span>
             </div>
           </a>
 
@@ -80,21 +83,16 @@ export const Header = () => {
                 value={searchCat}
                 onChange={(e) => setSearchCat(e.target.value)}
               >
-                <option value="all">All Categories</option>
-                <option value="fasteners">Nuts &amp; Screws</option>
-                <option value="filaments">3D Filaments</option>
-                <option value="motors">Motors &amp; Gearboxes</option>
-                <option value="drivers">Motor Drivers</option>
-                <option value="bearings">Bearings &amp; Motion</option>
-                <option value="line-follower">Line Follower Kits</option>
-                <option value="robo-race">Robo Race Parts</option>
-                <option value="soccer-robot">Soccer Robot Parts</option>
+                <option value="all">All 3D Sections</option>
+                <option value="filaments">🧵 3D Filament Spool</option>
+                <option value="3d-products">📦 3D Print Product</option>
+                <option value="custom-3d-print">🖨️ Custom 3D Print</option>
               </select>
               <input
                 type="text"
                 className="search-input"
-                aria-label="Search products, motors, chassis, filaments"
-                placeholder="Search 500+ motors, chassis, 3D filaments, screws, bearings..."
+                aria-label="Search 3D filaments, spools, printed models, custom parts"
+                placeholder="Search 3D filaments, spools, printed models, custom parts..."
                 autoComplete="off"
                 value={searchQuery}
                 onChange={(e) => {
@@ -109,7 +107,21 @@ export const Header = () => {
                 className="search-btn"
                 aria-label="Submit search"
                 onClick={() => {
-                  if (searchCat !== "all") setCurrentCategory(searchCat);
+                  if (searchCat === "custom-3d-print") {
+                    const el = document.getElementById("custom-3d-print");
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    else navigateToCustom3DPrint();
+                  } else if (searchCat === "filaments") {
+                    const el = document.getElementById("filament-hub-section");
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  } else if (searchCat === "3d-products") {
+                    setCurrentCategory('3d-products');
+                    const el = document.getElementById("section-3d-print-products") || document.getElementById("store-catalog");
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    const el = document.getElementById("section-3d-print-products") || document.getElementById("store-catalog");
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }
                   setIsSearchPopupOpen(false);
                 }}
               >

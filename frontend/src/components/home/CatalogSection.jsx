@@ -20,22 +20,16 @@ export const CatalogSection = () => {
 
   const popularTags = [
     "All Tags",
-    "Robo Race",
-    "Soccer Bot",
-    "Line Follower",
-    "PLA",
-    "PETG",
+    "Articulated & Toys",
+    "Desk Organizers",
+    "Functional & Mechanics",
+    "Enclosures & Mounts",
+    "Decor & Lighting",
+    "Silk PLA",
+    "TPU 95A",
     "Carbon Fiber",
-    "ABS",
-    "ASA",
-    "M3",
-    "Planetary Motor",
-    "Mecanum",
-    "Silicone Wheels",
-    "608ZZ",
-    "LiPo"
+    "PETG"
   ];
-
 
   // Filtering & Sorting Logic
   const filteredProducts = (products || []).filter((p) => {
@@ -77,14 +71,58 @@ export const CatalogSection = () => {
   });
 
   return (
-    <section className="catalog-section" id="store-catalog">
+    <section className="catalog-section" id="section-3d-print-products" style={{ position: 'relative' }}>
+      <div id="store-catalog" style={{ position: 'absolute', top: '-20px' }}></div>
       <div className="container">
+        {/* Section 2 Header Banner */}
+        <div
+          className="deals-banner-header filament-banner-header"
+          style={{
+            marginBottom: '24px',
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(5, 150, 105, 0.08))',
+            borderColor: 'rgba(16, 185, 129, 0.35)'
+          }}
+        >
+          <div className="deals-title-box">
+            <span
+              className="deals-icon-fire"
+              style={{ background: 'rgba(16, 185, 129, 0.2)', border: '1px solid #10B981' }}
+            >
+              📦
+            </span>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <h3 style={{ fontSize: '1.25rem', margin: 0, color: '#FFFFFF', fontWeight: '800' }}>
+                  Ready-to-Ship 3D Printed Products
+                </h3>
+                <span
+                  style={{
+                    background: 'rgba(16, 185, 129, 0.25)',
+                    color: '#34D399',
+                    border: '1px solid #10B981',
+                    padding: '2px 8px',
+                    borderRadius: '20px',
+                    fontSize: '11px',
+                    fontWeight: '800',
+                    letterSpacing: '0.5px'
+                  }}
+                >
+                  PRECISION MANUFACTURED
+                </span>
+              </div>
+              <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.75)', marginTop: '2px' }}>
+                Functional parts, articulated models, desk organization, and engineering prototypes
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Full-Width Single-Line Top Filter Toolbar */}
         <div className="catalog-toolbar-full">
           {/* Left Group: Results & Category Dropdown */}
           <div className="toolbar-left-group">
             <div className="results-count">
-              Showing <strong>{filteredProducts.length}</strong> Components
+              Showing <strong>{filteredProducts.length}</strong> 3D Items
             </div>
 
             {/* Category Dropdown */}
@@ -96,7 +134,7 @@ export const CatalogSection = () => {
                 value={currentCategory}
                 onChange={(e) => setCurrentCategory(e.target.value)}
               >
-                <option value="all">⚡ All Categories (24)</option>
+                <option value="all">⚡ All 3D Catalog</option>
                 {CATEGORIES_METADATA.filter(c => c.id !== 'all').map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name} ({cat.count})
@@ -180,8 +218,8 @@ export const CatalogSection = () => {
         ) : (
           <div className="cart-empty-state">
             <div className="cart-empty-icon">🔍</div>
-            <h3>No components found</h3>
-            <p>Try resetting your category or price filters to view all products.</p>
+            <h3>No 3D products found</h3>
+            <p>Try resetting your category or tag filters to view all 3D printed items.</p>
             <button
               className="btn btn-primary"
               style={{ marginTop: '14px' }}

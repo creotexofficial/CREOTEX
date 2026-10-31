@@ -9,6 +9,7 @@ export const MegaNav = () => {
     navbarSettings,
     currentView,
     navigateToFilaments,
+    navigateToCustom3DPrint,
     navigateToHome
   } = useCart();
 
@@ -22,46 +23,61 @@ export const MegaNav = () => {
     .sort((a, b) => (a.order || 0) - (b.order || 0));
 
   const handleCategoryClick = (cat, e) => {
-    // If clicking on 3D Filaments tab, open the dedicated 3D Filaments Hub
-    if (cat.id === 'filaments') {
-      e.preventDefault();
-      navigateToFilaments('all');
+    e.preventDefault();
+
+    // If currently on dedicated view, return to storefront first
+    if (currentView === 'filaments' || currentView === 'custom-3d-print') {
+      navigateToHome();
+      setTimeout(() => {
+        scrollToSection(cat.id);
+      }, 100);
       return;
     }
 
-    // If currently on dedicated filament page, return to storefront
-    if (currentView === 'filaments') {
-      navigateToHome();
-    }
+    scrollToSection(cat.id);
+  };
 
-    if (cat.targetType === 'link') {
-      // Direct Anchor / URL navigation
-      const target = cat.targetUrl || '#store-catalog';
-      if (target.startsWith('#')) {
-        e.preventDefault();
-        const el = document.querySelector(target);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth" });
-        }
+  const scrollToSection = (catId) => {
+    if (catId === 'filaments') {
+      const el = document.getElementById('filament-hub-section');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
       }
       return;
     }
 
-    // Catalog Category Filter
-    setCurrentCategory(cat.id);
-    const catalogEl = document.getElementById("store-catalog");
-    if (catalogEl) {
-      catalogEl.scrollIntoView({ behavior: "smooth" });
+    if (catId === '3d-products') {
+      setCurrentCategory('3d-products');
+      const el = document.getElementById('section-3d-print-products') || document.getElementById('store-catalog');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
     }
-  };
 
+    if (catId === 'custom-3d-print') {
+      const el = document.getElementById('custom-3d-print');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigateToCustom3DPrint();
+      }
+      return;
+    }
+
+    // Fallback anchor scroll
+    const el = document.getElementById('store-catalog');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <nav className="nav-bar">
       <div className="container">
         <div className="nav-categories">
           {categories.map((cat) => {
-            const isActive = currentCategory === cat.id;
+            const isActive = currentView === 'custom-3d-print'
+              ? cat.id === 'custom-3d-print'
+              : (currentCategory === cat.id && currentView === 'storefront');
             return (
               <a
                 key={cat.id}
@@ -69,10 +85,7 @@ export const MegaNav = () => {
                 className={`nav-link ${isActive ? 'active' : ''}`}
                 onClick={(e) => handleCategoryClick(cat, e)}
               >
-                <span>
-                  {cat.icon && <span style={{ marginRight: '4px' }}>{cat.icon}</span>}
-                  {cat.name}
-                </span>
+                <span>{cat.name}</span>
                 {cat.badge && (
                   <span className={`nav-badge-${cat.badgeType || 'hot'}`}>
                     {cat.badge}
@@ -82,18 +95,6 @@ export const MegaNav = () => {
             );
           })}
         </div>
-
-        {navbarSettings?.showToolsLink !== false && (
-          <a
-            href={navbarSettings?.toolsLinkUrl || "#robot-builder"}
-            className="nav-tools-link"
-          >
-            <span style={{ fontSize: '1.05rem', marginRight: '4px' }}>
-              {navbarSettings?.toolsLinkIcon || '🔧'}
-            </span>
-            <span>{navbarSettings?.toolsLinkLabel || 'Custom Robot Builder'}</span>
-          </a>
-        )}
       </div>
     </nav>
   );

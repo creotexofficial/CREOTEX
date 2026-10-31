@@ -4,12 +4,11 @@ import { Header } from './components/layout/Header';
 import { MegaNav } from './components/layout/MegaNav';
 import { NeuralBackground } from './components/layout/NeuralBackground';
 import { HeroSlider } from './components/home/HeroSlider';
-import { FlashDeals } from './components/home/FlashDeals';
 import { FilamentSection } from './components/home/FilamentSection';
 import { FilamentHubPage } from './components/home/FilamentHubPage';
+import { Custom3DPrintPage } from './components/home/Custom3DPrintPage';
 import { CatalogSection } from './components/home/CatalogSection';
-import { RobotBuilder } from './components/home/RobotBuilder';
-import { DatasheetsHub } from './components/home/DatasheetsHub';
+import { Custom3DPrintSection } from './components/home/Custom3DPrintSection';
 import { ValueStrip } from './components/home/ValueStrip';
 import { Footer } from './components/layout/Footer';
 import { ToastContainer } from './components/modals/ToastContainer';
@@ -24,6 +23,7 @@ const AdminLogin = lazy(() => import('./components/admin/AdminLogin').then(m => 
 
 const AppContent = () => {
   const { currentView, currentUser } = useCart();
+  const hasAdminToken = Boolean(localStorage.getItem('creotex_auth_token'));
 
   if (currentView === 'admin') {
     return (
@@ -53,6 +53,21 @@ const AppContent = () => {
     );
   }
 
+  // Dedicated Custom 3D Printing Service Page View (Not on home page)
+  if (currentView === 'custom-3d-print') {
+    return (
+      <>
+        <Custom3DPrintPage />
+        <Suspense fallback={null}>
+          <CartDrawer />
+          <QuickViewModal />
+          <CheckoutModal />
+          <AuthModal />
+        </Suspense>
+      </>
+    );
+  }
+
   return (
     <>
       {/* Optimized Canvas Particle Background */}
@@ -63,14 +78,20 @@ const AppContent = () => {
         <Header />
         <MegaNav />
 
-        {/* Main Content Sections */}
+        {/* Main Content Sections: Strictly 3 Core Sections */}
         <main id="main-content">
           <HeroSlider />
-          <FlashDeals />
+
+          {/* Section 1: 3D Filament Spool */}
           <FilamentSection />
+
+          {/* Section 2: 3D Print Product */}
           <CatalogSection />
-          <RobotBuilder />
-          <DatasheetsHub />
+
+          {/* Section 3: Custom 3D Print Service */}
+          <Custom3DPrintSection />
+
+          {/* 3D Print Quality & Trust Guarantee Strip */}
           <ValueStrip />
         </main>
 

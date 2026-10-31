@@ -16,7 +16,7 @@ export const ValueStrip = () => {
             </div>
             <div className="feature-info">
               <h5>Free Express Shipping</h5>
-              <p>On all orders above ₹999 across India</p>
+              <p>On all filament spools &amp; orders above ₹999</p>
             </div>
           </div>
 
@@ -27,20 +27,21 @@ export const ValueStrip = () => {
               </svg>
             </div>
             <div className="feature-info">
-              <h5>100% Genuine Components</h5>
-              <p>Direct from factory &amp; lab certified</p>
+              <h5>Bambu Lab &amp; Voron Farm</h5>
+              <p>±0.05mm high-precision print tolerance</p>
             </div>
           </div>
 
           <div className="feature-item">
             <div className="feature-icon-box">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
             </div>
             <div className="feature-info">
-              <h5>Maker Tech Support</h5>
-              <p>Engineer assistance for project wiring</p>
+              <h5>Rapid 24H Dispatch</h5>
+              <p>Priority rush queue for instant 3D orders</p>
             </div>
           </div>
 
@@ -53,8 +54,8 @@ export const ValueStrip = () => {
               </svg>
             </div>
             <div className="feature-info">
-              <h5>7-Day Easy Replacements</h5>
-              <p>Hassle-free replacement guarantee</p>
+              <h5>100% Quality Inspected</h5>
+              <p>Vacuum-sealed spools &amp; tested print beds</p>
             </div>
           </div>
         </div>

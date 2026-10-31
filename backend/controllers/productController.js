@@ -261,6 +261,23 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Delete every product in a filament subcategory
+// @route   DELETE /api/products/subcategory/:subCategory
+// @access  Private/Admin
+export const deleteProductsBySubcategory = asyncHandler(async (req, res) => {
+  const result = await Product.deleteMany({
+    subCategory: {
+      $regex: `^${req.params.subCategory.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+      $options: 'i'
+    }
+  });
+
+  res.json({
+    success: true,
+    message: `${result.deletedCount} product(s) removed from subcategory`
+  });
+});
+
 // @desc    Get product categories with counts
 // @route   GET /api/products/categories/all
 // @access  Public

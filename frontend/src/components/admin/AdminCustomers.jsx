@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
+import {
+  Users,
+  Search,
+  Plus,
+  RotateCw,
+  Trash2,
+  UserPlus,
+  X
+} from 'lucide-react';
 
 export const AdminCustomers = () => {
   const { customers, addCustomer, updateCustomer, deleteCustomer } = useCart();
@@ -47,13 +56,8 @@ export const AdminCustomers = () => {
       <div className="admin-card">
         <div className="admin-card-header">
           <div>
-            <h2 className="admin-card-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
+            <h2 className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Users size={20} strokeWidth={2} style={{ color: 'var(--primary)' }} />
               Maker &amp; Enterprise Customer Directory
             </h2>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -63,10 +67,7 @@ export const AdminCustomers = () => {
 
           <div className="admin-table-controls">
             <div className="admin-search-wrapper">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
+              <Search size={15} strokeWidth={2} />
               <input
                 type="text"
                 className="admin-search-input"
@@ -76,11 +77,8 @@ export const AdminCustomers = () => {
               />
             </div>
 
-            <button className="admin-action-pill-btn primary" onClick={() => setIsModalOpen(true)}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
+            <button className="admin-action-pill-btn primary" onClick={() => setIsModalOpen(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <Plus size={16} strokeWidth={2.5} />
               Add Customer
             </button>
           </div>
@@ -124,11 +122,11 @@ export const AdminCustomers = () => {
                     <td>
                       <span
                         className={`badge-status ${getTierBadge(c.tier)}`}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                         title="Click to cycle tier"
                         onClick={() => handleToggleTier(c)}
                       >
-                        {c.tier} ↺
+                        {c.tier} <RotateCw size={11} strokeWidth={2.2} />
                       </span>
                     </td>
                     <td>
@@ -149,10 +147,7 @@ export const AdminCustomers = () => {
                           }
                         }}
                       >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
+                        <Trash2 size={14} strokeWidth={2} />
                       </button>
                     </td>
                   </tr>
@@ -174,8 +169,12 @@ export const AdminCustomers = () => {
         <div className="admin-modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="admin-modal-box" style={{ maxWidth: '520px' }} onClick={e => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h3 className="admin-modal-title">✨ Add Customer Account</h3>
-              <button className="btn-table-icon" onClick={() => setIsModalOpen(false)}>✕</button>
+              <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <UserPlus size={18} strokeWidth={2} style={{ color: 'var(--primary)' }} /> Add Customer Account
+              </h3>
+              <button className="btn-table-icon" onClick={() => setIsModalOpen(false)} aria-label="Close">
+                <X size={16} strokeWidth={2} />
+              </button>
             </div>
 
             <form onSubmit={handleAdd} className="admin-modal-body">
@@ -244,7 +243,10 @@ export const AdminCustomers = () => {
 
               <div className="admin-modal-footer" style={{ margin: '24px -24px -24px', padding: '16px 24px' }}>
                 <button type="button" className="admin-action-pill-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                <button type="submit" className="admin-action-pill-btn primary">Add Customer</button>
+                <button type="submit" className="admin-action-pill-btn primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <Plus size={15} strokeWidth={2.2} />
+                  Add Customer
+                </button>
               </div>
             </form>
           </div>

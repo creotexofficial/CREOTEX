@@ -1,4 +1,22 @@
 import React, { useState } from 'react';
+import {
+  Layers,
+  Eye,
+  EyeOff,
+  Plus,
+  RotateCcw,
+  Edit3,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  Save,
+  X,
+  ExternalLink,
+  Sparkles,
+  CheckCircle2,
+  CircleDot,
+  Check
+} from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
 const PRESET_EMOJIS = [
@@ -48,9 +66,9 @@ export const AdminCategories = () => {
       enabled: nextState
     });
     if (nextState) {
-      showToast('🚀 Navbar Categories are now PUBLISHED & Live on Home Page!', 'success');
+      showToast('Navbar Categories are now PUBLISHED & Live on Home Page!', 'success');
     } else {
-      showToast('🔒 Navbar Categories are now HIDDEN from Home Page.', 'info');
+      showToast('Navbar Categories are now HIDDEN from Home Page.', 'info');
     }
   };
 
@@ -151,8 +169,8 @@ export const AdminCategories = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>📑</span>
-              Navbar Categories Manager
+              <Layers size={20} style={{ color: 'var(--primary)' }} />
+              <span>Navbar Categories Manager</span>
             </h2>
             <span
               style={{
@@ -165,7 +183,7 @@ export const AdminCategories = () => {
                 border: `1px solid ${isNavPublished ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
               }}
             >
-              {isNavPublished ? `● Live (${activeCount} Active)` : '○ Hidden on Home'}
+              {isNavPublished ? `Live (${activeCount} Active)` : 'Hidden on Home'}
             </span>
           </div>
           <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--text-secondary)' }}>
@@ -194,29 +212,25 @@ export const AdminCategories = () => {
             }}
             title={isNavPublished ? 'Click to hide navbar from Home Page' : 'Click to publish navbar on Home Page'}
           >
-            <span>{isNavPublished ? '✓ Published on Home' : '🔒 Unpublished (Hidden)'}</span>
+            {isNavPublished ? <Eye size={14} /> : <EyeOff size={14} />}
+            <span>{isNavPublished ? 'Published on Home' : 'Unpublished (Hidden)'}</span>
           </button>
 
           {/* Add Category Button */}
           <button
             type="button"
             onClick={handleOpenAddModal}
+            className="admin-action-pill-btn primary"
             style={{
-              background: 'linear-gradient(135deg, var(--primary), #EA580C)',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: '8px',
               padding: '8px 18px',
               fontSize: '12px',
-              fontWeight: '700',
-              cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 2px 8px var(--primary-glow)'
+              gap: '6px'
             }}
           >
-            <span>+ Add Category</span>
+            <Plus size={15} />
+            <span>Add Category</span>
           </button>
 
           {/* Reset Defaults */}
@@ -228,38 +242,36 @@ export const AdminCategories = () => {
                 showToast('Navbar categories reset to defaults', 'info');
               }
             }}
+            className="admin-action-pill-btn"
             style={{
-              background: 'var(--bg-secondary)',
-              color: 'var(--text-secondary)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '8px',
-              padding: '8px 12px',
+              padding: '8px 14px',
               fontSize: '12px',
-              fontWeight: '600',
-              cursor: 'pointer'
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
             title="Reset to factory default categories"
           >
-            🔄 Reset
+            <RotateCcw size={13} />
+            <span>Reset Defaults</span>
           </button>
 
           {/* View Storefront */}
           <button
             type="button"
             onClick={navigateToStorefront}
+            className="admin-action-pill-btn"
             style={{
-              background: 'var(--bg-secondary)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '8px',
               padding: '8px 14px',
               fontSize: '12px',
-              fontWeight: '600',
-              cursor: 'pointer'
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
             title="Preview changes on Storefront"
           >
-            👁️ View Store
+            <ExternalLink size={14} />
+            <span>View Store</span>
           </button>
         </div>
       </div>
@@ -279,8 +291,19 @@ export const AdminCategories = () => {
           gap: '14px'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ fontSize: '26px' }}>🧵</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '10px',
+            background: 'rgba(0, 102, 204, 0.15)',
+            color: '#0066CC',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <CircleDot size={22} />
+          </div>
           <div>
             <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)' }}>
               Looking to customize 3D Filament Subcategories &amp; Color Swatches?
@@ -295,9 +318,10 @@ export const AdminCategories = () => {
           type="button"
           onClick={() => setAdminActiveTab('filaments')}
           className="admin-action-pill-btn primary"
-          style={{ fontSize: '12px', padding: '8px 18px', borderRadius: '8px' }}
+          style={{ fontSize: '12px', padding: '8px 18px', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
         >
-          Open 3D Filaments &amp; Colors Hub →
+          <span>Open Filaments &amp; Colors Hub</span>
+          <ExternalLink size={13} />
         </button>
       </div>
 
@@ -306,8 +330,8 @@ export const AdminCategories = () => {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
           <div>
             <h3 style={{ margin: 0, fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>👁️</span>
-              Live Storefront Navigation Strip Preview
+              <Eye size={16} style={{ color: 'var(--primary)' }} />
+              <span>Live Storefront Navigation Strip Preview</span>
             </h3>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
               Real-time visualization of how the categories strip appears on customer storefront
@@ -323,7 +347,7 @@ export const AdminCategories = () => {
               color: isNavPublished ? '#22C55E' : '#EF4444'
             }}
           >
-            {isNavPublished ? '● Synchronized' : '🔒 Strip Hidden on Home'}
+            {isNavPublished ? 'Synchronized' : 'Strip Hidden on Home'}
           </span>
         </div>
 
@@ -382,21 +406,17 @@ export const AdminCategories = () => {
           <button
             type="button"
             onClick={handleOpenAddModal}
+            className="admin-action-pill-btn primary"
             style={{
-              background: 'var(--bg-secondary)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '6px',
               padding: '6px 14px',
               fontSize: '12px',
-              fontWeight: '700',
-              cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px'
             }}
           >
-            <span>+ Add Category</span>
+            <Plus size={14} />
+            <span>Add Category</span>
           </button>
         </div>
 
@@ -440,14 +460,16 @@ export const AdminCategories = () => {
                               border: '1px solid var(--border-color)',
                               color: 'var(--text-primary)',
                               borderRadius: '3px',
-                              padding: '1px 5px',
+                              padding: '2px 4px',
                               cursor: idx === 0 ? 'not-allowed' : 'pointer',
                               opacity: idx === 0 ? 0.3 : 1,
-                              fontSize: '9px'
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
                             }}
                             title="Move Up"
                           >
-                            ▲
+                            <ChevronUp size={12} />
                           </button>
                           <button
                             type="button"
@@ -458,14 +480,16 @@ export const AdminCategories = () => {
                               border: '1px solid var(--border-color)',
                               color: 'var(--text-primary)',
                               borderRadius: '3px',
-                              padding: '1px 5px',
+                              padding: '2px 4px',
                               cursor: idx === categoriesList.length - 1 ? 'not-allowed' : 'pointer',
                               opacity: idx === categoriesList.length - 1 ? 0.3 : 1,
-                              fontSize: '9px'
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
                             }}
                             title="Move Down"
                           >
-                            ▼
+                            <ChevronDown size={12} />
                           </button>
                         </div>
                       </div>
@@ -484,7 +508,7 @@ export const AdminCategories = () => {
                             lineHeight: 1
                           }}
                         >
-                          {cat.icon || '📁'}
+                          {cat.icon || '⚡'}
                         </span>
                         <div>
                           <strong style={{ color: 'var(--text-primary)', fontSize: '13px', display: 'block' }}>
@@ -530,8 +554,8 @@ export const AdminCategories = () => {
                     <td style={{ padding: '10px 12px' }}>
                       <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
                         {cat.targetType === 'link'
-                          ? `🔗 Anchor: ${cat.targetUrl || '#store-catalog'}`
-                          : `🔍 Catalog Filter: ${cat.id}`}
+                          ? `Anchor: ${cat.targetUrl || '#store-catalog'}`
+                          : `Catalog Filter: ${cat.id}`}
                       </span>
                     </td>
 
@@ -549,11 +573,15 @@ export const AdminCategories = () => {
                           fontSize: '11px',
                           fontWeight: '700',
                           cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
                           transition: 'all 0.2s'
                         }}
                         title={isPublished ? 'Click to Hide from navbar' : 'Click to Publish on navbar'}
                       >
-                        {isPublished ? '● Published' : '○ Hidden'}
+                        {isPublished ? <CheckCircle2 size={12} /> : <EyeOff size={12} />}
+                        <span>{isPublished ? 'Published' : 'Hidden'}</span>
                       </button>
                     </td>
 
@@ -564,22 +592,11 @@ export const AdminCategories = () => {
                         <button
                           type="button"
                           onClick={() => handleOpenEditModal(cat)}
-                          style={{
-                            background: '#0284C7',
-                            color: '#FFFFFF',
-                            border: 'none',
-                            borderRadius: '5px',
-                            padding: '5px 10px',
-                            fontSize: '11px',
-                            fontWeight: '700',
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
+                          className="btn-table-icon"
+                          style={{ color: '#0284C7' }}
                           title="Edit Category"
                         >
-                          ✏️ Edit
+                          <Edit3 size={14} />
                         </button>
 
                         {/* Delete Button */}
@@ -587,19 +604,10 @@ export const AdminCategories = () => {
                           <button
                             type="button"
                             onClick={() => handleDeleteCategory(cat)}
-                            style={{
-                              background: '#EF4444',
-                              color: '#FFFFFF',
-                              border: 'none',
-                              borderRadius: '5px',
-                              padding: '5px 9px',
-                              fontSize: '11px',
-                              fontWeight: '700',
-                              cursor: 'pointer'
-                            }}
+                            className="btn-table-icon danger"
                             title="Delete Category"
                           >
-                            🗑️
+                            <Trash2 size={14} />
                           </button>
                         )}
                       </div>
@@ -617,15 +625,16 @@ export const AdminCategories = () => {
         <div className="admin-modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="admin-modal-box" style={{ maxWidth: '520px' }} onClick={e => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h3 className="admin-modal-title">
-                {editingCatId ? '✏️ Edit Navbar Category' : '➕ Add New Navbar Category'}
+              <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Layers size={18} style={{ color: 'var(--primary)' }} />
+                <span>{editingCatId ? 'Edit Navbar Category' : 'Add New Navbar Category'}</span>
               </h3>
               <button
                 type="button"
                 className="btn-table-icon"
                 onClick={() => setIsModalOpen(false)}
               >
-                ✕
+                <X size={16} />
               </button>
             </div>
 
@@ -681,7 +690,7 @@ export const AdminCategories = () => {
 
                 {/* Emoji / Icon Selection */}
                 <div className="admin-form-group">
-                  <label className="admin-form-label">Category Icon / Emoji *</label>
+                  <label className="admin-form-label">Category Storefront Icon *</label>
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                     <input
                       type="text"
@@ -693,7 +702,7 @@ export const AdminCategories = () => {
                       required
                     />
                     <span style={{ fontSize: '12px', color: 'var(--text-secondary)', alignSelf: 'center' }}>
-                      Click preset emoji below or type custom emoji
+                      Select an icon or emoji for this category on the storefront
                     </span>
                   </div>
 
@@ -739,10 +748,10 @@ export const AdminCategories = () => {
                       value={categoryForm.badgeType}
                       onChange={e => setCategoryForm({ ...categoryForm, badgeType: e.target.value })}
                     >
-                      <option value="hot">🔥 Red (HOT)</option>
-                      <option value="pro">⚡ Amber (PRO)</option>
-                      <option value="new">🟢 Green (NEW)</option>
-                      <option value="deal">💜 Purple (SALE)</option>
+                      <option value="hot">Red (HOT)</option>
+                      <option value="pro">Amber (PRO)</option>
+                      <option value="new">Green (NEW)</option>
+                      <option value="deal">Purple (SALE)</option>
                     </select>
                   </div>
                 </div>
@@ -756,8 +765,8 @@ export const AdminCategories = () => {
                       value={categoryForm.targetType}
                       onChange={e => setCategoryForm({ ...categoryForm, targetType: e.target.value })}
                     >
-                      <option value="category">🔍 Filter Store Catalog</option>
-                      <option value="link">🔗 Scroll to Section Anchor (#)</option>
+                      <option value="category">Filter Store Catalog</option>
+                      <option value="link">Scroll to Section Anchor (#)</option>
                     </select>
                   </div>
 
@@ -800,13 +809,22 @@ export const AdminCategories = () => {
                   type="submit"
                   className="admin-action-pill-btn primary"
                   style={{
-                    background: 'linear-gradient(135deg, var(--primary), #EA580C)',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    fontWeight: '700'
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
                   }}
                 >
-                  {editingCatId ? '💾 Save Changes' : '➕ Add Category'}
+                  {editingCatId ? (
+                    <>
+                      <Save size={14} />
+                      <span>Save Changes</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={14} />
+                      <span>Add Category</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>

@@ -1,5 +1,30 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
+import {
+  Bot,
+  Cpu,
+  Wrench,
+  Zap,
+  Trophy,
+  Sliders,
+  Plus,
+  Edit3,
+  Trash2,
+  Check,
+  X,
+  ExternalLink,
+  RotateCcw,
+  Save,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Sparkles,
+  Layers,
+  Settings,
+  ShieldCheck,
+  Link2,
+  Copy
+} from 'lucide-react';
 
 export const AdminRobotBuilder = () => {
   const {
@@ -30,7 +55,7 @@ export const AdminRobotBuilder = () => {
     id: '',
     name: '',
     subtitle: '',
-    icon: '🤖',
+    icon: 'Bot',
     desc: '',
     active: true,
     defaults: {}
@@ -92,7 +117,7 @@ export const AdminRobotBuilder = () => {
       id: `preset-${Date.now().toString(36)}`,
       name: '',
       subtitle: 'Custom Championship Build',
-      icon: '🤖',
+      icon: 'Bot',
       desc: '',
       active: true,
       defaults: initialDefaults
@@ -108,7 +133,7 @@ export const AdminRobotBuilder = () => {
       id: key,
       name: p.name || '',
       subtitle: p.subtitle || '',
-      icon: p.icon || '🤖',
+      icon: p.icon || 'Bot',
       desc: p.desc || '',
       active: p.active !== false,
       defaults: p.defaults ? { ...p.defaults } : {}
@@ -309,7 +334,7 @@ export const AdminRobotBuilder = () => {
       ...prev,
       enabled: true
     }));
-    showToast('🚀 Robot Builder Section is now PUBLISHED & Live on Home Page!', 'success');
+    showToast('Robot Builder Section is now PUBLISHED & Live on Home Page!', 'success');
   };
 
   const handleUnpublishSection = () => {
@@ -321,7 +346,7 @@ export const AdminRobotBuilder = () => {
       ...prev,
       enabled: false
     }));
-    showToast('🔒 Robot Builder Section is now UNPUBLISHED (Hidden from Home Page).', 'info');
+    showToast('Robot Builder Section is now UNPUBLISHED (Hidden from Home Page).', 'info');
   };
 
   const handlePublishAllChanges = () => {
@@ -333,7 +358,7 @@ export const AdminRobotBuilder = () => {
       ...prev,
       enabled: true
     }));
-    showToast('🎉 All Robot Builder changes have been published live to the Home Page!', 'success');
+    showToast('All Robot Builder changes have been published live to the Home Page!', 'success');
   };
 
   return (
@@ -343,15 +368,36 @@ export const AdminRobotBuilder = () => {
         <div className="admin-card-header" style={{ alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                background: 'rgba(249, 115, 22, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#F97316'
+              }}>
+                <Bot size={22} />
+              </div>
               <h2 className="admin-card-title" style={{ margin: 0 }}>
-                <span style={{ fontSize: '1.4rem' }}>🤖</span>
                 Custom Competition Robot Builder Manager
               </h2>
-              <span className={`badge-status ${isSectionPublished ? 'badge-instock' : 'badge-outofstock'}`} style={{ fontWeight: '700' }}>
-                {isSectionPublished ? '● Published on Home Page' : '○ Hidden / Unpublished'}
+              <span className={`badge-status ${isSectionPublished ? 'badge-instock' : 'badge-outofstock'}`} style={{ fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                {isSectionPublished ? (
+                  <>
+                    <CheckCircle2 size={12} color="#22C55E" />
+                    <span>Published on Home Page</span>
+                  </>
+                ) : (
+                  <>
+                    <EyeOff size={12} color="#EF4444" />
+                    <span>Hidden / Unpublished</span>
+                  </>
+                )}
               </span>
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px', maxWidth: '750px' }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '6px', maxWidth: '750px' }}>
               Configure competition robot categories, modular engineering slots (Chassis, Motors, Wheels, Drivers, Battery, Addons), custom part options, catalog linking, and live discount bundles.
             </p>
           </div>
@@ -380,7 +426,7 @@ export const AdminRobotBuilder = () => {
               onClick={handlePublishSection}
               title="Publish the Robot Builder section live onto the customer home page"
             >
-              <span style={{ fontSize: '1rem' }}>{isSectionPublished ? '✓' : '🚀'}</span>
+              {isSectionPublished ? <Check size={15} /> : <Zap size={15} />}
               <span>{isSectionPublished ? 'Published on Home' : 'Publish to Home Page'}</span>
             </button>
 
@@ -407,7 +453,7 @@ export const AdminRobotBuilder = () => {
               onClick={handleUnpublishSection}
               title="Unpublish / Hide the Robot Builder section from the customer home page"
             >
-              <span style={{ fontSize: '1rem' }}>{!isSectionPublished ? '🔒' : '🚫'}</span>
+              <EyeOff size={15} />
               <span>{!isSectionPublished ? 'Unpublished (Hidden)' : 'Unpublish from Home'}</span>
             </button>
 
@@ -420,12 +466,13 @@ export const AdminRobotBuilder = () => {
               style={{
                 background: 'linear-gradient(135deg, var(--primary), #EA580C)',
                 color: '#FFFFFF',
-                fontWeight: '700'
+                fontWeight: '700',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
               }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
+              <Save size={15} />
               <span>Save &amp; Publish All</span>
             </button>
 
@@ -434,14 +481,10 @@ export const AdminRobotBuilder = () => {
               type="button"
               className="admin-action-pill-btn"
               onClick={resetRobotBuilderDefaults}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               title="Reset all robot builder presets and slots to factory defaults"
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
-                <path d="M21 3v5h-5"></path>
-                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
-                <path d="M8 16H3v5"></path>
-              </svg>
+              <RotateCcw size={15} />
               <span>Restore Defaults</span>
             </button>
 
@@ -450,12 +493,10 @@ export const AdminRobotBuilder = () => {
               type="button"
               className="admin-action-pill-btn"
               onClick={navigateToStorefront}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               title="Preview on customer storefront"
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
+              <ExternalLink size={15} />
               <span>View Storefront</span>
             </button>
           </div>
@@ -477,17 +518,14 @@ export const AdminRobotBuilder = () => {
           border: `1px solid ${isSectionPublished ? 'rgba(34, 197, 94, 0.35)' : 'rgba(239, 68, 68, 0.35)'}`
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{
-              display: 'inline-block',
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              background: isSectionPublished ? '#22C55E' : '#EF4444',
-              boxShadow: isSectionPublished ? '0 0 10px #22C55E' : '0 0 10px #EF4444'
-            }}></span>
+            {isSectionPublished ? (
+              <CheckCircle2 size={18} color="#22C55E" />
+            ) : (
+              <EyeOff size={18} color="#EF4444" />
+            )}
             <div>
               <strong style={{ color: isSectionPublished ? '#22C55E' : '#EF4444', fontSize: '0.92rem' }}>
-                {isSectionPublished ? '🟢 Section Status: Live & Visible on Home Page' : '🔴 Section Status: Unpublished & Hidden from Home Page'}
+                {isSectionPublished ? 'Section Status: Live & Visible on Home Page' : 'Section Status: Unpublished & Hidden from Home Page'}
               </strong>
               <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                 {isSectionPublished 
@@ -507,11 +545,14 @@ export const AdminRobotBuilder = () => {
                 borderColor: '#22C55E',
                 fontWeight: '700',
                 padding: '7px 16px',
-                fontSize: '0.84rem'
+                fontSize: '0.84rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
               }}
               onClick={handlePublishSection}
             >
-              🚀 {isSectionPublished ? 'Published (Active)' : 'Publish to Home Page'}
+              <CheckCircle2 size={14} /> {isSectionPublished ? 'Published (Active)' : 'Publish to Home Page'}
             </button>
 
             <button
@@ -523,11 +564,14 @@ export const AdminRobotBuilder = () => {
                 borderColor: 'rgba(239, 68, 68, 0.4)',
                 fontWeight: '700',
                 padding: '7px 16px',
-                fontSize: '0.84rem'
+                fontSize: '0.84rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
               }}
               onClick={handleUnpublishSection}
             >
-              🚫 {!isSectionPublished ? 'Unpublished (Active)' : 'Unpublish from Home'}
+              <EyeOff size={14} /> {!isSectionPublished ? 'Unpublished (Active)' : 'Unpublish from Home'}
             </button>
           </div>
         </div>
@@ -566,7 +610,7 @@ export const AdminRobotBuilder = () => {
             className={`builder-subtab-btn ${activeSubTab === 'presets' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('presets')}
           >
-            <span style={{ fontSize: '1.1rem' }}>🏆</span>
+            <Trophy size={16} />
             <span>Competition Presets ({totalPresetsCount})</span>
           </button>
 
@@ -575,7 +619,7 @@ export const AdminRobotBuilder = () => {
             className={`builder-subtab-btn ${activeSubTab === 'slots' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('slots')}
           >
-            <span style={{ fontSize: '1.1rem' }}>⚙️</span>
+            <Sliders size={16} />
             <span>Component Slots &amp; Parts ({totalSlotsCount})</span>
           </button>
 
@@ -584,7 +628,7 @@ export const AdminRobotBuilder = () => {
             className={`builder-subtab-btn ${activeSubTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('settings')}
           >
-            <span style={{ fontSize: '1.1rem' }}>🛠️</span>
+            <Settings size={16} />
             <span>Global Settings &amp; Perks</span>
           </button>
 
@@ -593,7 +637,7 @@ export const AdminRobotBuilder = () => {
             className={`builder-subtab-btn ${activeSubTab === 'preview' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('preview')}
           >
-            <span style={{ fontSize: '1.1rem' }}>⚡</span>
+            <Zap size={16} />
             <span>Live Interactive Simulator</span>
           </button>
         </div>
@@ -612,11 +656,8 @@ export const AdminRobotBuilder = () => {
               </div>
             </div>
 
-            <button className="admin-action-pill-btn primary" onClick={openNewPresetModal}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
+            <button className="admin-action-pill-btn primary" onClick={openNewPresetModal} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <Plus size={15} />
               <span>Add New Robot Preset</span>
             </button>
           </div>
@@ -627,7 +668,9 @@ export const AdminRobotBuilder = () => {
                 <div key={key} className="builder-preset-item-card">
                   <div className="preset-card-top">
                     <div className="preset-card-icon-title">
-                      <span className="preset-big-icon">{preset.icon || '🤖'}</span>
+                      <span className="preset-big-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Bot size={22} color="#F97316" />
+                      </span>
                       <div>
                         <h4 className="preset-card-name">{preset.name}</h4>
                         <span className="preset-card-tag">{preset.subtitle || key}</span>
@@ -661,13 +704,10 @@ export const AdminRobotBuilder = () => {
                     <button
                       type="button"
                       className="admin-action-pill-btn"
-                      style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                      style={{ fontSize: '0.8rem', padding: '6px 12px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                       onClick={() => openEditPresetModal(key)}
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                      </svg>
+                      <Edit3 size={13} />
                       <span>Edit Preset</span>
                     </button>
 
@@ -677,10 +717,7 @@ export const AdminRobotBuilder = () => {
                       title="Duplicate Preset"
                       onClick={() => handleDuplicatePreset(key)}
                     >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                      </svg>
+                      <Copy size={14} />
                     </button>
 
                     <button
@@ -693,10 +730,7 @@ export const AdminRobotBuilder = () => {
                         }
                       }}
                     >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                      </svg>
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>
@@ -717,10 +751,7 @@ export const AdminRobotBuilder = () => {
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Ordered modular layers</span>
               </div>
               <button className="btn-table-icon primary" title="Add New Slot Layer" onClick={openNewSlotModal}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
+                <Plus size={15} />
               </button>
             </div>
 
@@ -747,10 +778,7 @@ export const AdminRobotBuilder = () => {
                         title="Edit Slot Info"
                         onClick={() => openEditSlotModal(slot)}
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
+                        <Edit3 size={13} />
                       </button>
 
                       {robotBuilderSlots.length > 1 && (
@@ -765,10 +793,7 @@ export const AdminRobotBuilder = () => {
                             }
                           }}
                         >
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                          </svg>
+                          <Trash2 size={13} />
                         </button>
                       )}
                     </div>
@@ -798,11 +823,9 @@ export const AdminRobotBuilder = () => {
                   <button
                     className="admin-action-pill-btn primary"
                     onClick={() => openNewOptionModal(currentActiveSlotObj.key)}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                   >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <line x1="12" y1="5" x2="12" y2="19"></line>
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
+                    <Plus size={15} />
                     <span>Add Component Part</span>
                   </button>
                 </div>
@@ -853,10 +876,7 @@ export const AdminRobotBuilder = () => {
                                   title="Edit Part Option"
                                   onClick={() => openEditOptionModal(currentActiveSlotObj.key, opt)}
                                 >
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                  </svg>
+                                  <Edit3 size={13} />
                                 </button>
                                 <button
                                   className="btn-table-icon danger"
@@ -867,10 +887,7 @@ export const AdminRobotBuilder = () => {
                                     }
                                   }}
                                 >
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                  </svg>
+                                  <Trash2 size={13} />
                                 </button>
                               </div>
                             </td>
@@ -911,12 +928,9 @@ export const AdminRobotBuilder = () => {
               type="button"
               className="admin-action-pill-btn primary"
               onClick={handleSaveSettings}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                <polyline points="7 3 7 8 15 8"></polyline>
-              </svg>
+              <Save size={15} />
               <span>Save Configuration</span>
             </button>
           </div>
@@ -934,7 +948,7 @@ export const AdminRobotBuilder = () => {
                     onClick={() => {
                       setSettingsForm(prev => ({ ...prev, enabled: true }));
                       updateRobotBuilderSettings({ ...robotBuilderSettings, enabled: true });
-                      showToast('🚀 Robot Builder Section is now PUBLISHED on Home Page!', 'success');
+                      showToast('Robot Builder Section is now PUBLISHED on Home Page!', 'success');
                     }}
                     style={{
                       border: settingsForm.enabled !== false ? '2px solid #22C55E' : '1px solid var(--border-color)',
@@ -950,8 +964,9 @@ export const AdminRobotBuilder = () => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontWeight: '800', color: settingsForm.enabled !== false ? '#22C55E' : 'var(--text-primary)', fontSize: '0.96rem' }}>
-                        🚀 Published to Home Page
+                      <span style={{ fontWeight: '800', color: settingsForm.enabled !== false ? '#22C55E' : 'var(--text-primary)', fontSize: '0.96rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                        <CheckCircle2 size={18} color="#22C55E" />
+                        <span>Published to Home Page</span>
                       </span>
                       <span style={{
                         width: '22px',
@@ -966,7 +981,7 @@ export const AdminRobotBuilder = () => {
                         fontSize: '12px',
                         fontWeight: 'bold'
                       }}>
-                        {settingsForm.enabled !== false ? '✓' : ''}
+                        {settingsForm.enabled !== false ? <Check size={13} /> : null}
                       </span>
                     </div>
                     <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
@@ -984,7 +999,7 @@ export const AdminRobotBuilder = () => {
                     onClick={() => {
                       setSettingsForm(prev => ({ ...prev, enabled: false }));
                       updateRobotBuilderSettings({ ...robotBuilderSettings, enabled: false });
-                      showToast('🔒 Robot Builder Section is now UNPUBLISHED (Hidden from Home Page).', 'info');
+                      showToast('Robot Builder Section is now UNPUBLISHED (Hidden from Home Page).', 'info');
                     }}
                     style={{
                       border: settingsForm.enabled === false ? '2px solid #EF4444' : '1px solid var(--border-color)',
@@ -1000,8 +1015,9 @@ export const AdminRobotBuilder = () => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontWeight: '800', color: settingsForm.enabled === false ? '#EF4444' : 'var(--text-primary)', fontSize: '0.96rem' }}>
-                        🚫 Unpublished (Hidden from Home)
+                      <span style={{ fontWeight: '800', color: settingsForm.enabled === false ? '#EF4444' : 'var(--text-primary)', fontSize: '0.96rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                        <EyeOff size={18} color="#EF4444" />
+                        <span>Unpublished (Hidden from Home)</span>
                       </span>
                       <span style={{
                         width: '22px',
@@ -1016,7 +1032,7 @@ export const AdminRobotBuilder = () => {
                         fontSize: '12px',
                         fontWeight: 'bold'
                       }}>
-                        {settingsForm.enabled === false ? '✓' : ''}
+                        {settingsForm.enabled === false ? <Check size={13} /> : null}
                       </span>
                     </div>
                     <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
@@ -1106,23 +1122,25 @@ export const AdminRobotBuilder = () => {
                     type="button"
                     className="admin-action-pill-btn primary"
                     onClick={handleAddPerk}
-                    style={{ whiteSpace: 'nowrap' }}
+                    style={{ whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                   >
-                    + Add Perk
+                    <Plus size={14} /> Add Perk
                   </button>
                 </div>
 
                 <div className="perks-pills-wrap">
                   {settingsForm.perks && settingsForm.perks.map((perk, idx) => (
-                    <div key={idx} className="perk-editable-pill">
-                      <span>✓ {perk}</span>
+                    <div key={idx} className="perk-editable-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <Check size={13} color="#22C55E" />
+                      <span>{perk}</span>
                       <button
                         type="button"
                         onClick={() => handleRemovePerk(idx)}
                         className="perk-remove-btn"
                         title="Remove perk"
+                        style={{ display: 'inline-flex', alignItems: 'center' }}
                       >
-                        ✕
+                        <X size={12} />
                       </button>
                     </div>
                   ))}
@@ -1131,8 +1149,9 @@ export const AdminRobotBuilder = () => {
             </div>
 
             <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button type="submit" className="admin-action-pill-btn primary" style={{ padding: '10px 24px' }}>
-                Save Settings
+              <button type="submit" className="admin-action-pill-btn primary" style={{ padding: '10px 24px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <Save size={15} />
+                <span>Save Settings</span>
               </button>
             </div>
           </form>
@@ -1145,7 +1164,7 @@ export const AdminRobotBuilder = () => {
           <div className="admin-card-header">
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem' }}>⚡</span>
+                <Zap size={18} color="#F97316" />
                 <h3 className="admin-card-title">Live Storefront Builder Simulation</h3>
               </div>
               <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -1164,14 +1183,10 @@ export const AdminRobotBuilder = () => {
                     showToast(`Reset simulator to ${currentP.name} defaults`, 'info');
                   }
                 }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 title="Reset current slot selections back to preset defaults"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
-                  <path d="M21 3v5h-5"></path>
-                  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
-                  <path d="M8 16H3v5"></path>
-                </svg>
+                <RotateCcw size={14} />
                 <span>Reset Selections</span>
               </button>
               <span className="badge-status badge-instock">Real-Time Sync Active</span>
@@ -1210,7 +1225,9 @@ export const AdminRobotBuilder = () => {
                           }
                         }}
                       >
-                        <span className="preset-icon">{p.icon || '🤖'}</span>
+                        <span className="preset-icon" style={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <Bot size={18} color="#F97316" />
+                        </span>
                         <span className="preset-text">
                           <strong>{p.name}</strong>
                           <small>{p.subtitle || 'Championship Grade'}</small>
@@ -1308,8 +1325,8 @@ export const AdminRobotBuilder = () => {
                       <span className="total-val">₹{simFinalPrice.toLocaleString('en-IN')}</span>
                     </div>
                     {simSavings > 0 && (
-                      <div className="savings-pill" style={{ margin: '10px 0 14px' }}>
-                        🎉 Total Maker Savings: ₹{simSavings.toLocaleString('en-IN')}
+                      <div className="savings-pill" style={{ margin: '10px 0 14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <Sparkles size={13} /> Total Maker Savings: ₹{simSavings.toLocaleString('en-IN')}
                       </div>
                     )}
                   </div>
@@ -1334,7 +1351,10 @@ export const AdminRobotBuilder = () => {
                   {/* Perks List */}
                   <div className="builder-perks" style={{ marginTop: '16px' }}>
                     {robotBuilderSettings.perks && robotBuilderSettings.perks.map((perk, i) => (
-                      <div key={i} className="perk-item">✓ {perk}</div>
+                      <div key={i} className="perk-item" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Check size={12} color="#22C55E" />
+                        <span>{perk}</span>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -1349,10 +1369,13 @@ export const AdminRobotBuilder = () => {
         <div className="admin-modal-overlay" onClick={() => setIsPresetModalOpen(false)}>
           <div className="admin-modal-box" style={{ maxWidth: '640px' }} onClick={e => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h3 className="admin-modal-title">
-                {editingPresetKey ? '✨ Edit Robot Preset' : '✨ Add New Competition Preset'}
+              <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Sparkles size={18} color="#F97316" />
+                <span>{editingPresetKey ? 'Edit Robot Preset' : 'Add New Competition Preset'}</span>
               </h3>
-              <button className="btn-table-icon" onClick={() => setIsPresetModalOpen(false)}>✕</button>
+              <button className="btn-table-icon" onClick={() => setIsPresetModalOpen(false)}>
+                <X size={16} />
+              </button>
             </div>
 
             <form onSubmit={handleSavePreset} className="admin-modal-body">
@@ -1372,13 +1395,13 @@ export const AdminRobotBuilder = () => {
                 </div>
 
                 <div className="admin-form-group">
-                  <label className="admin-form-label">Category Icon / Emoji</label>
+                  <label className="admin-form-label">Category Icon Name</label>
                   <input
                     type="text"
                     className="admin-form-input"
                     value={presetForm.icon}
                     onChange={e => setPresetForm({ ...presetForm, icon: e.target.value })}
-                    placeholder="e.g. 🏎️, ⚡, ⚽, ⚔️, 🦾"
+                    placeholder="e.g. Race, Combat, Soccer"
                   />
                 </div>
 
@@ -1451,7 +1474,10 @@ export const AdminRobotBuilder = () => {
 
               <div className="admin-modal-footer" style={{ margin: '24px -24px -24px', padding: '16px 24px' }}>
                 <button type="button" className="admin-action-pill-btn" onClick={() => setIsPresetModalOpen(false)}>Cancel</button>
-                <button type="submit" className="admin-action-pill-btn primary">Save Preset</button>
+                <button type="submit" className="admin-action-pill-btn primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <Save size={14} />
+                  <span>Save Preset</span>
+                </button>
               </div>
             </form>
           </div>
@@ -1463,10 +1489,13 @@ export const AdminRobotBuilder = () => {
         <div className="admin-modal-overlay" onClick={() => setIsSlotModalOpen(false)}>
           <div className="admin-modal-box" style={{ maxWidth: '520px' }} onClick={e => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h3 className="admin-modal-title">
-                {editingSlotKey ? '⚙️ Edit Assembly Slot' : '⚙️ Add Assembly Slot Layer'}
+              <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Sliders size={18} color="#F97316" />
+                <span>{editingSlotKey ? 'Edit Assembly Slot' : 'Add Assembly Slot Layer'}</span>
               </h3>
-              <button className="btn-table-icon" onClick={() => setIsSlotModalOpen(false)}>✕</button>
+              <button className="btn-table-icon" onClick={() => setIsSlotModalOpen(false)}>
+                <X size={16} />
+              </button>
             </div>
 
             <form onSubmit={handleSaveSlot} className="admin-modal-body">
@@ -1511,7 +1540,10 @@ export const AdminRobotBuilder = () => {
 
               <div className="admin-modal-footer" style={{ margin: '24px -24px -24px', padding: '16px 24px' }}>
                 <button type="button" className="admin-action-pill-btn" onClick={() => setIsSlotModalOpen(false)}>Cancel</button>
-                <button type="submit" className="admin-action-pill-btn primary">Save Slot</button>
+                <button type="submit" className="admin-action-pill-btn primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <Save size={14} />
+                  <span>Save Slot</span>
+                </button>
               </div>
             </form>
           </div>
@@ -1523,10 +1555,13 @@ export const AdminRobotBuilder = () => {
         <div className="admin-modal-overlay" onClick={() => setIsOptionModalOpen(false)}>
           <div className="admin-modal-box" style={{ maxWidth: '560px' }} onClick={e => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h3 className="admin-modal-title">
-                {editingOptionId ? '🛠️ Edit Component Part' : '🛠️ Add Component Part to Slot'}
+              <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Wrench size={18} color="#F97316" />
+                <span>{editingOptionId ? 'Edit Component Part' : 'Add Component Part to Slot'}</span>
               </h3>
-              <button className="btn-table-icon" onClick={() => setIsOptionModalOpen(false)}>✕</button>
+              <button className="btn-table-icon" onClick={() => setIsOptionModalOpen(false)}>
+                <X size={16} />
+              </button>
             </div>
 
             <form onSubmit={handleSaveOption} className="admin-modal-body">
@@ -1534,8 +1569,9 @@ export const AdminRobotBuilder = () => {
                 {/* Catalog Quick Import (Only for new options) */}
                 {!editingOptionId && (
                   <div className="admin-form-group admin-form-full" style={{ background: 'rgba(249, 115, 22, 0.08)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(249, 115, 22, 0.2)' }}>
-                    <label className="admin-form-label" style={{ color: 'var(--primary)' }}>
-                      ⚡ Quick Link from Store Inventory (Optional)
+                    <label className="admin-form-label" style={{ color: 'var(--primary)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <Link2 size={14} />
+                      <span>Quick Link from Store Inventory (Optional)</span>
                     </label>
                     <select
                       className="admin-select"
@@ -1591,7 +1627,10 @@ export const AdminRobotBuilder = () => {
 
               <div className="admin-modal-footer" style={{ margin: '24px -24px -24px', padding: '16px 24px' }}>
                 <button type="button" className="admin-action-pill-btn" onClick={() => setIsOptionModalOpen(false)}>Cancel</button>
-                <button type="submit" className="admin-action-pill-btn primary">Save Component</button>
+                <button type="submit" className="admin-action-pill-btn primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <Save size={14} />
+                  <span>Save Component</span>
+                </button>
               </div>
             </form>
           </div>

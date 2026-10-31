@@ -12,87 +12,99 @@ import {
   DEFAULT_BUILDER_SLOTS,
   DEFAULT_BUILDER_SETTINGS
 } from '../data/robotBuilderData';
+import { api } from '../services/api';
 
 export const DEFAULT_NAVBAR_CATEGORIES = [
-  { id: 'all', name: 'All Products', icon: '⚡', badge: '', badgeType: '', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 1 },
-  { id: 'fasteners', name: 'Nut Bolt & Screws', icon: '🔩', badge: '', badgeType: '', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 2 },
-  { id: 'filaments', name: '3D Filaments', icon: '🧵', badge: 'HOT', badgeType: 'hot', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 3 },
-  { id: 'motors', name: 'Motors & Gearboxes', icon: '⚙️', badge: '', badgeType: '', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 4 },
-  { id: 'drivers', name: 'Motor Drivers', icon: '🔌', badge: '', badgeType: '', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 5 },
-  { id: 'bearings', name: 'Bearings & Motion', icon: '🔲', badge: '', badgeType: '', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 6 },
-  { id: 'line-follower', name: 'Line Follower Kits', icon: '🏁', badge: 'PRO', badgeType: 'pro', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 7 },
-  { id: 'robo-race', name: 'Robo Race', icon: '🏎️', badge: '', badgeType: '', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 8 },
-  { id: 'soccer-robot', name: 'Soccer Robots', icon: '⚽', badge: '', badgeType: '', targetType: 'category', targetUrl: '#store-catalog', active: true, order: 9 }
+  { id: 'filaments', name: '3D Filament Spool', icon: '🧵', badge: '1KG SPOOLS', badgeType: 'hot', targetType: 'link', targetUrl: '#filament-hub-section', active: true, order: 1 },
+  { id: '3d-products', name: '3D Print Product', icon: '📦', badge: 'FINISHED PRINTS', badgeType: 'pro', targetType: 'link', targetUrl: '#section-3d-print-products', active: true, order: 2 },
+  { id: 'custom-3d-print', name: 'Custom 3D Print', icon: '🖨️', badge: 'INSTANT QUOTE', badgeType: 'new', targetType: 'link', targetUrl: '#custom-3d-print', active: true, order: 3 }
 ];
 
 export const DEFAULT_NAVBAR_SETTINGS = {
   enabled: true, // Master toggle: publish / unpublish on storefront home page
   showToolsLink: true,
-  toolsLinkLabel: 'Custom Robot Builder',
-  toolsLinkUrl: '#robot-builder',
-  toolsLinkIcon: '🔧'
+  toolsLinkLabel: 'Custom 3D Print Quote',
+  toolsLinkUrl: '#custom-3d-print',
+  toolsLinkIcon: '🖨️'
 };
 
 export const DEFAULT_HERO_SLIDES = [
   {
     id: 'slide-1',
-    badge: 'Championship Robotics 2026',
+    badge: 'Precision 3D Filament Spools',
     badgeColor: '#EA580C',
-    title: 'Dominate Every Arena with',
-    titleHighlight: 'Creotex Pro Kits',
-    description: 'High-torque planetary motors, sticky silicone race wheels, 360° omni soccer chassis, and sub-millimeter PID line follower robots.',
-    primaryBtnText: 'Explore Store Catalog →',
-    primaryBtnAction: 'catalog',
-    primaryBtnTarget: 'all',
-    secondaryBtnText: '🛠️ Build Custom Bot',
+    title: 'High-Flow 1.75mm Filaments &',
+    titleHighlight: '1KG Engineering Spools',
+    description: 'Hyper PLA, Carbon Fiber PETG-CF, High-Heat ABS & Shockproof TPU 95A. Vacuum-sealed spools with ±0.02mm diameter tolerance.',
+    primaryBtnText: 'Explore Filament Spools →',
+    primaryBtnAction: 'link',
+    primaryBtnTarget: '#filament-hub-section',
+    secondaryBtnText: '🖨️ Custom 3D Print',
     secondaryBtnAction: 'link',
-    secondaryBtnTarget: '#robot-builder',
-    imageType: 'robot',
+    secondaryBtnTarget: '#custom-3d-print',
+    imageType: 'filament',
     active: true,
     order: 1
   },
   {
     id: 'slide-2',
-    badge: 'Next-Gen Rapid Prototyping',
-    badgeColor: '#F59E0B',
-    title: 'Hyper-Speed PLA &',
-    titleHighlight: 'Carbon Fiber PETG',
-    description: 'Print up to 600mm/s without clogs. Rigid lightweight robot parts, shock-absorbing TPU wheels, and hardened steel volcano nozzles.',
-    primaryBtnText: 'Shop 3D Filaments',
-    primaryBtnAction: 'category',
-    primaryBtnTarget: 'filaments',
-    secondaryBtnText: 'Slicing Guides',
+    badge: 'Ready-to-Ship Finished Prints',
+    badgeColor: '#10B981',
+    title: 'Precision Manufactured',
+    titleHighlight: '3D Printed Products',
+    description: 'Articulated dragons, ergonomic desk docks, Voronoi architectural decor, modular cable spines, and working planetary gearboxes.',
+    primaryBtnText: 'Shop 3D Print Products →',
+    primaryBtnAction: 'link',
+    primaryBtnTarget: '#section-3d-print-products',
+    secondaryBtnText: 'Upload Custom CAD',
     secondaryBtnAction: 'link',
-    secondaryBtnTarget: '#datasheets-hub',
+    secondaryBtnTarget: '#custom-3d-print',
     imageType: 'filament',
     active: true,
     order: 2
+  },
+  {
+    id: 'slide-3',
+    badge: 'Bambu Lab & Voron Print Farm',
+    badgeColor: '#6366F1',
+    title: 'Instant Automated Online',
+    titleHighlight: 'Custom 3D Printing',
+    description: 'Upload your .STL or .STEP files for real-time slicing and pricing from ₹3.5/gram. Multi-color, engineering polymers, and 24-hr rush dispatch.',
+    primaryBtnText: 'Start Custom Print Job →',
+    primaryBtnAction: 'link',
+    primaryBtnTarget: '#custom-3d-print',
+    secondaryBtnText: 'View Spools Catalog',
+    secondaryBtnAction: 'link',
+    secondaryBtnTarget: '#filament-hub-section',
+    imageType: 'custom',
+    active: true,
+    order: 3
   }
 ];
 
 export const DEFAULT_HERO_SIDE_BANNERS = [
   {
     id: 'side-1',
-    badge: '🔩 Workshop Essential',
+    badge: '🧵 Spool Highlights',
     badgeColor: '#EA580C',
-    title: 'M2–M5 Fastener Kits',
-    description: '304 Stainless Steel Allen bolts, knurled brass standoffs & anti-vibration nyloc nuts.',
-    btnText: 'Shop Fasteners →',
-    btnAction: 'category',
-    btnTarget: 'fasteners',
+    title: 'Hyper PLA & PETG-CF Spools',
+    description: 'Up to 600mm/s high-flow printing. 30+ vibrant color shades in stock.',
+    btnText: 'Shop Spools →',
+    btnAction: 'link',
+    btnTarget: '#filament-hub-section',
     accentClass: 'card-accent-1',
     active: true,
     order: 1
   },
   {
     id: 'side-2',
-    badge: '⚙️ Heavy Duty Power',
-    badgeColor: '#F59E0B',
-    title: 'Planetary & Steppers',
-    description: '12V PG36 high-torque all-metal motors, NEMA 17 steppers & Cytron dual MOSFET drivers.',
-    btnText: 'Shop Motors & Drivers →',
-    btnAction: 'category',
-    btnTarget: 'motors',
+    badge: '🖨️ On-Demand Studio',
+    badgeColor: '#6366F1',
+    title: 'Custom 3D Print Quote',
+    description: 'Upload CAD files & get instant pricing from ₹3.5/gram with 24H dispatch.',
+    btnText: 'Upload Model →',
+    btnAction: 'link',
+    btnTarget: '#custom-3d-print',
     accentClass: 'card-accent-2',
     active: true,
     order: 2
@@ -106,6 +118,36 @@ export const DEFAULT_HERO_SETTINGS = {
   showSideBanners: true
 };
 
+export const DEFAULT_FLASH_DEALS_SETTINGS = {
+  enabled: true, // Master toggle: publish / unpublish on home page
+  title: 'Flash Maker Deals of the Day',
+  subtitle: 'Limited stock at special tournament discount pricing',
+  icon: '🔥',
+  badgeText: 'ENDS TODAY',
+  showCountdown: true,
+  countdownSeconds: 14 * 3600 + 42 * 60 + 19,
+  maxProducts: 4,
+  customProductIds: [] // If empty, auto picks products with isDeal: true
+};
+
+export const DEFAULT_FILAMENT_SECTION_SETTINGS = {
+  enabled: true, // Master toggle: publish / unpublish on home page
+  title: '3D Printer Filament Spool Zone',
+  subtitle: 'Precision 1.75mm engineering filaments for rapid prototyping, combat robots & heat-resistant parts',
+  icon: '🧵',
+  badgeText: '', // empty = dynamic `${count} SUB-CATEGORIES AVAILABLE`
+  buttonText: 'Explore All 3D Filaments',
+  buttonLink: '#filaments-hub',
+  showSubcategoriesGrid: true,
+  showShelf: true,
+  shelfTitle: '⭐ Popular In-Stock 1KG Spools',
+  shelfSubtitle: 'Bambu Lab RFID & Standard 1KG spools vacuum-sealed with desiccant',
+  shelfButtonText: 'View All Filaments',
+  maxShelfProducts: 4,
+  customShelfProductIds: [], // If empty, auto picks top filament products
+  hiddenSubcategoryKeys: [] // Keys of subcategories hidden specifically from the home section
+};
+
 const CartContext = createContext();
 
 export const useCart = () => {
@@ -116,6 +158,76 @@ export const useCart = () => {
   return context;
 };
 
+export const VALID_ADMIN_TABS = [
+  'dashboard',
+  'users',
+  'products',
+  'deals-filaments',
+  'filaments',
+  'hero-banners',
+  'categories',
+  'robot-builder',
+  'orders',
+  'coupons',
+  'customers',
+  'datasheets',
+  'settings'
+];
+
+export const getInitialAdminTab = () => {
+  if (typeof window !== 'undefined') {
+    // 1. Check URL search query parameter: ?tab=products or ?adminTab=products
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab') || params.get('adminTab') || params.get('section');
+      if (tabParam && VALID_ADMIN_TABS.includes(tabParam.toLowerCase())) {
+        return tabParam.toLowerCase();
+      }
+    } catch {}
+
+    // 2. Check URL hash: #products or #tab=products
+    try {
+      const rawHash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+      if (rawHash) {
+        if (VALID_ADMIN_TABS.includes(rawHash)) {
+          return rawHash;
+        }
+        if (rawHash.includes('tab=')) {
+          const hashParams = new URLSearchParams(rawHash.includes('?') ? rawHash.split('?')[1] : rawHash);
+          const hashTab = hashParams.get('tab');
+          if (hashTab && VALID_ADMIN_TABS.includes(hashTab.toLowerCase())) {
+            return hashTab.toLowerCase();
+          }
+        }
+        const hashParts = rawHash.split('/');
+        const lastPart = hashParts[hashParts.length - 1];
+        if (VALID_ADMIN_TABS.includes(lastPart)) {
+          return lastPart;
+        }
+      }
+    } catch {}
+
+    // 3. Check pathname: /super/products
+    try {
+      const pathParts = window.location.pathname.toLowerCase().split('/').filter(Boolean);
+      const lastPart = pathParts[pathParts.length - 1];
+      if (VALID_ADMIN_TABS.includes(lastPart)) {
+        return lastPart;
+      }
+    } catch {}
+  }
+
+  // 4. Check localStorage fallback
+  try {
+    const saved = localStorage.getItem('creotex_admin_active_tab');
+    if (saved && VALID_ADMIN_TABS.includes(saved.toLowerCase())) {
+      return saved.toLowerCase();
+    }
+  } catch {}
+
+  return 'dashboard';
+};
+
 export const CartProvider = ({ children }) => {
   // Storage Keys
   const cartKey = "creotex_cart_items";
@@ -123,24 +235,27 @@ export const CartProvider = ({ children }) => {
   const compareKey = "creotex_compare_items";
   const couponKey = "creotex_applied_coupon";
   const themeKey = "creotex_theme";
-  const productsKey = "creotex_admin_products";
+  const productsKey = "creotex_admin_products_v4";
   const ordersKey = "creotex_admin_orders";
   const couponsKey = "creotex_admin_coupons";
   const customersKey = "creotex_admin_customers";
   const datasheetsKey = "creotex_admin_datasheets";
   const settingsKey = "creotex_admin_settings";
   const viewKey = "creotex_current_view";
+  const adminTabKey = "creotex_admin_active_tab";
   const usersKey = "creotex_users";
   const authKey = "creotex_auth_user";
   const builderPresetsKey = "creotex_admin_builder_presets";
   const builderSlotsKey = "creotex_admin_builder_slots";
   const builderSettingsKey = "creotex_admin_builder_settings";
-  const navbarCategoriesKey = "creotex_navbar_categories";
-  const navbarSettingsKey = "creotex_navbar_settings";
-  const heroSlidesKey = "creotex_hero_slides";
-  const heroSideBannersKey = "creotex_hero_side_banners";
+  const navbarCategoriesKey = "creotex_navbar_categories_v4";
+  const navbarSettingsKey = "creotex_navbar_settings_v4";
+  const heroSlidesKey = "creotex_hero_slides_v4";
+  const heroSideBannersKey = "creotex_hero_side_banners_v4";
   const heroSettingsKey = "creotex_hero_settings";
   const filamentSubcategoriesKey = "creotex_filament_subcategories";
+  const flashDealsSettingsKey = "creotex_flash_deals_settings";
+  const filamentSectionSettingsKey = "creotex_filament_section_settings";
 
   // Load helper
   const load = (key, fallback) => {
@@ -166,7 +281,7 @@ export const CartProvider = ({ children }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState("login"); // 'login' | 'signup' | 'profile'
 
-  // Navigation & Admin View State
+  // Navigation & Admin View State - persist across reload
   const [currentView, setCurrentView] = useState(() => {
     if (typeof window !== 'undefined') {
       const p = window.location.pathname.toLowerCase();
@@ -175,25 +290,19 @@ export const CartProvider = ({ children }) => {
       if (p.includes('super') || h.includes('super') || s.includes('super')) {
         return "admin";
       }
+      if (p.includes('custom-3d') || h.includes('custom-3d') || s.includes('custom-3d')) {
+        return "custom-3d-print";
+      }
     }
     return localStorage.getItem(viewKey) || "storefront";
   });
-  const [adminActiveTab, setAdminActiveTab] = useState("dashboard");
+  const [adminActiveTab, setAdminActiveTabState] = useState(() => getInitialAdminTab());
 
   // Dynamic Store Data with LocalStorage Sync
-  const [products, setProducts] = useState(() => {
-    const loaded = load(productsKey, PRODUCTS_DATA);
-    const existingIds = new Set(loaded.map(p => p.id));
-    const missing = PRODUCTS_DATA.filter(p => !existingIds.has(p.id));
-    return missing.length > 0 ? [...loaded, ...missing] : loaded;
-  });
-  const [filamentSubcategories, setFilamentSubcategories] = useState(() => {
-    const loaded = load(filamentSubcategoriesKey, FILAMENT_SUBCATEGORIES);
-    if (!loaded || loaded.length === 0) return FILAMENT_SUBCATEGORIES;
-    const existingIds = new Set(loaded.map(s => s.id));
-    const missing = FILAMENT_SUBCATEGORIES.filter(s => !existingIds.has(s.id));
-    return missing.length > 0 ? [...loaded, ...missing] : loaded;
-  });
+  const [products, setProducts] = useState(() => load(productsKey, PRODUCTS_DATA));
+  const [filamentSubcategories, setFilamentSubcategories] = useState(
+    () => load(filamentSubcategoriesKey, FILAMENT_SUBCATEGORIES)
+  );
   const [activeFilamentSubcategory, setActiveFilamentSubcategory] = useState("all");
   const [orders, setOrders] = useState(() => load(ordersKey, INITIAL_ORDERS));
 
@@ -208,13 +317,35 @@ export const CartProvider = ({ children }) => {
   const [robotBuilderSettings, setRobotBuilderSettings] = useState(() => load(builderSettingsKey, DEFAULT_BUILDER_SETTINGS));
 
   // Storefront Navbar Categories & Navigation Data State
-  const [navbarCategories, setNavbarCategories] = useState(() => load(navbarCategoriesKey, DEFAULT_NAVBAR_CATEGORIES));
+  const [navbarCategories, setNavbarCategories] = useState(() => {
+    const loaded = load(navbarCategoriesKey, DEFAULT_NAVBAR_CATEGORIES);
+    if (Array.isArray(loaded) && !loaded.some(c => c.id === 'custom-3d-print')) {
+      const copy = [...loaded];
+      copy.splice(1, 0, {
+        id: 'custom-3d-print',
+        name: 'Custom 3D Print',
+        icon: '🖨️',
+        badge: 'NEW',
+        badgeType: 'new',
+        targetType: 'link',
+        targetUrl: '#custom-3d-print',
+        active: true,
+        order: 2
+      });
+      return copy;
+    }
+    return loaded;
+  });
   const [navbarSettings, setNavbarSettings] = useState(() => load(navbarSettingsKey, DEFAULT_NAVBAR_SETTINGS));
 
   // Storefront Hero Carousel & Side Promo Banners State
   const [heroSlides, setHeroSlides] = useState(() => load(heroSlidesKey, DEFAULT_HERO_SLIDES));
   const [heroSideBanners, setHeroSideBanners] = useState(() => load(heroSideBannersKey, DEFAULT_HERO_SIDE_BANNERS));
   const [heroSettings, setHeroSettings] = useState(() => load(heroSettingsKey, DEFAULT_HERO_SETTINGS));
+
+  // Storefront Home Page Sections: Flash Deals & Filament Spool Zone
+  const [flashDealsSettings, setFlashDealsSettings] = useState(() => load(flashDealsSettingsKey, DEFAULT_FLASH_DEALS_SETTINGS));
+  const [filamentSectionSettings, setFilamentSectionSettings] = useState(() => load(filamentSectionSettingsKey, DEFAULT_FILAMENT_SECTION_SETTINGS));
 
   // Modals & Drawers state
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -316,12 +447,23 @@ export const CartProvider = ({ children }) => {
   }, [heroSettings]);
 
   useEffect(() => {
+    localStorage.setItem(flashDealsSettingsKey, JSON.stringify(flashDealsSettings));
+  }, [flashDealsSettings]);
+
+  useEffect(() => {
+    localStorage.setItem(filamentSectionSettingsKey, JSON.stringify(filamentSectionSettings));
+  }, [filamentSectionSettings]);
+
+  useEffect(() => {
     localStorage.setItem(usersKey, JSON.stringify(users));
   }, [users]);
 
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem(authKey, JSON.stringify(currentUser));
+      if (currentUser.role === 'super_admin' && !localStorage.getItem('creotex_auth_token')) {
+        localStorage.setItem('creotex_auth_token', currentUser.token || 'creotex_root_admin_session_token');
+      }
     } else {
       localStorage.removeItem(authKey);
     }
@@ -330,6 +472,34 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(viewKey, currentView);
   }, [currentView]);
+
+  // Persist admin active tab in localStorage
+  useEffect(() => {
+    if (adminActiveTab) {
+      localStorage.setItem(adminTabKey, adminActiveTab);
+    }
+  }, [adminActiveTab]);
+
+  // Keep browser URL in sync when in Super Admin view so page refresh stays on this exact page
+  useEffect(() => {
+    if (currentView === 'admin' && typeof window !== 'undefined') {
+      try {
+        const url = new URL(window.location.href);
+        let urlModified = false;
+        if (!url.pathname.toLowerCase().includes('super')) {
+          url.pathname = '/super';
+          urlModified = true;
+        }
+        if (url.searchParams.get('tab') !== adminActiveTab) {
+          url.searchParams.set('tab', adminActiveTab);
+          urlModified = true;
+        }
+        if (urlModified) {
+          window.history.replaceState({ view: 'admin', tab: adminActiveTab }, '', url.pathname + url.search + url.hash);
+        }
+      } catch {}
+    }
+  }, [currentView, adminActiveTab]);
 
   // Sync Theme attribute
   useEffect(() => {
@@ -340,6 +510,19 @@ export const CartProvider = ({ children }) => {
   // Toast Notification (Disabled globally as requested)
   const showToast = () => {};
 
+  const persistDelete = async (request, updateLocalState, itemLabel) => {
+    try {
+      await request();
+      updateLocalState();
+    } catch (error) {
+      if (error.status === 404) {
+        updateLocalState();
+        return;
+      }
+      window.alert(`Could not delete ${itemLabel} from the database: ${error.message}`);
+    }
+  };
+
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
@@ -347,15 +530,37 @@ export const CartProvider = ({ children }) => {
   };
 
   // View Navigation
-  const navigateToAdmin = (tab = "dashboard") => {
-    setAdminActiveTab(tab);
+  const setAdminActiveTab = (tab) => {
+    const validTab = VALID_ADMIN_TABS.includes(tab) ? tab : 'dashboard';
+    setAdminActiveTabState(validTab);
+    try {
+      localStorage.setItem(adminTabKey, validTab);
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        if (!url.pathname.toLowerCase().includes('super')) {
+          url.pathname = '/super';
+        }
+        url.searchParams.set('tab', validTab);
+        window.history.replaceState({ view: 'admin', tab: validTab }, '', url.pathname + url.search + url.hash);
+      }
+    } catch {}
+  };
+
+  const navigateToAdmin = (tab = null) => {
+    const targetTab = (tab && VALID_ADMIN_TABS.includes(tab))
+      ? tab
+      : (adminActiveTab && VALID_ADMIN_TABS.includes(adminActiveTab) ? adminActiveTab : getInitialAdminTab());
+    setAdminActiveTab(targetTab);
     setCurrentView("admin");
     try {
-      if (!window.location.pathname.toLowerCase().includes('super') && !window.location.hash.toLowerCase().includes('super')) {
-        window.history.pushState({ view: 'admin' }, '', '/super');
+      const url = new URL(window.location.href);
+      if (!url.pathname.toLowerCase().includes('super')) {
+        url.pathname = '/super';
       }
+      url.searchParams.set('tab', targetTab);
+      window.history.pushState({ view: 'admin', tab: targetTab }, '', url.pathname + url.search + url.hash);
     } catch {
-      window.location.hash = 'super';
+      window.location.hash = `super?tab=${targetTab}`;
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -363,7 +568,7 @@ export const CartProvider = ({ children }) => {
   const navigateToStorefront = () => {
     setCurrentView("storefront");
     try {
-      if (window.location.pathname.toLowerCase().includes('super') || window.location.hash.toLowerCase().includes('super')) {
+      if (window.location.pathname.toLowerCase().includes('super') || window.location.hash.toLowerCase().includes('super') || window.location.search.toLowerCase().includes('tab=')) {
         window.history.pushState({ view: 'storefront' }, '', '/');
       }
     } catch {
@@ -373,7 +578,13 @@ export const CartProvider = ({ children }) => {
   };
 
   const navigateToHome = () => {
+    setCurrentCategory("all");
     setCurrentView("storefront");
+    try {
+      if (window.location.hash.includes('custom-3d') || window.location.hash.includes('filaments')) {
+        window.history.pushState({ view: 'storefront' }, '', '/');
+      }
+    } catch {}
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -381,6 +592,15 @@ export const CartProvider = ({ children }) => {
     setActiveFilamentSubcategory(subCat);
     setCurrentCategory("filaments");
     setCurrentView("filaments");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const navigateToCustom3DPrint = () => {
+    setCurrentCategory("custom-3d-print");
+    setCurrentView("custom-3d-print");
+    try {
+      window.history.pushState({ view: 'custom-3d-print' }, '', '/#custom-3d-print');
+    } catch {}
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -523,10 +743,23 @@ export const CartProvider = ({ children }) => {
     showToast(`Toggled visibility for subcategory "${subKey}".`, 'info');
   };
 
-  const deleteFilamentSubcategory = (subKey) => {
-    setFilamentSubcategories(prev => prev.filter(s => s.subCategoryKey.toLowerCase() !== subKey.toLowerCase()));
-    setProducts(prev => prev.filter(p => !p.subCategory || p.subCategory.toLowerCase() !== subKey.toLowerCase()));
-    showToast(`Removed subcategory "${subKey}" from system.`, 'info');
+  const deleteFilamentSubcategory = async (subKey) => {
+    const nextSubcategories = filamentSubcategories.filter(
+      s => s.subCategoryKey.toLowerCase() !== subKey.toLowerCase()
+    );
+
+    await persistDelete(
+      () => Promise.all([
+        api.products.deleteBySubcategory(subKey),
+        api.settings.update({ filamentSubcategories: nextSubcategories })
+      ]),
+      () => {
+        setFilamentSubcategories(nextSubcategories);
+        setProducts(prev => prev.filter(p => !p.subCategory || p.subCategory.toLowerCase() !== subKey.toLowerCase()));
+        showToast(`Removed subcategory "${subKey}" from system.`, 'info');
+      },
+      `subcategory "${subKey}"`
+    );
   };
 
   const resetFilamentSubcategoriesDefaults = () => {
@@ -546,8 +779,16 @@ export const CartProvider = ({ children }) => {
       const s = window.location.search.toLowerCase();
       if (p.includes('super') || h.includes('super') || s.includes('super')) {
         setCurrentView("admin");
+        const detectedTab = getInitialAdminTab();
+        if (detectedTab && detectedTab !== adminActiveTab) {
+          setAdminActiveTabState(detectedTab);
+          localStorage.setItem(adminTabKey, detectedTab);
+        }
       } else {
-        setCurrentView("storefront");
+        const storedView = localStorage.getItem(viewKey);
+        if (storedView !== 'admin') {
+          setCurrentView("storefront");
+        }
       }
     };
 
@@ -557,7 +798,7 @@ export const CartProvider = ({ children }) => {
       window.removeEventListener('popstate', handleUrlChange);
       window.removeEventListener('hashchange', handleUrlChange);
     };
-  }, []);
+  }, [adminActiveTab]);
 
   // ================= AUTHENTICATION METHODS =================
   const openAuthModal = (mode = "login") => {
@@ -569,9 +810,25 @@ export const CartProvider = ({ children }) => {
     setIsAuthModalOpen(false);
   };
 
-  const login = (email, password) => {
+  const login = (email, password, authenticatedUser = null) => {
     const cleanEmail = email.trim().toLowerCase();
     const found = users.find(u => u.email.toLowerCase() === cleanEmail);
+
+    if (authenticatedUser) {
+      const loggedInUser = {
+        ...(found || {}),
+        ...authenticatedUser,
+        email: authenticatedUser.email.toLowerCase()
+      };
+      setUsers(prev => (
+        prev.some(u => u.email.toLowerCase() === cleanEmail)
+          ? prev.map(u => u.email.toLowerCase() === cleanEmail ? loggedInUser : u)
+          : [loggedInUser, ...prev]
+      ));
+      setCurrentUser(loggedInUser);
+      setIsAuthModalOpen(false);
+      return { success: true, user: loggedInUser };
+    }
 
     if (!found) {
       showToast("Account not found. Please sign up or check email.", "error");
@@ -641,10 +898,12 @@ export const CartProvider = ({ children }) => {
 
   const logout = () => {
     const wasAdmin = currentUser?.role === 'super_admin';
+    localStorage.removeItem('creotex_auth_token');
+    localStorage.removeItem(adminTabKey);
     setCurrentUser(null);
     setIsAuthModalOpen(false);
     if (wasAdmin && currentView === 'admin') {
-      setCurrentView('storefront');
+      navigateToStorefront();
     }
     showToast("You have been logged out successfully.", "info");
   };
@@ -1020,9 +1279,15 @@ export const CartProvider = ({ children }) => {
     showToast(`Product updated successfully!`, "success");
   };
 
-  const deleteProduct = (id) => {
-    setProducts(prev => prev.filter(p => p.id !== id));
-    showToast("Product deleted from catalog", "info");
+  const deleteProduct = async (id) => {
+    await persistDelete(
+      () => api.products.delete(id),
+      () => {
+        setProducts(prev => prev.filter(p => p.id !== id));
+        showToast("Product deleted from catalog", "info");
+      },
+      'product'
+    );
   };
 
   const updateStock = (id, newStock) => {
@@ -1106,9 +1371,15 @@ export const CartProvider = ({ children }) => {
     showToast(`Order ${orderId} status set to ${newStatus}`, "success");
   };
 
-  const deleteOrder = (orderId) => {
-    setOrders(prev => prev.filter(o => o.id !== orderId));
-    showToast(`Order ${orderId} removed`, "info");
+  const deleteOrder = async (orderId) => {
+    await persistDelete(
+      () => api.orders.delete(orderId),
+      () => {
+        setOrders(prev => prev.filter(o => o.id !== orderId));
+        showToast(`Order ${orderId} removed`, "info");
+      },
+      `order ${orderId}`
+    );
   };
 
   // ================= ADMIN COUPONS =================
@@ -1121,13 +1392,19 @@ export const CartProvider = ({ children }) => {
     showToast(`Coupon ${upper} added!`, "success");
   };
 
-  const deleteCoupon = (code) => {
-    setCoupons(prev => {
-      const next = { ...prev };
-      delete next[code];
-      return next;
-    });
-    showToast(`Coupon ${code} deleted`, "info");
+  const deleteCoupon = async (code) => {
+    await persistDelete(
+      () => api.coupons.delete(code),
+      () => {
+        setCoupons(prev => {
+          const next = { ...prev };
+          delete next[code];
+          return next;
+        });
+        showToast(`Coupon ${code} deleted`, "info");
+      },
+      `coupon ${code}`
+    );
   };
 
   // ================= ADMIN CUSTOMERS =================
@@ -1150,9 +1427,15 @@ export const CartProvider = ({ children }) => {
     showToast("Customer record updated", "success");
   };
 
-  const deleteCustomer = (id) => {
-    setCustomers(prev => prev.filter(c => c.id !== id));
-    showToast("Customer record deleted", "info");
+  const deleteCustomer = async (id) => {
+    await persistDelete(
+      () => api.customers.delete(id),
+      () => {
+        setCustomers(prev => prev.filter(c => c.id !== id));
+        showToast("Customer record deleted", "info");
+      },
+      'customer'
+    );
   };
 
   // ================= ADMIN DATASHEETS =================
@@ -1168,9 +1451,15 @@ export const CartProvider = ({ children }) => {
     showToast("Technical Datasheet added!", "success");
   };
 
-  const deleteDatasheet = (id) => {
-    setDatasheets(prev => prev.filter(d => d.id !== id));
-    showToast("Datasheet removed", "info");
+  const deleteDatasheet = async (id) => {
+    await persistDelete(
+      () => api.datasheets.delete(id),
+      () => {
+        setDatasheets(prev => prev.filter(d => d.id !== id));
+        showToast("Datasheet removed", "info");
+      },
+      'datasheet'
+    );
   };
 
   // ================= ROBOT BUILDER ADMIN CRUD =================
@@ -1191,13 +1480,18 @@ export const CartProvider = ({ children }) => {
     showToast(`Preset "${presetData.name || presetKey}" saved successfully!`, "success");
   };
 
-  const deleteRobotBuilderPreset = (presetKey) => {
-    setRobotBuilderPresets(prev => {
-      const next = { ...prev };
-      delete next[presetKey];
-      return next;
-    });
-    showToast(`Preset "${presetKey}" removed`, "info");
+  const deleteRobotBuilderPreset = async (presetKey) => {
+    const nextPresets = { ...robotBuilderPresets };
+    delete nextPresets[presetKey];
+
+    await persistDelete(
+      () => api.robotBuilder.updatePresets(nextPresets),
+      () => {
+        setRobotBuilderPresets(nextPresets);
+        showToast(`Preset "${presetKey}" removed`, "info");
+      },
+      `robot preset "${presetKey}"`
+    );
   };
 
   const saveRobotBuilderSlot = (slotKey, slotData) => {
@@ -1214,9 +1508,16 @@ export const CartProvider = ({ children }) => {
     showToast(`Slot "${slotData.name || slotKey}" saved!`, "success");
   };
 
-  const deleteRobotBuilderSlot = (slotKey) => {
-    setRobotBuilderSlots(prev => prev.filter(s => s.key !== slotKey));
-    showToast(`Slot "${slotKey}" deleted`, "info");
+  const deleteRobotBuilderSlot = async (slotKey) => {
+    const nextSlots = robotBuilderSlots.filter(s => s.key !== slotKey);
+    await persistDelete(
+      () => api.robotBuilder.updateSlots(nextSlots),
+      () => {
+        setRobotBuilderSlots(nextSlots);
+        showToast(`Slot "${slotKey}" deleted`, "info");
+      },
+      `robot builder slot "${slotKey}"`
+    );
   };
 
   const addSlotOption = (slotKey, optionData) => {
@@ -1256,8 +1557,8 @@ export const CartProvider = ({ children }) => {
     showToast("Component option updated successfully!", "success");
   };
 
-  const deleteSlotOption = (slotKey, optionId) => {
-    setRobotBuilderSlots(prev => prev.map(slot => {
+  const deleteSlotOption = async (slotKey, optionId) => {
+    const nextSlots = robotBuilderSlots.map(slot => {
       if (slot.key === slotKey) {
         return {
           ...slot,
@@ -1265,8 +1566,16 @@ export const CartProvider = ({ children }) => {
         };
       }
       return slot;
-    }));
-    showToast("Component option removed from slot", "info");
+    });
+
+    await persistDelete(
+      () => api.robotBuilder.updateSlots(nextSlots),
+      () => {
+        setRobotBuilderSlots(nextSlots);
+        showToast("Component option removed from slot", "info");
+      },
+      'robot builder component'
+    );
   };
 
   const resetRobotBuilderDefaults = () => {
@@ -1300,6 +1609,8 @@ export const CartProvider = ({ children }) => {
 
     localStorage.removeItem(navbarCategoriesKey);
     localStorage.removeItem(navbarSettingsKey);
+    localStorage.removeItem(flashDealsSettingsKey);
+    localStorage.removeItem(filamentSectionSettingsKey);
 
     setProducts(PRODUCTS_DATA);
     setOrders(INITIAL_ORDERS);
@@ -1314,6 +1625,8 @@ export const CartProvider = ({ children }) => {
     setRobotBuilderSettings(DEFAULT_BUILDER_SETTINGS);
     setNavbarCategories(DEFAULT_NAVBAR_CATEGORIES);
     setNavbarSettings(DEFAULT_NAVBAR_SETTINGS);
+    setFlashDealsSettings(DEFAULT_FLASH_DEALS_SETTINGS);
+    setFilamentSectionSettings(DEFAULT_FILAMENT_SECTION_SETTINGS);
 
     showToast("Reset all store, accounts & demo data to original state", "info");
   };
@@ -1338,9 +1651,16 @@ export const CartProvider = ({ children }) => {
     showToast(`Navbar category updated!`, "success");
   };
 
-  const deleteNavbarCategory = (id) => {
-    setNavbarCategories(prev => prev.filter(c => c.id !== id));
-    showToast(`Category removed from Navbar!`, "info");
+  const deleteNavbarCategory = async (id) => {
+    const nextCategories = navbarCategories.filter(c => c.id !== id);
+    await persistDelete(
+      () => api.settings.update({ navbarCategories: nextCategories }),
+      () => {
+        setNavbarCategories(nextCategories);
+        showToast(`Category removed from Navbar!`, "info");
+      },
+      'navbar category'
+    );
   };
 
   const toggleNavbarCategoryActive = (id) => {
@@ -1391,9 +1711,16 @@ export const CartProvider = ({ children }) => {
     showToast("Hero Slide updated successfully!", "success");
   };
 
-  const deleteHeroSlide = (id) => {
-    setHeroSlides(prev => prev.filter(s => s.id !== id));
-    showToast("Hero Slide removed!", "info");
+  const deleteHeroSlide = async (id) => {
+    const nextSlides = heroSlides.filter(s => s.id !== id);
+    await persistDelete(
+      () => api.settings.update({ heroSlides: nextSlides }),
+      () => {
+        setHeroSlides(nextSlides);
+        showToast("Hero Slide removed!", "info");
+      },
+      'hero slide'
+    );
   };
 
   const toggleHeroSlideActive = (id) => {
@@ -1430,9 +1757,16 @@ export const CartProvider = ({ children }) => {
     showToast("Side Banner updated successfully!", "success");
   };
 
-  const deleteHeroSideBanner = (id) => {
-    setHeroSideBanners(prev => prev.filter(b => b.id !== id));
-    showToast("Side Banner removed!", "info");
+  const deleteHeroSideBanner = async (id) => {
+    const nextBanners = heroSideBanners.filter(b => b.id !== id);
+    await persistDelete(
+      () => api.settings.update({ heroSideBanners: nextBanners }),
+      () => {
+        setHeroSideBanners(nextBanners);
+        showToast("Side Banner removed!", "info");
+      },
+      'side banner'
+    );
   };
 
   const toggleHeroSideBannerActive = (id) => {
@@ -1464,6 +1798,96 @@ export const CartProvider = ({ children }) => {
     setHeroSideBanners(DEFAULT_HERO_SIDE_BANNERS);
     setHeroSettings(DEFAULT_HERO_SETTINGS);
     showToast("Hero slider & banners reset to factory defaults!", "info");
+  };
+
+  // ================= FLASH DEALS & FILAMENT SECTION MANAGEMENT =================
+  const updateFlashDealsSettings = (newSettings) => {
+    setFlashDealsSettings(prev => {
+      const updated = { ...prev, ...newSettings };
+      try {
+        api.settings.update({ flashDealsSettings: updated }).catch(() => {});
+      } catch {}
+      return updated;
+    });
+    showToast("Flash Deals settings saved successfully!", "success");
+  };
+
+  const updateFilamentSectionSettings = (newSettings) => {
+    setFilamentSectionSettings(prev => {
+      const updated = { ...prev, ...newSettings };
+      try {
+        api.settings.update({ filamentSectionSettings: updated }).catch(() => {});
+      } catch {}
+      return updated;
+    });
+    showToast("3D Filament Spool Zone settings saved successfully!", "success");
+  };
+
+  const toggleProductFlashDeal = (productId) => {
+    const prod = (products || []).find(p => p.id === productId);
+    if (!prod) return;
+    const nextDealState = !prod.isDeal;
+
+    setProducts(prev => prev.map(p => p.id === productId ? { ...p, isDeal: nextDealState } : p));
+
+    setFlashDealsSettings(prev => {
+      const currentList = prev.customProductIds || [];
+      let nextList;
+      if (nextDealState) {
+        if (!currentList.includes(productId)) {
+          nextList = [...currentList, productId];
+        } else {
+          nextList = currentList;
+        }
+      } else {
+        nextList = currentList.filter(id => id !== productId);
+      }
+      return { ...prev, customProductIds: nextList };
+    });
+
+    showToast(`Product "${prod.name}" ${nextDealState ? 'added to' : 'removed from'} Flash Deals!`, nextDealState ? 'success' : 'info');
+  };
+
+  const addProductToFlashDeals = (productId) => {
+    setProducts(prev => prev.map(p => p.id === productId ? { ...p, isDeal: true } : p));
+    setFlashDealsSettings(prev => {
+      const baseList = prev.customProductIds && prev.customProductIds.length > 0
+        ? prev.customProductIds
+        : (products || []).filter(p => p.isDeal).map(p => p.id);
+      if (!baseList.includes(productId)) {
+        return { ...prev, customProductIds: [productId, ...baseList] };
+      }
+      return prev;
+    });
+    showToast("Added product to Flash Deals!", "success");
+  };
+
+  const removeProductFromFlashDeals = (productId) => {
+    setProducts(prev => prev.map(p => p.id === productId ? { ...p, isDeal: false } : p));
+    setFlashDealsSettings(prev => {
+      const baseList = prev.customProductIds && prev.customProductIds.length > 0
+        ? prev.customProductIds
+        : (products || []).filter(p => p.isDeal).map(p => p.id);
+      return { ...prev, customProductIds: baseList.filter(id => id !== productId) };
+    });
+    showToast("Removed product from Flash Deals!", "info");
+  };
+
+  const reorderFlashDeals = (reorderedIds) => {
+    setFlashDealsSettings(prev => ({ ...prev, customProductIds: reorderedIds }));
+    showToast("Flash Deals display order updated!", "success");
+  };
+
+  const resetFlashDealsDefaults = () => {
+    localStorage.removeItem(flashDealsSettingsKey);
+    setFlashDealsSettings(DEFAULT_FLASH_DEALS_SETTINGS);
+    showToast("Flash Deals restored to factory defaults!", "info");
+  };
+
+  const resetFilamentSectionDefaults = () => {
+    localStorage.removeItem(filamentSectionSettingsKey);
+    setFilamentSectionSettings(DEFAULT_FILAMENT_SECTION_SETTINGS);
+    showToast("Filament Spool Zone restored to factory defaults!", "info");
   };
 
   return (
@@ -1621,7 +2045,20 @@ export const CartProvider = ({ children }) => {
         deleteFilamentSubcategory,
         resetFilamentSubcategoriesDefaults,
         navigateToFilaments,
-        navigateToHome
+        navigateToCustom3DPrint,
+        navigateToHome,
+
+        // Homepage Featured Sections: Flash Deals & Filament Spool Zone
+        flashDealsSettings,
+        filamentSectionSettings,
+        updateFlashDealsSettings,
+        updateFilamentSectionSettings,
+        toggleProductFlashDeal,
+        addProductToFlashDeals,
+        removeProductFromFlashDeals,
+        reorderFlashDeals,
+        resetFlashDealsDefaults,
+        resetFilamentSectionDefaults
       }}
 
     >

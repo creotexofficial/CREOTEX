@@ -27,6 +27,20 @@ export const REAL_PRODUCT_IMAGE_URLS = {
   "nozzle-set": "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=600&auto=format&fit=crop&q=80",
   "filaments-steel-nozzles": "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=600&auto=format&fit=crop&q=80",
 
+  // 2B. READY-TO-SHIP 3D PRINT PRODUCTS
+  "print-dragon-crystal": "/filaments/dragon_model_black.jpg",
+  "print-headphone-stand": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80",
+  "print-voronoi-vase": "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80",
+  "print-cable-spine": "https://images.unsplash.com/photo-1588508065123-287b28e013da?w=600&auto=format&fit=crop&q=80",
+  "print-planetary-gearbox": "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=600&auto=format&fit=crop&q=80",
+  "print-lithophane-lamp": "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=600&auto=format&fit=crop&q=80",
+  "print-drone-canopy": "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=600&auto=format&fit=crop&q=80",
+  "print-cyber-gecko": "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&auto=format&fit=crop&q=80",
+  "print-fan-duct": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80",
+  "print-bit-tower": "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=600&auto=format&fit=crop&q=80",
+  "print-ams-pods": "/filaments/refill_spool_pack.jpg",
+  "print-hc-wall": "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=600&auto=format&fit=crop&q=80",
+
   // 3. GEARBOX & MOTORS
   "motor-planetary-pg36": "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&auto=format&fit=crop&q=80",
   "motor-pg36-12v": "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&auto=format&fit=crop&q=80",

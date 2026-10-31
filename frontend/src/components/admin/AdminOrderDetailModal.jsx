@@ -1,4 +1,18 @@
 import React, { useState } from 'react';
+import {
+  Printer,
+  X,
+  Mail,
+  Phone,
+  MapPin,
+  CreditCard,
+  Truck,
+  User,
+  CheckCircle2,
+  Clock,
+  Package,
+  FileText
+} from 'lucide-react';
 
 export const AdminOrderDetailModal = ({ order, isOpen, onClose, onUpdateStatus }) => {
   const [currentStatus, setCurrentStatus] = useState(order ? order.orderStatus : 'Processing');
@@ -24,19 +38,20 @@ export const AdminOrderDetailModal = ({ order, isOpen, onClose, onUpdateStatus }
       <div className="admin-modal-box" style={{ maxWidth: '820px' }} onClick={e => e.stopPropagation()}>
         <div className="admin-modal-header">
           <div>
-            <h3 className="admin-modal-title">Order Manifest: #{order.id}</h3>
+            <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FileText size={18} style={{ color: 'var(--primary)' }} />
+              <span>Order Manifest: #{order.id}</span>
+            </h3>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Placed on {order.date}</span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="admin-action-pill-btn" onClick={handlePrint}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                <rect x="6" y="14" width="12" height="8"></rect>
-              </svg>
-              Print Invoice
+            <button className="admin-action-pill-btn" onClick={handlePrint} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <Printer size={14} />
+              <span>Print Invoice</span>
             </button>
-            <button className="btn-table-icon" onClick={onClose}>✕</button>
+            <button className="btn-table-icon" onClick={onClose}>
+              <X size={15} />
+            </button>
           </div>
         </div>
 
@@ -110,24 +125,33 @@ export const AdminOrderDetailModal = ({ order, isOpen, onClose, onUpdateStatus }
           {/* Customer & Shipping Details */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
             <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--primary)', fontWeight: '700', marginBottom: '8px' }}>
-                Customer Profile
+              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--primary)', fontWeight: '700', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <User size={13} />
+                <span>Customer Profile</span>
               </div>
               <div style={{ fontWeight: '700', fontSize: '0.95rem' }}>{order.customer?.name}</div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px' }}>📧 {order.customer?.email}</div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '2px' }}>📞 {order.customer?.phone}</div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Mail size={12} style={{ color: 'var(--text-muted)' }} />
+                <span>{order.customer?.email}</span>
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Phone size={12} style={{ color: 'var(--text-muted)' }} />
+                <span>{order.customer?.phone}</span>
+              </div>
             </div>
 
             <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--primary)', fontWeight: '700', marginBottom: '8px' }}>
-                Delivery Destination
+              <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--primary)', fontWeight: '700', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <MapPin size={13} />
+                <span>Delivery Destination</span>
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: '1.4' }}>
                 {order.customer?.address}<br />
                 {order.customer?.city}, {order.customer?.state || 'India'} - {order.customer?.pincode}
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Payment: <strong>{order.paymentMethod}</strong> ({order.paymentStatus})
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CreditCard size={13} />
+                <span>Payment: <strong>{order.paymentMethod}</strong> ({order.paymentStatus})</span>
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  deleteProductsBySubcategory,
   getCategories
 } from '../controllers/productController.js';
 import { protect, adminOnly } from '../middleware/authMiddleware.js';
@@ -17,6 +18,8 @@ router
   .route('/')
   .get(getProducts)
   .post(protect, adminOnly, createProduct);
+
+router.delete('/subcategory/:subCategory', protect, adminOnly, deleteProductsBySubcategory);
 
 router
   .route('/:id')

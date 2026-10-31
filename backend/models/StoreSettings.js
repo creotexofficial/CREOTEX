@@ -45,6 +45,30 @@ const storeSettingsSchema = new mongoose.Schema(
     maintenanceMode: {
       type: Boolean,
       default: false
+    },
+    navbarCategories: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: undefined
+    },
+    heroSlides: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: undefined
+    },
+    heroSideBanners: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: undefined
+    },
+    filamentSubcategories: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: undefined
+    },
+    flashDealsSettings: {
+      type: mongoose.Schema.Types.Mixed,
+      default: undefined
+    },
+    filamentSectionSettings: {
+      type: mongoose.Schema.Types.Mixed,
+      default: undefined
     }
   },
   {

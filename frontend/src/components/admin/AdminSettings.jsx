@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
+import {
+  Settings,
+  Save,
+  Download,
+  RotateCcw,
+  Database,
+  Store,
+  ShieldAlert
+} from 'lucide-react';
 
 export const AdminSettings = () => {
   const {
@@ -58,11 +67,8 @@ export const AdminSettings = () => {
       <div className="admin-card" style={{ maxWidth: '880px' }}>
         <div className="admin-card-header">
           <div>
-            <h2 className="admin-card-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
+            <h2 className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Settings size={20} strokeWidth={2} style={{ color: 'var(--primary)' }} />
               Store Configuration &amp; Global Parameters
             </h2>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -194,7 +200,10 @@ export const AdminSettings = () => {
           </div>
 
           <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-            <button type="submit" className="admin-action-pill-btn primary">Save Store Settings</button>
+            <button type="submit" className="admin-action-pill-btn primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <Save size={16} strokeWidth={2.2} />
+              Save Store Settings
+            </button>
           </div>
         </form>
       </div>
@@ -202,40 +211,27 @@ export const AdminSettings = () => {
       {/* Backup & System Operations */}
       <div className="admin-card" style={{ maxWidth: '880px', marginTop: '24px' }}>
         <div className="admin-card-header">
-          <h2 className="admin-card-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
+          <h2 className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Database size={20} strokeWidth={2} style={{ color: 'var(--primary)' }} />
             Data Backup &amp; Factory Reset
           </h2>
         </div>
         <div style={{ padding: '24px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <button className="admin-action-pill-btn" onClick={handleExportJSON}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
+          <button className="admin-action-pill-btn" onClick={handleExportJSON} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Download size={16} strokeWidth={2} />
             Export Store Backup (JSON)
           </button>
 
           <button
             className="admin-action-pill-btn"
-            style={{ color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.4)' }}
+            style={{ color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.4)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             onClick={() => {
               if (window.confirm("Are you sure you want to reset all store data to factory demo defaults? Custom added items and orders will be refreshed.")) {
                 resetDemoData();
               }
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
-              <path d="M21 3v5h-5"></path>
-              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
-              <path d="M8 16H3v5"></path>
-            </svg>
+            <RotateCcw size={16} strokeWidth={2} />
             Reset to Factory Demo Data
           </button>
         </div>

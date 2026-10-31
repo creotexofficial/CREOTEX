@@ -1,4 +1,17 @@
 import React, { useState } from 'react';
+import {
+  ShoppingBag,
+  Search,
+  Eye,
+  Trash2,
+  Calendar,
+  CreditCard,
+  Truck,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  Package
+} from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { AdminOrderDetailModal } from './AdminOrderDetailModal';
 
@@ -37,12 +50,8 @@ export const AdminOrders = () => {
         <div className="admin-card-header">
           <div>
             <h2 className="admin-card-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <path d="M16 10a4 4 0 0 1-8 0"></path>
-              </svg>
-              Orders &amp; Dispatch Hub
+              <ShoppingBag size={20} />
+              <span>Orders &amp; Fulfillment Dispatch Hub</span>
             </h2>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
               Total Orders: <strong>{orders.length}</strong> | Pending/Processing: <strong>{orders.filter(o => ['pending', 'processing'].includes(o.orderStatus?.toLowerCase())).length}</strong>
@@ -51,10 +60,7 @@ export const AdminOrders = () => {
 
           <div className="admin-table-controls">
             <div className="admin-search-wrapper">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
+              <Search size={15} />
               <input
                 type="text"
                 className="admin-search-input"
@@ -146,10 +152,7 @@ export const AdminOrders = () => {
                           title="Inspect Order Manifest"
                           onClick={() => setSelectedOrder(ord)}
                         >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                          </svg>
+                          <Eye size={15} />
                         </button>
                         <button
                           className="btn-table-icon danger"
@@ -160,10 +163,7 @@ export const AdminOrders = () => {
                             }
                           }}
                         >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                          </svg>
+                          <Trash2 size={15} />
                         </button>
                       </div>
                     </td>

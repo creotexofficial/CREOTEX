@@ -2,7 +2,7 @@ export const seedUsers = [
   {
     name: "Root Administrator",
     email: "admin@creotex.in",
-    password: "admin123",
+    password: "Admin@123",
     role: "super_admin",
     tier: "Super Admin",
     phone: "+91 80 4912 8800",

@@ -1,4 +1,26 @@
 import React from 'react';
+import {
+  TrendingUp,
+  ShoppingCart,
+  Package,
+  GraduationCap,
+  Database,
+  AlertTriangle,
+  Plus,
+  Flame,
+  Layers,
+  Bot,
+  Image as ImageIcon,
+  BarChart3,
+  ArrowRight,
+  Clock,
+  CheckCircle2,
+  RefreshCw,
+  Sparkles,
+  Check,
+  ShieldCheck,
+  Users
+} from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { ProductImage } from '../../data/productImages';
 
@@ -27,12 +49,12 @@ export const AdminDashboard = () => {
   const totalUsers = users?.length || 0;
 
   // Real Database Records Count
-  const totalDbRecords = 
-    (products?.length || 0) + 
-    (orders?.length || 0) + 
-    (customers?.length || 0) + 
-    (totalUsers || 0) + 
-    (datasheets?.length || 0) + 
+  const totalDbRecords =
+    (products?.length || 0) +
+    (orders?.length || 0) +
+    (customers?.length || 0) +
+    (totalUsers || 0) +
+    (datasheets?.length || 0) +
     (Array.isArray(coupons) ? coupons.length : Object.keys(coupons || {}).length);
 
   // Calculate Real Database Memory / Storage Footprint (in bytes, KB, MB)
@@ -51,11 +73,9 @@ export const AdminDashboard = () => {
         robotBuilderSettings
       };
 
-      // Accurate UTF-8 byte length of all data records
       const jsonStr = JSON.stringify(fullStorePayload);
       let bytes = new Blob([jsonStr]).size;
 
-      // Also calculate actual localStorage stored footprint if active
       if (typeof window !== 'undefined' && window.localStorage) {
         let lsBytes = 0;
         for (let i = 0; i < localStorage.length; i++) {
@@ -109,23 +129,32 @@ export const AdminDashboard = () => {
           <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '1.6rem', fontWeight: '800', color: 'var(--text-primary)' }}>
             Super Admin Control Center
           </h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-            Store health: <span style={{ color: '#22C55E', fontWeight: '600' }}>● All Robotics Fulfillment Systems Operational</span>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 8px #22C55E' }}></span>
+            <span>All Robotics Systems & Database Nodes Operational</span>
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <button className="admin-action-pill-btn primary" onClick={() => setAdminActiveTab('products')}>
-            + New Product
+            <Plus size={15} />
+            <span>New Product</span>
+          </button>
+          <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('deals-filaments')}>
+            <Flame size={15} style={{ color: '#EA580C' }} />
+            <span>Deals & Filament Zone</span>
           </button>
           <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('categories')}>
-            📑 Categories
+            <Layers size={15} style={{ color: '#0EA5E9' }} />
+            <span>Categories</span>
           </button>
           <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('users')}>
-            User Logins ({totalUsers})
+            <Users size={15} />
+            <span>Users ({totalUsers})</span>
           </button>
           <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('orders')}>
-            Orders ({pendingOrders} Pending)
+            <ShoppingCart size={15} />
+            <span>Orders ({pendingOrders} Pending)</span>
           </button>
         </div>
       </div>
@@ -137,10 +166,7 @@ export const AdminDashboard = () => {
           <div className="admin-stat-header">
             <span className="admin-stat-label">Gross Store Revenue</span>
             <div className="admin-stat-icon icon-revenue">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="12" y1="1" x2="12" y2="23"></line>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-              </svg>
+              <TrendingUp size={20} />
             </div>
           </div>
           <div className="admin-stat-value">₹{Math.round(totalRevenue).toLocaleString('en-IN')}</div>
@@ -155,11 +181,7 @@ export const AdminDashboard = () => {
           <div className="admin-stat-header">
             <span className="admin-stat-label">Total Orders</span>
             <div className="admin-stat-icon icon-orders">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-              </svg>
+              <ShoppingCart size={20} />
             </div>
           </div>
           <div className="admin-stat-value">{totalOrders}</div>
@@ -173,30 +195,29 @@ export const AdminDashboard = () => {
           <div className="admin-stat-header">
             <span className="admin-stat-label">Catalog Products</span>
             <div className="admin-stat-icon icon-products">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                <polyline points="2 17 12 22 22 17"></polyline>
-                <polyline points="2 12 12 17 22 12"></polyline>
-              </svg>
+              <Package size={20} />
             </div>
           </div>
           <div className="admin-stat-value">{products.length}</div>
           <div className="admin-stat-footer">
-            <span>{lowStockProducts.length > 0 ? (
-              <span style={{ color: '#EF4444', fontWeight: '600' }}>⚠ {lowStockProducts.length} low stock</span>
-            ) : 'All items in stock'}</span>
+            <span>
+              {lowStockProducts.length > 0 ? (
+                <span style={{ color: '#EF4444', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <AlertTriangle size={13} /> {lowStockProducts.length} low stock
+                </span>
+              ) : (
+                'All items in stock'
+              )}
+            </span>
           </div>
         </div>
 
         {/* Customers */}
         <div className="admin-stat-card">
           <div className="admin-stat-header">
-            <span className="admin-stat-label">Robotics Labs &amp; Makers</span>
+            <span className="admin-stat-label">Robotics Labs & Makers</span>
             <div className="admin-stat-icon icon-customers">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-              </svg>
+              <GraduationCap size={20} />
             </div>
           </div>
           <div className="admin-stat-value">{totalCustomers}</div>
@@ -211,12 +232,7 @@ export const AdminDashboard = () => {
           <div className="admin-stat-header">
             <span className="admin-stat-label">Database Memory</span>
             <div className="admin-stat-icon icon-database">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                <path d="M21 17c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-              </svg>
+              <Database size={20} />
             </div>
           </div>
           <div className="admin-stat-value" style={{ color: '#06B6D4' }}>{formattedDbSize}</div>
@@ -240,10 +256,10 @@ export const AdminDashboard = () => {
         }}
       >
         <div
-          onClick={() => setAdminActiveTab('hero-banners')}
+          onClick={() => setAdminActiveTab('deals-filaments')}
           style={{
-            background: 'linear-gradient(135deg, rgba(234, 88, 12, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%)',
-            border: '1px solid rgba(234, 88, 12, 0.3)',
+            background: 'linear-gradient(135deg, rgba(234, 88, 12, 0.12) 0%, rgba(249, 115, 22, 0.06) 100%)',
+            border: '1px solid rgba(234, 88, 12, 0.35)',
             borderRadius: '12px',
             padding: '16px 20px',
             cursor: 'pointer',
@@ -255,20 +271,73 @@ export const AdminDashboard = () => {
           className="admin-quick-action-card"
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <span style={{ fontSize: '24px' }}>🖼️</span>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
+              background: 'rgba(234, 88, 12, 0.15)',
+              color: '#EA580C',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Flame size={22} />
+            </div>
             <div>
-              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Hero Banners &amp; Slider</strong>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Slides, side cards &amp; publish toggle</span>
+              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Flash Deals & Filament Zone</strong>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Manage 2 homepage sections, timers & spools</span>
             </div>
           </div>
-          <span style={{ fontSize: '14px', color: '#EA580C', fontWeight: '700' }}>Manage →</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#EA580C', fontWeight: '700' }}>
+            <span>Manage</span>
+            <ArrowRight size={14} />
+          </div>
+        </div>
+
+        <div
+          onClick={() => setAdminActiveTab('hero-banners')}
+          style={{
+            background: 'linear-gradient(135deg, rgba(234, 88, 12, 0.10) 0%, rgba(245, 158, 11, 0.05) 100%)',
+            border: '1px solid rgba(234, 88, 12, 0.25)',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+          className="admin-quick-action-card"
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
+              background: 'rgba(245, 158, 11, 0.15)',
+              color: '#F59E0B',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <ImageIcon size={22} />
+            </div>
+            <div>
+              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Hero Banners & Slider</strong>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Slides, side cards & publish toggle</span>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#EA580C', fontWeight: '700' }}>
+            <span>Manage</span>
+            <ArrowRight size={14} />
+          </div>
         </div>
 
         <div
           onClick={() => setAdminActiveTab('categories')}
           style={{
-            background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)',
-            border: '1px solid rgba(14, 165, 233, 0.3)',
+            background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.10) 0%, rgba(59, 130, 246, 0.05) 100%)',
+            border: '1px solid rgba(14, 165, 233, 0.25)',
             borderRadius: '12px',
             padding: '16px 20px',
             cursor: 'pointer',
@@ -280,20 +349,34 @@ export const AdminDashboard = () => {
           className="admin-quick-action-card"
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <span style={{ fontSize: '24px' }}>📑</span>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
+              background: 'rgba(14, 165, 233, 0.15)',
+              color: '#0EA5E9',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Layers size={22} />
+            </div>
             <div>
               <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Navbar Categories Strip</strong>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Nav badges, filters &amp; publish toggle</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Nav badges, filters & publish toggle</span>
             </div>
           </div>
-          <span style={{ fontSize: '14px', color: '#0EA5E9', fontWeight: '700' }}>Manage →</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#0EA5E9', fontWeight: '700' }}>
+            <span>Manage</span>
+            <ArrowRight size={14} />
+          </div>
         </div>
 
         <div
           onClick={() => setAdminActiveTab('robot-builder')}
           style={{
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.08) 100%)',
-            border: '1px solid rgba(16, 185, 129, 0.3)',
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.10) 0%, rgba(5, 150, 105, 0.05) 100%)',
+            border: '1px solid rgba(16, 185, 129, 0.25)',
             borderRadius: '12px',
             padding: '16px 20px',
             cursor: 'pointer',
@@ -305,13 +388,27 @@ export const AdminDashboard = () => {
           className="admin-quick-action-card"
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <span style={{ fontSize: '24px' }}>🤖</span>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
+              background: 'rgba(16, 185, 129, 0.15)',
+              color: '#10B981',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Bot size={22} />
+            </div>
             <div>
               <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Robot Builder Section</strong>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Presets, slots &amp; publish toggle</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Presets, slots & publish toggle</span>
             </div>
           </div>
-          <span style={{ fontSize: '14px', color: '#10B981', fontWeight: '700' }}>Manage →</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#10B981', fontWeight: '700' }}>
+            <span>Manage</span>
+            <ArrowRight size={14} />
+          </div>
         </div>
       </div>
 
@@ -321,12 +418,8 @@ export const AdminDashboard = () => {
         <div className="admin-card">
           <div className="admin-card-header">
             <h3 className="admin-card-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="20" x2="18" y2="10"></line>
-                <line x1="12" y1="20" x2="12" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="14"></line>
-              </svg>
-              Weekly Dispatch Velocity (₹)
+              <BarChart3 size={18} />
+              <span>Weekly Dispatch Velocity (₹)</span>
             </h3>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Last 7 Days</span>
           </div>
@@ -355,12 +448,8 @@ export const AdminDashboard = () => {
         <div className="admin-card">
           <div className="admin-card-header">
             <h3 className="admin-card-title" style={{ color: '#EF4444' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
-              Low Stock Replenishment Warnings
+              <AlertTriangle size={18} />
+              <span>Low Stock Replenishment Warnings</span>
             </h3>
             <span style={{ fontSize: '0.78rem', color: '#EF4444', fontWeight: '600' }}>
               {lowStockProducts.length} Items
@@ -396,16 +485,18 @@ export const AdminDashboard = () => {
 
                   <button
                     className="admin-action-pill-btn"
-                    style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+                    style={{ fontSize: '0.75rem', padding: '4px 10px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                     onClick={() => handleQuickRestock(p.id, p.stock)}
                   >
-                    +20 Restock
+                    <Plus size={12} />
+                    <span>20 Restock</span>
                   </button>
                 </div>
               ))
             ) : (
-              <div style={{ textAlign: 'center', padding: '28px', color: '#22C55E' }}>
-                ✓ All inventory items are well-stocked above threshold.
+              <div style={{ textAlign: 'center', padding: '28px', color: '#22C55E', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <CheckCircle2 size={16} />
+                <span>All inventory items are well-stocked above threshold.</span>
               </div>
             )}
           </div>
@@ -416,15 +507,16 @@ export const AdminDashboard = () => {
       <div className="admin-card">
         <div className="admin-card-header">
           <h3 className="admin-card-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-              <line x1="8" y1="21" x2="16" y2="21"></line>
-              <line x1="12" y1="17" x2="12" y2="21"></line>
-            </svg>
-            Recent Dispatch Stream
+            <Clock size={18} />
+            <span>Recent Dispatch Stream</span>
           </h3>
-          <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('orders')}>
-            View All {orders.length} Orders →
+          <button
+            className="admin-action-pill-btn"
+            onClick={() => setAdminActiveTab('orders')}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
+            <span>View All {orders.length} Orders</span>
+            <ArrowRight size={14} />
           </button>
         </div>
 
@@ -452,8 +544,9 @@ export const AdminDashboard = () => {
                     <strong>₹{Math.round(o.totalAmount || 0).toLocaleString('en-IN')}</strong>
                   </td>
                   <td>
-                    <span style={{ color: '#22C55E', fontSize: '0.8rem', fontWeight: '600' }}>
-                      ● {o.paymentStatus}
+                    <span style={{ color: '#22C55E', fontSize: '0.8rem', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#22C55E' }}></span>
+                      {o.paymentStatus}
                     </span>
                   </td>
                   <td>

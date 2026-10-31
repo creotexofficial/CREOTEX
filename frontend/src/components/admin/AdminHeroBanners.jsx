@@ -1,5 +1,28 @@
 import React, { useState, useRef } from 'react';
 import { useCart } from '../../context/CartContext';
+import {
+  Image as ImageIcon,
+  Layers,
+  Plus,
+  Edit3,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  RotateCcw,
+  Play,
+  Pause,
+  UploadCloud,
+  Globe,
+  Save,
+  X,
+  Check,
+  Rocket
+} from 'lucide-react';
 
 const COLOR_PRESETS = [
   { name: 'Orange', hex: '#EA580C' },
@@ -307,9 +330,20 @@ export const AdminHeroBanners = () => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <span style={{ fontSize: '26px' }}>{isHeroPublished ? '🟢' : '🔴'}</span>
+          <div style={{
+            width: '36px',
+            height: '36px',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: isHeroPublished ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+            color: isHeroPublished ? '#10B981' : '#EF4444'
+          }}>
+            {isHeroPublished ? <Eye size={20} strokeWidth={2.2} /> : <EyeOff size={20} strokeWidth={2.2} />}
+          </div>
           <div>
-            <strong style={{ fontSize: '16px', color: 'var(--text-primary)' }}>
+            <strong style={{ fontSize: '15px', color: 'var(--text-primary)', display: 'block' }}>
               {isHeroPublished
                 ? 'HERO SECTION IS PUBLISHED & LIVE ON HOME PAGE'
                 : 'HERO SECTION IS CURRENTLY HIDDEN (UNPUBLISHED)'}
@@ -341,7 +375,8 @@ export const AdminHeroBanners = () => {
               boxShadow: isHeroPublished ? '0 0 12px rgba(16, 185, 129, 0.4)' : 'none'
             }}
           >
-            🚀 Publish to Home
+            <Rocket size={15} strokeWidth={2.2} />
+            Publish to Home
           </button>
 
           <button
@@ -361,7 +396,8 @@ export const AdminHeroBanners = () => {
               gap: '6px'
             }}
           >
-            🚫 Unpublish from Home
+            <EyeOff size={15} strokeWidth={2.2} />
+            Unpublish from Home
           </button>
 
           <button
@@ -375,10 +411,14 @@ export const AdminHeroBanners = () => {
               padding: '8px 14px',
               fontSize: '13px',
               fontWeight: '600',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            👁️ View Store
+            <ExternalLink size={14} strokeWidth={2} />
+            View Store
           </button>
         </div>
       </div>
@@ -408,10 +448,14 @@ export const AdminHeroBanners = () => {
               fontSize: '13px',
               fontWeight: '700',
               cursor: 'pointer',
-              transition: 'all 0.2s'
+              transition: 'all 0.2s',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            🖼️ Hero Slides ({slidesList.length})
+            <ImageIcon size={15} strokeWidth={2} />
+            Hero Slides ({slidesList.length})
           </button>
 
           <button
@@ -426,10 +470,14 @@ export const AdminHeroBanners = () => {
               fontSize: '13px',
               fontWeight: '700',
               cursor: 'pointer',
-              transition: 'all 0.2s'
+              transition: 'all 0.2s',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            🎯 Side Promo Cards ({sideBannersList.length})
+            <Layers size={15} strokeWidth={2} />
+            Side Promo Cards ({sideBannersList.length})
           </button>
         </div>
 
@@ -453,7 +501,8 @@ export const AdminHeroBanners = () => {
               boxShadow: '0 2px 8px rgba(234, 88, 12, 0.3)'
             }}
           >
-            ➕ Add Hero Slide
+            <Plus size={15} strokeWidth={2.5} />
+            Add Hero Slide
           </button>
 
           <button
@@ -474,7 +523,8 @@ export const AdminHeroBanners = () => {
               boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)'
             }}
           >
-            ➕ Add Side Card
+            <Plus size={15} strokeWidth={2.5} />
+            Add Side Card
           </button>
 
           {/* Autoplay Toggle */}
@@ -489,11 +539,22 @@ export const AdminHeroBanners = () => {
               padding: '8px 12px',
               fontSize: '12px',
               fontWeight: '600',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
             title="Toggle Slide Auto Rotation"
           >
-            {heroSettings?.autoplay !== false ? '🔄 Autoplay: ON' : '⏸️ Autoplay: OFF'}
+            {heroSettings?.autoplay !== false ? (
+              <>
+                <Play size={13} strokeWidth={2} /> Autoplay: ON
+              </>
+            ) : (
+              <>
+                <Pause size={13} strokeWidth={2} /> Autoplay: OFF
+              </>
+            )}
           </button>
 
           <button
@@ -507,11 +568,15 @@ export const AdminHeroBanners = () => {
               padding: '8px 12px',
               fontSize: '12px',
               fontWeight: '600',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
             title="Reset to factory demo content"
           >
-            🔄 Reset
+            <RotateCcw size={13} strokeWidth={2} />
+            Reset
           </button>
         </div>
       </div>
@@ -556,10 +621,14 @@ export const AdminHeroBanners = () => {
                         padding: '2px 6px',
                         cursor: index === 0 ? 'not-allowed' : 'pointer',
                         opacity: index === 0 ? 0.3 : 1,
-                        fontSize: '10px'
+                        fontSize: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}
+                      title="Move Up"
                     >
-                      ▲
+                      <ChevronUp size={12} strokeWidth={2.5} />
                     </button>
                     <span style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-secondary)' }}>
                       #{index + 1}
@@ -576,10 +645,14 @@ export const AdminHeroBanners = () => {
                         padding: '2px 6px',
                         cursor: index === slidesList.length - 1 ? 'not-allowed' : 'pointer',
                         opacity: index === slidesList.length - 1 ? 0.3 : 1,
-                        fontSize: '10px'
+                        fontSize: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}
+                      title="Move Down"
                     >
-                      ▼
+                      <ChevronDown size={12} strokeWidth={2.5} />
                     </button>
                   </div>
 
@@ -609,10 +682,13 @@ export const AdminHeroBanners = () => {
                           padding: '2px 8px',
                           borderRadius: '6px',
                           background: isPublished ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)',
-                          color: isPublished ? '#10B981' : '#64748B'
+                          color: isPublished ? '#10B981' : '#64748B',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px'
                         }}
                       >
-                        {isPublished ? '● Published' : '○ Hidden'}
+                        {isPublished ? <><Check size={11} strokeWidth={2.5} /> Published</> : <><EyeOff size={11} strokeWidth={2.5} /> Hidden</>}
                       </span>
 
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
@@ -631,12 +707,12 @@ export const AdminHeroBanners = () => {
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', fontSize: '11px', color: 'var(--text-secondary)' }}>
                       {slide.primaryBtnText && (
                         <span style={{ background: 'var(--bg-secondary)', padding: '2px 8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
-                          🔘 <strong>{slide.primaryBtnText}</strong> → {slide.primaryBtnAction}: {slide.primaryBtnTarget}
+                          <strong>{slide.primaryBtnText}</strong> → {slide.primaryBtnAction}: {slide.primaryBtnTarget}
                         </span>
                       )}
                       {slide.secondaryBtnText && (
                         <span style={{ background: 'var(--bg-secondary)', padding: '2px 8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
-                          🔘 {slide.secondaryBtnText} → {slide.secondaryBtnTarget}
+                          {slide.secondaryBtnText} → {slide.secondaryBtnTarget}
                         </span>
                       )}
                     </div>
@@ -657,10 +733,13 @@ export const AdminHeroBanners = () => {
                       padding: '6px 12px',
                       fontSize: '12px',
                       fontWeight: '700',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px'
                     }}
                   >
-                    {isPublished ? '✓ Active' : '⊘ Hidden'}
+                    {isPublished ? <><Check size={12} strokeWidth={2.5} /> Active</> : <><EyeOff size={12} strokeWidth={2.5} /> Hidden</>}
                   </button>
 
                   {/* Edit Button: Sky Blue */}
@@ -678,10 +757,11 @@ export const AdminHeroBanners = () => {
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '4px'
+                      gap: '5px'
                     }}
                   >
-                    ✏️ Edit
+                    <Edit3 size={13} strokeWidth={2} />
+                    Edit
                   </button>
 
                   {/* Delete Button: Red */}
@@ -693,16 +773,17 @@ export const AdminHeroBanners = () => {
                       color: '#FFFFFF',
                       border: 'none',
                       borderRadius: '6px',
-                      padding: '6px 12px',
+                      padding: '6px 10px',
                       fontSize: '12px',
                       fontWeight: '700',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '4px'
+                      justifyContent: 'center'
                     }}
+                    title="Delete Slide"
                   >
-                    🗑️
+                    <Trash2 size={14} strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -746,10 +827,13 @@ export const AdminHeroBanners = () => {
                         padding: '2px 6px',
                         borderRadius: '4px',
                         background: isPublished ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)',
-                        color: isPublished ? '#10B981' : '#64748B'
+                        color: isPublished ? '#10B981' : '#64748B',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px'
                       }}
                     >
-                      {isPublished ? '● Published' : '○ Hidden'}
+                      {isPublished ? <><Check size={10} strokeWidth={2.5} /> Published</> : <><EyeOff size={10} strokeWidth={2.5} /> Hidden</>}
                     </span>
                   </div>
 
@@ -763,7 +847,7 @@ export const AdminHeroBanners = () => {
 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
                     <span style={{ color: '#EA580C', fontWeight: '700' }}>
-                      🔘 {banner.btnText}
+                      {banner.btnText}
                     </span>
                     <span style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>
                       Target: <strong>{banner.btnTarget}</strong>
@@ -795,10 +879,14 @@ export const AdminHeroBanners = () => {
                         padding: '3px 8px',
                         fontSize: '11px',
                         cursor: index === 0 ? 'not-allowed' : 'pointer',
-                        opacity: index === 0 ? 0.3 : 1
+                        opacity: index === 0 ? 0.3 : 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}
+                      title="Move Left"
                     >
-                      ◀
+                      <ChevronLeft size={12} strokeWidth={2.5} />
                     </button>
                     <button
                       type="button"
@@ -812,10 +900,14 @@ export const AdminHeroBanners = () => {
                         padding: '3px 8px',
                         fontSize: '11px',
                         cursor: index === sideBannersList.length - 1 ? 'not-allowed' : 'pointer',
-                        opacity: index === sideBannersList.length - 1 ? 0.3 : 1
+                        opacity: index === sideBannersList.length - 1 ? 0.3 : 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}
+                      title="Move Right"
                     >
-                      ▶
+                      <ChevronRight size={12} strokeWidth={2.5} />
                     </button>
                   </div>
 
@@ -831,10 +923,13 @@ export const AdminHeroBanners = () => {
                         padding: '5px 10px',
                         fontSize: '11px',
                         fontWeight: '700',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
                       }}
                     >
-                      {isPublished ? '✓ Active' : '⊘ Hidden'}
+                      {isPublished ? <><Check size={11} strokeWidth={2.5} /> Active</> : <><EyeOff size={11} strokeWidth={2.5} /> Hidden</>}
                     </button>
 
                     <button
@@ -848,10 +943,14 @@ export const AdminHeroBanners = () => {
                         padding: '5px 12px',
                         fontSize: '11px',
                         fontWeight: '700',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
                       }}
                     >
-                      ✏️ Edit
+                      <Edit3 size={11} strokeWidth={2} />
+                      Edit
                     </button>
 
                     <button
@@ -865,10 +964,14 @@ export const AdminHeroBanners = () => {
                         padding: '5px 8px',
                         fontSize: '11px',
                         fontWeight: '700',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}
+                      title="Delete Side Card"
                     >
-                      🗑️
+                      <Trash2 size={13} strokeWidth={2} />
                     </button>
                   </div>
                 </div>
@@ -883,15 +986,24 @@ export const AdminHeroBanners = () => {
         <div className="admin-modal-overlay" onClick={() => setIsSlideModalOpen(false)}>
           <div className="admin-modal-box" style={{ maxWidth: '620px' }} onClick={e => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h3 className="admin-modal-title">
-                {editingSlideId ? '✏️ Edit Hero Slide' : '➕ Add New Hero Slide'}
+              <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {editingSlideId ? (
+                  <>
+                    <Edit3 size={18} strokeWidth={2} style={{ color: 'var(--primary)' }} /> Edit Hero Slide
+                  </>
+                ) : (
+                  <>
+                    <Plus size={18} strokeWidth={2.5} style={{ color: 'var(--primary)' }} /> Add New Hero Slide
+                  </>
+                )}
               </h3>
               <button
                 type="button"
                 className="btn-table-icon"
                 onClick={() => setIsSlideModalOpen(false)}
+                aria-label="Close"
               >
-                ✕
+                <X size={16} strokeWidth={2} />
               </button>
             </div>
 
@@ -971,7 +1083,7 @@ export const AdminHeroBanners = () => {
                 {/* Primary Button & Product Link */}
                 <div style={{ background: 'var(--bg-card)', padding: '14px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
                   <label className="admin-form-label" style={{ color: '#EA580C', fontWeight: '800', marginBottom: '8px' }}>
-                    🔘 Primary Button &amp; Target Destination
+                    Primary Button &amp; Target Destination
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                     <div>
@@ -1019,7 +1131,7 @@ export const AdminHeroBanners = () => {
                         onChange={(e) => setSlideForm({ ...slideForm, primaryBtnTarget: e.target.value })}
                       >
                         {(navbarCategories || []).map(cat => (
-                          <option key={cat.id} value={cat.id}>{cat.icon} {cat.name}</option>
+                          <option key={cat.id} value={cat.id}>{cat.name}</option>
                         ))}
                       </select>
                     ) : (
@@ -1073,11 +1185,11 @@ export const AdminHeroBanners = () => {
                       }));
                     }}
                   >
-                    <option value="robot">🤖 Robot Chassis (Preset SVG)</option>
-                    <option value="filament">🧵 3D Filament Spool (Preset SVG)</option>
-                    <option value="motor">⚙️ Planetary Motor (Preset SVG)</option>
-                    <option value="electronics">🔌 Microcontroller (Preset SVG)</option>
-                    <option value="custom">🖼️ Upload Your Image (Live URL or Device File)</option>
+                    <option value="robot">Robot Chassis (Preset SVG)</option>
+                    <option value="filament">3D Filament Spool (Preset SVG)</option>
+                    <option value="motor">Planetary Motor (Preset SVG)</option>
+                    <option value="electronics">Microcontroller (Preset SVG)</option>
+                    <option value="custom">Upload Your Image (Live URL or Device File)</option>
                   </select>
                 </div>
 
@@ -1096,7 +1208,7 @@ export const AdminHeroBanners = () => {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                       <label className="admin-form-label" style={{ margin: 0, fontWeight: '800', color: '#EA580C' }}>
-                        🖼️ Upload Your Image:
+                        Upload Your Image:
                       </label>
                       
                       {/* Mode Toggle Buttons: Live URL vs Upload File */}
@@ -1113,10 +1225,13 @@ export const AdminHeroBanners = () => {
                             fontSize: '12px',
                             fontWeight: '700',
                             cursor: 'pointer',
-                            transition: 'all 0.2s'
+                            transition: 'all 0.2s',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          🌐 Live URL
+                          <Globe size={13} strokeWidth={2} /> Live URL
                         </button>
                         <button
                           type="button"
@@ -1130,10 +1245,13 @@ export const AdminHeroBanners = () => {
                             fontSize: '12px',
                             fontWeight: '700',
                             cursor: 'pointer',
-                            transition: 'all 0.2s'
+                            transition: 'all 0.2s',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          📁 Upload from Device
+                          <UploadCloud size={13} strokeWidth={2} /> Upload File
                         </button>
                       </div>
                     </div>
@@ -1152,7 +1270,7 @@ export const AdminHeroBanners = () => {
                           placeholder="https://example.com/robot-banner.png"
                         />
                         <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
-                          💡 Paste any direct image link (.png, .jpg, .webp, .svg)
+                          Paste any direct image link (.png, .jpg, .webp, .svg)
                         </span>
                       </div>
                     )}
@@ -1182,7 +1300,7 @@ export const AdminHeroBanners = () => {
                             transition: 'all 0.2s'
                           }}
                         >
-                          <div style={{ fontSize: '26px', marginBottom: '4px' }}>📁</div>
+                          <UploadCloud size={28} strokeWidth={1.8} style={{ color: 'var(--primary)', margin: '0 auto 6px' }} />
                           <strong style={{ fontSize: '13px', color: 'var(--text-primary)', display: 'block' }}>
                             Click to Browse Image File
                           </strong>
@@ -1226,8 +1344,8 @@ export const AdminHeroBanners = () => {
                           />
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <strong style={{ fontSize: '12px', color: '#10B981', display: 'block' }}>
-                            ✓ Image Loaded &amp; Active
+                          <strong style={{ fontSize: '12px', color: '#10B981', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Check size={13} strokeWidth={2.5} /> Image Loaded &amp; Active
                           </strong>
                           <span
                             style={{
@@ -1258,10 +1376,13 @@ export const AdminHeroBanners = () => {
                             padding: '4px 10px',
                             fontSize: '11px',
                             fontWeight: '700',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          ✕ Remove
+                          <X size={12} strokeWidth={2.2} /> Remove
                         </button>
                       </div>
                     )}
@@ -1295,9 +1416,10 @@ export const AdminHeroBanners = () => {
                 <button
                   type="submit"
                   className="admin-action-pill-btn primary"
-                  style={{ background: '#EA580C', color: '#FFFFFF', fontWeight: '700', border: 'none' }}
+                  style={{ background: '#EA580C', color: '#FFFFFF', fontWeight: '700', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
-                  💾 Save Slide
+                  <Save size={15} strokeWidth={2.2} />
+                  Save Slide
                 </button>
               </div>
             </form>
@@ -1310,28 +1432,37 @@ export const AdminHeroBanners = () => {
         <div className="admin-modal-overlay" onClick={() => setIsSideModalOpen(false)}>
           <div className="admin-modal-box" style={{ maxWidth: '560px' }} onClick={e => e.stopPropagation()}>
             <div className="admin-modal-header">
-              <h3 className="admin-modal-title">
-                {editingSideId ? '✏️ Edit Side Card' : '➕ Add Side Promo Card'}
+              <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {editingSideId ? (
+                  <>
+                    <Edit3 size={18} strokeWidth={2} style={{ color: 'var(--primary)' }} /> Edit Side Card
+                  </>
+                ) : (
+                  <>
+                    <Plus size={18} strokeWidth={2.5} style={{ color: 'var(--primary)' }} /> Add Side Promo Card
+                  </>
+                )}
               </h3>
               <button
                 type="button"
                 className="btn-table-icon"
                 onClick={() => setIsSideModalOpen(false)}
+                aria-label="Close"
               >
-                ✕
+                <X size={16} strokeWidth={2} />
               </button>
             </div>
 
             <form onSubmit={handleSaveSideBanner}>
               <div className="admin-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <div className="admin-form-group">
-                  <label className="admin-form-label">Badge Tag (with Emoji)</label>
+                  <label className="admin-form-label">Badge Tag</label>
                   <input
                     type="text"
                     className="admin-form-input"
                     value={sideForm.badge}
-                    onChange={(e) => setSideForm({ ...sideForm, badge: e.target.value })}
-                    placeholder="e.g. 🔩 Workshop Essential"
+                    onChange={(e) => setSlideForm({ ...sideForm, badge: e.target.value })}
+                    placeholder="e.g. Workshop Essential"
                   />
                 </div>
 
@@ -1403,7 +1534,7 @@ export const AdminHeroBanners = () => {
                       onChange={(e) => setSideForm({ ...sideForm, btnTarget: e.target.value })}
                     >
                       {(navbarCategories || []).map(c => (
-                        <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+                        <option key={c.id} value={c.id}>{c.name}</option>
                       ))}
                     </select>
                   ) : (
@@ -1443,9 +1574,10 @@ export const AdminHeroBanners = () => {
                 <button
                   type="submit"
                   className="admin-action-pill-btn primary"
-                  style={{ background: '#EA580C', color: '#FFFFFF', fontWeight: '700', border: 'none' }}
+                  style={{ background: '#EA580C', color: '#FFFFFF', fontWeight: '700', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
-                  💾 Save Card
+                  <Save size={15} strokeWidth={2.2} />
+                  Save Card
                 </button>
               </div>
             </form>

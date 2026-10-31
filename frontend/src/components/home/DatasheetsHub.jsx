@@ -84,3 +84,5 @@ export const DatasheetsHub = () => {
     </section>
   );
 };
+
+export default DatasheetsHub;

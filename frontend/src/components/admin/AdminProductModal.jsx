@@ -1,4 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
+import {
+  RotateCcw,
+  X,
+  UploadCloud,
+  Globe,
+  Boxes,
+  Clipboard,
+  Zap,
+  AlertCircle,
+  Palette,
+  Edit3,
+  Plus,
+  Check,
+  Trash2,
+  Save,
+  ArrowLeft,
+  Image as ImageIcon
+} from 'lucide-react';
 import { CATEGORIES_METADATA, DEFAULT_FILAMENT_COLORS } from '../../data/productsData';
 import { ProductImage } from '../../data/productImages';
 
@@ -424,14 +442,18 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                   color: 'var(--text-secondary)',
                   border: '1px solid var(--border-color)',
                   borderRadius: '6px',
-                  padding: '4px 10px',
+                  padding: '5px 10px',
                   fontSize: '11px',
                   fontWeight: '600',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px'
                 }}
                 title="Clear draft and reset to default blank values"
               >
-                🔄 Reset
+                <RotateCcw size={12} />
+                <span>Reset</span>
               </button>
             )}
             <button
@@ -443,16 +465,17 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--border-color)',
                 borderRadius: '6px',
-                padding: '4px 10px',
+                padding: '5px 10px',
                 fontSize: '12px',
                 fontWeight: '700',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '4px'
+                gap: '5px'
               }}
             >
-              ✕ Back
+              <X size={14} />
+              <span>Close</span>
             </button>
           </div>
         </div>
@@ -643,15 +666,11 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                       transition: 'all 0.2s ease',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '5px'
+                      gap: '6px'
                     }}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="17 8 12 3 7 8" />
-                      <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                    📁 Upload from File
+                    <UploadCloud size={14} />
+                    <span>Upload from File</span>
                   </button>
 
                   <button
@@ -674,15 +693,11 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                       transition: 'all 0.2s ease',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '5px'
+                      gap: '6px'
                     }}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="2" y1="12" x2="22" y2="12" />
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
-                    🌐 Live Image URL
+                    <Globe size={14} />
+                    <span>Live Image URL</span>
                   </button>
 
                   <button
@@ -707,15 +722,11 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                       transition: 'all 0.2s ease',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '5px'
+                      gap: '6px'
                     }}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                      <polyline points="2 17 12 22 22 17" />
-                      <polyline points="2 12 12 17 22 12" />
-                    </svg>
-                    📦 Catalog Presets
+                    <Boxes size={14} />
+                    <span>Catalog Presets</span>
                   </button>
                 </div>
               </div>
@@ -786,7 +797,10 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                             fontSize: '0.76rem',
                             fontWeight: '600'
                           }}>
-                            <span>✓ {uploadedFileName}</span>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <Check size={13} />
+                              <span>{uploadedFileName}</span>
+                            </span>
                             {uploadedFileSize && <span>({uploadedFileSize})</span>}
                           </div>
                         )}
@@ -835,10 +849,11 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                             }
                           }}
                           className="admin-action-pill-btn"
-                          style={{ padding: '0 14px', height: '42px', display: 'flex', alignItems: 'center', gap: '5px' }}
+                          style={{ padding: '0 14px', height: '42px', display: 'flex', alignItems: 'center', gap: '6px' }}
                           title="Paste from clipboard"
                         >
-                          📋 Paste
+                          <Clipboard size={14} />
+                          <span>Paste</span>
                         </button>
                       </div>
 
@@ -855,10 +870,13 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                             padding: '3px 8px',
                             borderRadius: '6px',
                             fontSize: '0.72rem',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          ⚡ DC Motor
+                          <Zap size={11} /> DC Motor
                         </button>
                         <button
                           type="button"
@@ -870,10 +888,13 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                             padding: '3px 8px',
                             borderRadius: '6px',
                             fontSize: '0.72rem',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          ⚡ Circuit Board
+                          <Zap size={11} /> Circuit Board
                         </button>
                         <button
                           type="button"
@@ -885,10 +906,13 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                             padding: '3px 8px',
                             borderRadius: '6px',
                             fontSize: '0.72rem',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          ⚡ 3D Filament
+                          <Zap size={11} /> 3D Filament
                         </button>
                         <button
                           type="button"
@@ -900,10 +924,13 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                             padding: '3px 8px',
                             borderRadius: '6px',
                             fontSize: '0.72rem',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          ⚡ Robot Kit
+                          <Zap size={11} /> Robot Kit
                         </button>
                       </div>
                     </div>
@@ -928,8 +955,9 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                   )}
 
                   {imageError && (
-                    <div style={{ marginTop: '8px', color: '#EF4444', fontSize: '0.78rem', fontWeight: '600' }}>
-                      ⚠ {imageError}
+                    <div style={{ marginTop: '8px', color: '#EF4444', fontSize: '0.78rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <AlertCircle size={14} />
+                      <span>{imageError}</span>
                     </div>
                   )}
                 </div>
@@ -996,7 +1024,7 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '18px' }}>🎨</span>
+                  <Palette size={20} style={{ color: 'var(--primary)' }} />
                   <div>
                     <label className="admin-form-label" style={{ margin: 0, fontSize: '14px', fontWeight: '800' }}>
                       Color Variants &amp; Dedicated Images Manager
@@ -1015,13 +1043,17 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                     border: '1px solid var(--border-color)',
                     color: 'var(--primary)',
                     borderRadius: '6px',
-                    padding: '4px 10px',
+                    padding: '5px 12px',
                     fontSize: '11px',
                     fontWeight: '700',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
                   }}
                 >
-                  ⚡ Load Standard 32+ Filament Colors
+                  <Zap size={12} />
+                  <span>Load Standard 32+ Colors</span>
                 </button>
               </div>
 
@@ -1039,8 +1071,18 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                   marginBottom: '14px'
                 }}
               >
-                <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '10px' }}>
-                  {colorEditingIndex !== null ? `✏️ Editing Color #${colorEditingIndex + 1}` : '➕ Add Color Variant'}
+                <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  {colorEditingIndex !== null ? (
+                    <>
+                      <Edit3 size={13} style={{ color: 'var(--primary)' }} />
+                      <span>Editing Color #{colorEditingIndex + 1}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={13} style={{ color: 'var(--primary)' }} />
+                      <span>Add Color Variant</span>
+                    </>
+                  )}
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '12px' }}>
@@ -1105,13 +1147,17 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                           color: colorImageTab === 'url' ? '#FFFFFF' : 'var(--text-secondary)',
                           border: 'none',
                           borderRadius: '4px',
-                          padding: '2px 8px',
+                          padding: '3px 8px',
                           fontSize: '10px',
                           fontWeight: '700',
-                          cursor: 'pointer'
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px'
                         }}
                       >
-                        🌐 Image URL
+                        <Globe size={11} />
+                        <span>Image URL</span>
                       </button>
                       <button
                         type="button"
@@ -1121,13 +1167,17 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                           color: colorImageTab === 'preset' ? '#FFFFFF' : 'var(--text-secondary)',
                           border: 'none',
                           borderRadius: '4px',
-                          padding: '2px 8px',
+                          padding: '3px 8px',
                           fontSize: '10px',
                           fontWeight: '700',
-                          cursor: 'pointer'
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px'
                         }}
                       >
-                        ⚡ Presets
+                        <Zap size={11} />
+                        <span>Presets</span>
                       </button>
                       <button
                         type="button"
@@ -1137,13 +1187,17 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                           color: colorImageTab === 'file' ? '#FFFFFF' : 'var(--text-secondary)',
                           border: 'none',
                           borderRadius: '4px',
-                          padding: '2px 8px',
+                          padding: '3px 8px',
                           fontSize: '10px',
                           fontWeight: '700',
-                          cursor: 'pointer'
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px'
                         }}
                       >
-                        📁 Device Upload
+                        <UploadCloud size={11} />
+                        <span>Device Upload</span>
                       </button>
                     </div>
                   </div>
@@ -1182,6 +1236,8 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                       ))}
                     </div>
                   )}
+
+                  {colorImageTab === 'file' && (
                     <div>
                       <input
                         type="file"
@@ -1211,7 +1267,7 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                           gap: '8px'
                         }}
                       >
-                        <span>📁</span>
+                        <UploadCloud size={16} />
                         <span>{colorFileName || 'Click to choose image file from your computer'}</span>
                       </button>
                     </div>
@@ -1234,8 +1290,9 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                         {newColorName || 'Color Preview'}
                       </span>
                       {newColorImage && (
-                        <span style={{ fontSize: '11px', color: '#16A34A', fontWeight: '700' }}>
-                          ✓ Image attached
+                        <span style={{ fontSize: '11px', color: '#16A34A', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                          <Check size={12} />
+                          <span>Image attached</span>
                         </span>
                       )}
                     </div>
@@ -1268,9 +1325,19 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                         type="button"
                         onClick={handleAddOrUpdateColor}
                         className="admin-action-pill-btn primary"
-                        style={{ borderRadius: '6px', padding: '6px 14px', fontSize: '12px' }}
+                        style={{ borderRadius: '6px', padding: '6px 14px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                       >
-                        {colorEditingIndex !== null ? '✓ Save Color Variant' : '➕ Add Color'}
+                        {colorEditingIndex !== null ? (
+                          <>
+                            <Check size={13} />
+                            <span>Save Color</span>
+                          </>
+                        ) : (
+                          <>
+                            <Plus size={13} />
+                            <span>Add Color</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
@@ -1319,7 +1386,7 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                           {col.name}
                         </div>
                         <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>
-                          {col.image ? '🖼️ Custom Image' : '🎨 Auto Filter'}
+                          {col.image ? 'Custom Image' : 'Auto Filter'}
                         </div>
                       </div>
                     </div>
@@ -1334,11 +1401,12 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                           border: 'none',
                           color: '#0066CC',
                           cursor: 'pointer',
-                          padding: '2px 4px',
-                          fontSize: '12px'
+                          padding: '3px 4px',
+                          display: 'flex',
+                          alignItems: 'center'
                         }}
                       >
-                        ✏️
+                        <Edit3 size={13} />
                       </button>
                       <button
                         type="button"
@@ -1349,11 +1417,12 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                           border: 'none',
                           color: '#EF4444',
                           cursor: 'pointer',
-                          padding: '2px 4px',
-                          fontSize: '12px'
+                          padding: '3px 4px',
+                          display: 'flex',
+                          alignItems: 'center'
                         }}
                       >
-                        ✕
+                        <Trash2 size={13} />
                       </button>
                     </div>
                   </div>
@@ -1382,10 +1451,11 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                 <button
                   type="button"
                   className="admin-action-pill-btn primary"
-                  style={{ borderRadius: '8px', whiteSpace: 'nowrap' }}
+                  style={{ borderRadius: '8px', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
                   onClick={handleAddSpec}
                 >
-                  + Add Spec
+                  <Plus size={14} />
+                  <span>Add Spec</span>
                 </button>
               </div>
 
@@ -1423,11 +1493,12 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
                           border: 'none',
                           color: '#EF4444',
                           cursor: 'pointer',
-                          fontWeight: 'bold',
-                          padding: '0 2px'
+                          padding: '0 2px',
+                          display: 'flex',
+                          alignItems: 'center'
                         }}
                       >
-                        ✕
+                        <X size={12} />
                       </button>
                     </div>
                   ))}
@@ -1473,10 +1544,25 @@ export const AdminProductModal = ({ product, isOpen, onClose, onSave }) => {
               onClick={onClose}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
             >
-              ← Back / Cancel
+              <ArrowLeft size={14} />
+              <span>Cancel</span>
             </button>
-            <button type="submit" className="admin-modal-btn submit">
-              {product ? '💾 Save Changes' : '➕ Publish Product to Store'}
+            <button
+              type="submit"
+              className="admin-modal-btn submit"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              {product ? (
+                <>
+                  <Save size={15} />
+                  <span>Save Changes</span>
+                </>
+              ) : (
+                <>
+                  <Plus size={15} />
+                  <span>Publish Product</span>
+                </>
+              )}
             </button>
           </div>
         </form>

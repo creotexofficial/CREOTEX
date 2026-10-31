@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import asyncHandler from '../utils/asyncHandler.js';
 import Coupon from '../models/Coupon.js';
 
@@ -158,7 +159,15 @@ export const updateCoupon = asyncHandler(async (req, res) => {
 // @route   DELETE /api/coupons/:id
 // @access  Private/Admin
 export const deleteCoupon = asyncHandler(async (req, res) => {
-  const coupon = await Coupon.findById(req.params.id);
+  const identifier = req.params.id;
+  let coupon;
+
+  if (mongoose.Types.ObjectId.isValid(identifier)) {
+    coupon = await Coupon.findById(identifier);
+  }
+  if (!coupon) {
+    coupon = await Coupon.findOne({ code: identifier.toUpperCase() });
+  }
 
   if (!coupon) {
     res.status(404);

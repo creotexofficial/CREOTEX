@@ -1,4 +1,18 @@
 import React, { useState } from 'react';
+import {
+  Boxes,
+  Search,
+  Plus,
+  CircleDot,
+  Edit3,
+  Trash2,
+  Check,
+  X,
+  AlertTriangle,
+  Zap,
+  Filter,
+  Layers
+} from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { CATEGORIES_METADATA } from '../../data/productsData';
 import { ProductImage } from '../../data/productImages';
@@ -68,11 +82,8 @@ export const AdminProducts = () => {
         <div className="admin-card-header">
           <div>
             <h2 className="admin-card-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-              </svg>
-              Robotics Product &amp; Inventory Manager
+              <Boxes size={20} />
+              <span>Robotics Product & Catalog Manager</span>
             </h2>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
               Total items in catalog: <strong>{products.length}</strong> | Low stock items: <strong>{products.filter(p => p.stock <= 15).length}</strong>
@@ -82,10 +93,7 @@ export const AdminProducts = () => {
           <div className="admin-table-controls">
             {/* Search */}
             <div className="admin-search-wrapper">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
+              <Search size={15} />
               <input
                 type="text"
                 className="admin-search-input"
@@ -126,16 +134,14 @@ export const AdminProducts = () => {
               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               title="Open 3D Filament Subcategories & Color Swatches Manager"
             >
-              <span>🧵 Filament Colors Hub</span>
+              <CircleDot size={14} style={{ color: '#0EA5E9' }} />
+              <span>Filament Colors Hub</span>
             </button>
 
             {/* Add Product Button */}
             <button className="admin-action-pill-btn primary" onClick={handleOpenAddModal}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              Add Product
+              <Plus size={16} />
+              <span>Add Product</span>
             </button>
           </div>
         </div>
@@ -209,8 +215,12 @@ export const AdminProducts = () => {
                             onChange={e => setQuickStockVal(e.target.value)}
                             autoFocus
                           />
-                          <button className="btn-table-icon" style={{ color: '#22C55E' }} onClick={() => handleQuickStockSave(p.id)}>✓</button>
-                          <button className="btn-table-icon" onClick={() => setQuickStockId(null)}>✕</button>
+                          <button className="btn-table-icon" style={{ color: '#22C55E' }} onClick={() => handleQuickStockSave(p.id)}>
+                            <Check size={14} />
+                          </button>
+                          <button className="btn-table-icon" onClick={() => setQuickStockId(null)}>
+                            <X size={14} />
+                          </button>
                         </div>
                       ) : (
                         <div
@@ -224,23 +234,20 @@ export const AdminProducts = () => {
                           <span className={`badge-status ${p.stock === 0 ? 'badge-outstock' : p.stock <= 15 ? 'badge-lowstock' : 'badge-instock'}`}>
                             {p.stock === 0 ? 'Out of Stock' : p.stock <= 15 ? `Low (${p.stock})` : `${p.stock} units`}
                           </span>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--text-muted)' }}>
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                          </svg>
+                          <Edit3 size={12} style={{ color: 'var(--text-muted)' }} />
                         </div>
                       )}
                     </td>
                     <td>
-                      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
                         {p.badge && (
                           <span style={{ fontSize: '0.7rem', padding: '2px 6px', background: 'rgba(249, 115, 22, 0.15)', color: 'var(--primary)', borderRadius: '4px', fontWeight: '600' }}>
                             {p.badge}
                           </span>
                         )}
                         {p.isDeal && (
-                          <span style={{ fontSize: '0.7rem', padding: '2px 6px', background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444', borderRadius: '4px', fontWeight: '600' }}>
-                            ⚡ Deal
+                          <span style={{ fontSize: '0.7rem', padding: '2px 6px', background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444', borderRadius: '4px', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                            <Zap size={10} /> Deal
                           </span>
                         )}
                       </div>
@@ -252,20 +259,14 @@ export const AdminProducts = () => {
                           title="Edit Product"
                           onClick={() => handleOpenEditModal(p)}
                         >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                          </svg>
+                          <Edit3 size={14} />
                         </button>
                         <button
                           className="btn-table-icon danger"
                           title="Delete Product"
                           onClick={() => handleDelete(p.id, p.name)}
                         >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                          </svg>
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>

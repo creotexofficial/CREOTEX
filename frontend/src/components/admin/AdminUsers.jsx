@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
+import {
+  Users,
+  Mail,
+  Phone,
+  Search,
+  Download,
+  Plus,
+  UserPlus,
+  Copy,
+  Check,
+  AlertCircle,
+  X,
+  MapPin
+} from 'lucide-react';
 
 export const AdminUsers = () => {
   const {
@@ -11,6 +25,7 @@ export const AdminUsers = () => {
 
   const [search, setSearch] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [copiedKey, setCopiedKey] = useState(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -39,8 +54,10 @@ export const AdminUsers = () => {
   const verifiedPhones = users.filter(u => u.phone && u.phone !== 'Not Provided').length;
 
   // Copy to clipboard helper
-  const copyToClipboard = (text, label) => {
+  const copyToClipboard = (text, label, key) => {
     navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
     showToast(`Copied ${label} to clipboard!`, 'info');
   };
 
@@ -104,12 +121,7 @@ export const AdminUsers = () => {
           <div className="admin-stat-header">
             <span className="admin-stat-label">Total Registered Users</span>
             <div className="admin-stat-icon" style={{ background: 'rgba(249, 115, 22, 0.15)', color: '#F97316' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
+              <Users size={20} strokeWidth={2} />
             </div>
           </div>
           <div className="admin-stat-value" style={{ fontSize: '1.8rem', marginTop: '8px' }}>{totalUsers}</div>
@@ -123,10 +135,7 @@ export const AdminUsers = () => {
           <div className="admin-stat-header">
             <span className="admin-stat-label">Verified Email Accounts</span>
             <div className="admin-stat-icon" style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                <polyline points="22,6 12,13 2,6" />
-              </svg>
+              <Mail size={20} strokeWidth={2} />
             </div>
           </div>
           <div className="admin-stat-value" style={{ fontSize: '1.8rem', marginTop: '8px', color: '#38BDF8' }}>{verifiedEmails}</div>
@@ -140,9 +149,7 @@ export const AdminUsers = () => {
           <div className="admin-stat-header">
             <span className="admin-stat-label">Phone &amp; Mobile Numbers</span>
             <div className="admin-stat-icon" style={{ background: 'rgba(34, 197, 94, 0.15)', color: '#22C55E' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
+              <Phone size={20} strokeWidth={2} />
             </div>
           </div>
           <div className="admin-stat-value" style={{ fontSize: '1.8rem', marginTop: '8px', color: '#22C55E' }}>{verifiedPhones}</div>
@@ -158,12 +165,7 @@ export const AdminUsers = () => {
         <div className="admin-card-header" style={{ flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <h2 className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
+              <Users size={22} strokeWidth={2} style={{ color: 'var(--primary)' }} />
               User Login Data Directory
             </h2>
             <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '3px' }}>
@@ -174,10 +176,7 @@ export const AdminUsers = () => {
           <div className="admin-table-controls" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
             {/* Search Input */}
             <div className="admin-search-wrapper" style={{ minWidth: '260px' }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
+              <Search size={15} strokeWidth={2} />
               <input
                 type="text"
                 className="admin-search-input"
@@ -194,11 +193,7 @@ export const AdminUsers = () => {
               title="Download user login list as JSON"
               style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
+              <Download size={15} strokeWidth={2} />
               Export JSON
             </button>
 
@@ -216,10 +211,7 @@ export const AdminUsers = () => {
               }}
               style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
+              <Plus size={16} strokeWidth={2.5} />
               Add User
             </button>
           </div>
@@ -288,7 +280,9 @@ export const AdminUsers = () => {
                             <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                               <span>ID: <code style={{ color: 'var(--primary)' }}>{user.id}</code></span>
                               <span>•</span>
-                              <span>{user.city || 'India'}</span>
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <MapPin size={11} /> {user.city || 'India'}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -301,22 +295,25 @@ export const AdminUsers = () => {
                             {user.email}
                           </span>
                           <button
-                            onClick={() => copyToClipboard(user.email, 'Email')}
+                            onClick={() => copyToClipboard(user.email, 'Email', `email-${user.id}`)}
                             style={{
                               background: 'none',
                               border: 'none',
-                              color: 'var(--text-muted)',
+                              color: copiedKey === `email-${user.id}` ? '#22C55E' : 'var(--text-muted)',
                               cursor: 'pointer',
-                              padding: '3px',
+                              padding: '4px',
                               display: 'flex',
-                              alignItems: 'center'
+                              alignItems: 'center',
+                              borderRadius: '4px',
+                              transition: 'all 0.2s ease'
                             }}
                             title="Copy email address"
                           >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                            </svg>
+                            {copiedKey === `email-${user.id}` ? (
+                              <Check size={14} strokeWidth={2.2} />
+                            ) : (
+                              <Copy size={14} strokeWidth={1.8} />
+                            )}
                           </button>
                         </div>
                         <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '3px' }}>
@@ -337,22 +334,25 @@ export const AdminUsers = () => {
                           </span>
                           {user.phone && (
                             <button
-                              onClick={() => copyToClipboard(user.phone, 'Phone Number')}
+                              onClick={() => copyToClipboard(user.phone, 'Phone Number', `phone-${user.id}`)}
                               style={{
                                 background: 'none',
                                 border: 'none',
-                                color: 'var(--text-muted)',
+                                color: copiedKey === `phone-${user.id}` ? '#22C55E' : 'var(--text-muted)',
                                 cursor: 'pointer',
-                                padding: '3px',
+                                padding: '4px',
                                 display: 'flex',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                borderRadius: '4px',
+                                transition: 'all 0.2s ease'
                               }}
                               title="Copy mobile number"
                             >
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                              </svg>
+                              {copiedKey === `phone-${user.id}` ? (
+                                <Check size={14} strokeWidth={2.2} />
+                              ) : (
+                                <Copy size={14} strokeWidth={1.8} />
+                              )}
                             </button>
                           )}
                         </div>
@@ -366,11 +366,7 @@ export const AdminUsers = () => {
               ) : (
                 <tr>
                   <td colSpan="3" style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 12px', opacity: 0.5 }}>
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 8v4" />
-                      <path d="M12 16h.01" />
-                    </svg>
+                    <AlertCircle size={40} strokeWidth={1.5} style={{ margin: '0 auto 12px', opacity: 0.5, display: 'block' }} />
                     <div style={{ fontSize: '1rem', fontWeight: '600', color: 'var(--text-primary)' }}>No user login records match your search</div>
                     <div style={{ fontSize: '0.82rem', marginTop: '4px' }}>Try clearing the search filter.</div>
                   </td>
@@ -392,15 +388,12 @@ export const AdminUsers = () => {
           <div className="admin-modal-card" style={{ maxWidth: '480px' }}>
             <div className="admin-modal-header">
               <h3 className="admin-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="8.5" cy="7" r="4" />
-                  <line x1="20" y1="8" x2="20" y2="14" />
-                  <line x1="23" y1="11" x2="17" y2="11" />
-                </svg>
+                <UserPlus size={20} strokeWidth={2} style={{ color: 'var(--primary)' }} />
                 Add User Login
               </h3>
-              <button className="admin-modal-close" onClick={() => setIsAddModalOpen(false)}>×</button>
+              <button className="admin-modal-close" onClick={() => setIsAddModalOpen(false)} aria-label="Close">
+                <X size={18} />
+              </button>
             </div>
 
             <form onSubmit={handleAddSubmit}>
@@ -460,7 +453,8 @@ export const AdminUsers = () => {
                 <button type="button" className="admin-modal-btn cancel" onClick={() => setIsAddModalOpen(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="admin-modal-btn submit">
+                <button type="submit" className="admin-modal-btn submit" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <Plus size={16} strokeWidth={2} />
                   Save User
                 </button>
               </div>
@@ -471,3 +465,4 @@ export const AdminUsers = () => {
     </div>
   );
 };
+

@@ -113,49 +113,47 @@ export const HeroSlider = () => {
       );
     }
 
-    if (type === 'motor') {
+    if (type === 'product') {
       return (
-        <div style={{ width: '240px', height: '240px', background: 'radial-gradient(circle, rgba(14,165,233,0.22) 0%, transparent 70%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: '240px', height: '240px', background: 'radial-gradient(circle, rgba(16,185,129,0.22) 0%, transparent 70%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="220" height="220" viewBox="0 0 300 240" fill="none">
-            <rect x="70" y="50" width="130" height="140" rx="16" fill="#1E293B" stroke="#0EA5E9" strokeWidth="4" />
-            <circle cx="135" cy="120" r="45" fill="#0F172A" stroke="#38BDF8" strokeWidth="3" />
-            <rect x="130" y="10" width="10" height="40" rx="3" fill="#94A3B8" />
-            <circle cx="135" cy="120" r="14" fill="#0EA5E9" />
-            <line x1="100" y1="190" x2="100" y2="230" stroke="#EF4444" strokeWidth="4" />
-            <line x1="170" y1="190" x2="170" y2="230" stroke="#0F172A" strokeWidth="4" />
+            {/* 3D Printed Geometric Crystal / Polygon Model */}
+            <polygon points="150,20 220,70 200,160 100,160 80,70" fill="#064E3B" stroke="#10B981" strokeWidth="3" />
+            <polygon points="150,20 200,160 150,210 100,160" fill="#047857" stroke="#34D399" strokeWidth="2" />
+            <polygon points="150,20 150,210 80,70" fill="#065F46" fillOpacity="0.8" />
+            <polygon points="150,20 220,70 150,210" fill="#10B981" fillOpacity="0.3" />
+            <circle cx="150" cy="115" r="8" fill="#6EE7B7" />
           </svg>
         </div>
       );
     }
 
-    if (type === 'electronics') {
+    if (type === 'custom') {
       return (
-        <div style={{ width: '240px', height: '240px', background: 'radial-gradient(circle, rgba(168,85,247,0.22) 0%, transparent 70%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: '240px', height: '240px', background: 'radial-gradient(circle, rgba(99,102,241,0.22) 0%, transparent 70%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="220" height="220" viewBox="0 0 300 240" fill="none">
-            <rect x="50" y="40" width="200" height="160" rx="12" fill="#064E3B" stroke="#10B981" strokeWidth="3" />
-            <rect x="100" y="80" width="100" height="80" rx="8" fill="#0F172A" stroke="#A855F7" strokeWidth="3" />
-            <circle cx="150" cy="120" r="18" fill="#8B5CF6" />
-            <circle cx="70" cy="60" r="6" fill="#F59E0B" />
-            <circle cx="230" cy="60" r="6" fill="#F59E0B" />
-            <line x1="80" y1="190" x2="220" y2="190" stroke="#34D399" strokeWidth="3" strokeDasharray="6 4" />
+            {/* 3D Printer Heated Bed & Hotend Extruder */}
+            <rect x="40" y="170" width="220" height="24" rx="4" fill="#1E293B" stroke="#6366F1" strokeWidth="3" />
+            <line x1="40" y1="182" x2="260" y2="182" stroke="#4F46E5" strokeWidth="2" strokeDasharray="6 4" />
+            {/* Printed Layer Box */}
+            <rect x="100" y="115" width="100" height="55" rx="6" fill="#312E81" stroke="#818CF8" strokeWidth="2" />
+            {/* Extruder Nozzle Assembly */}
+            <rect x="130" y="40" width="40" height="50" rx="4" fill="#0F172A" stroke="#A5B4FC" strokeWidth="3" />
+            <polygon points="135,90 165,90 150,110" fill="#F59E0B" stroke="#D97706" strokeWidth="2" />
+            <circle cx="150" cy="112" r="3" fill="#FBBF24" />
           </svg>
         </div>
       );
     }
 
-    // Default: Robot Chassis
+    // Default Filament Graphic
     return (
-      <div style={{ width: '240px', height: '240px', background: 'radial-gradient(circle, rgba(234,88,12,0.18) 0%, transparent 70%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: '240px', height: '240px', background: 'radial-gradient(circle, rgba(245,158,11,0.22) 0%, transparent 70%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg width="220" height="220" viewBox="0 0 300 240" fill="none">
-          <polygon points="50,26 150,26 180,120 20,120" fill="#1E293B" stroke="#EA580C" strokeWidth="3" />
-          <rect x="20" y="10" width="160" height="16" rx="6" fill="#C2410C" />
-          <circle cx="35" cy="18" r="4" fill="#EF4444" />
-          <circle cx="65" cy="18" r="4" fill="#EF4444" />
-          <circle cx="95" cy="18" r="4" fill="#EF4444" />
-          <circle cx="125" cy="18" r="4" fill="#EF4444" />
-          <circle cx="155" cy="18" r="4" fill="#EF4444" />
-          <rect x="0" y="85" width="22" height="40" rx="4" fill="#EA580C" />
-          <rect x="178" y="85" width="22" height="40" rx="4" fill="#EA580C" />
+          <ellipse cx="150" cy="115" rx="85" ry="60" fill="#1E293B" stroke="#F59E0B" strokeWidth="4" />
+          <ellipse cx="150" cy="115" rx="72" ry="48" fill="#F59E0B" fillOpacity="0.85" />
+          <ellipse cx="150" cy="115" rx="30" ry="20" fill="#0F172A" />
+          <path d="M150 55 L210 30 L225 45" stroke="#EA580C" strokeWidth="4" strokeLinecap="round" />
         </svg>
       </div>
     );

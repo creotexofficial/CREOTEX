@@ -112,7 +112,12 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   // Connect to Database
-  await connectDB();
+  const databaseConnected = await connectDB();
+  if (!databaseConnected) {
+    console.error('Backend startup stopped because MongoDB is unavailable.');
+    process.exitCode = 1;
+    return;
+  }
 
   app.listen(PORT, () => {
     console.log('\x1b[36m%s\x1b[0m', '=========================================================');

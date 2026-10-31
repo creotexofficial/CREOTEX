@@ -29,7 +29,9 @@ const request = async (endpoint, options = {}) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || `Request failed with status ${response.status}`);
+      const error = new Error(data.message || `Request failed with status ${response.status}`);
+      error.status = response.status;
+      throw error;
     }
 
     return data;
@@ -93,6 +95,10 @@ export const api = {
       }),
     delete: (id) =>
       request(`/products/${id}`, {
+        method: 'DELETE'
+      }),
+    deleteBySubcategory: (subCategory) =>
+      request(`/products/subcategory/${encodeURIComponent(subCategory)}`, {
         method: 'DELETE'
       })
   },

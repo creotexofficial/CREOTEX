@@ -270,15 +270,15 @@ export const INITIAL_DATASHEETS = [
 ];
 
 export const INITIAL_SETTINGS = {
-  storeName: "CreotexShop Robotics & Maker Superstore",
-  storeTagline: "High-Performance Robotics Kits, Motors, Drivers & Prototyping Gear",
+  storeName: "Creotex 3D Printing & Filament Superstore",
+  storeTagline: "3D Filament Spools, 3D Printed Products & Custom Manufacturing Studio",
   contactEmail: "admin@creotex.in",
   supportPhone: "+91 80 4912 8800",
   gstRate: 18,
   freeShippingThreshold: 999,
   standardShippingCost: 79,
   currencySymbol: "₹",
-  announcementBanner: "⚡ Free Express Shipping on all Robotics Orders over ₹999 across India!",
+  announcementBanner: "⚡ Free Express Shipping on all 3D Filament Spools & Print Orders over ₹999 across India!",
   bannerActive: true,
   maintenanceMode: false
 };
@@ -288,7 +288,7 @@ export const INITIAL_USERS = [
     id: "usr-admin-01",
     name: "Root Administrator",
     email: "admin@creotex.in",
-    password: "admin123",
+    password: "Admin@123",
     role: "super_admin",
     tier: "Super Admin",
     phone: "+91 80 4912 8800",

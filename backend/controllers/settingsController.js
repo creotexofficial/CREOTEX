@@ -42,7 +42,9 @@ export const updateSettings = asyncHandler(async (req, res) => {
   const fields = [
     'storeName', 'storeTagline', 'contactEmail', 'supportPhone',
     'gstRate', 'freeShippingThreshold', 'standardShippingCost',
-    'currencySymbol', 'announcementBanner', 'bannerActive', 'maintenanceMode'
+    'currencySymbol', 'announcementBanner', 'bannerActive', 'maintenanceMode',
+    'navbarCategories', 'heroSlides', 'heroSideBanners', 'filamentSubcategories',
+    'flashDealsSettings', 'filamentSectionSettings'
   ];
 
   fields.forEach(f => {

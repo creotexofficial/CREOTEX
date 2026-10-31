@@ -104,6 +104,48 @@ export const CartDrawer = () => {
                 </div>
                 <div className="cart-item-info">
                   <div className="cart-item-name">{item.name}</div>
+                  {item.customConfig && (
+                    <div style={{
+                      fontSize: '0.72rem',
+                      color: 'var(--text-muted)',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '4px',
+                      margin: '3px 0 4px'
+                    }}>
+                      {item.customConfig.material && (
+                        <span style={{
+                          background: 'rgba(249, 115, 22, 0.12)',
+                          color: '#F97316',
+                          padding: '1px 6px',
+                          borderRadius: '4px',
+                          fontWeight: '700'
+                        }}>
+                          {item.customConfig.material}
+                        </span>
+                      )}
+                      {item.customConfig.color && (
+                        <span style={{
+                          background: 'rgba(255, 255, 255, 0.06)',
+                          color: 'var(--text-secondary)',
+                          padding: '1px 6px',
+                          borderRadius: '4px'
+                        }}>
+                          {item.customConfig.color}
+                        </span>
+                      )}
+                      {item.customConfig.infill && (
+                        <span style={{
+                          background: 'rgba(255, 255, 255, 0.06)',
+                          color: 'var(--text-secondary)',
+                          padding: '1px 6px',
+                          borderRadius: '4px'
+                        }}>
+                          {item.customConfig.infill}
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div className="cart-item-price">₹{item.price.toLocaleString('en-IN')}</div>
                   <div className="cart-qty-controls">
                     <button
