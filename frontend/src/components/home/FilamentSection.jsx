@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { FILAMENT_SUBCATEGORIES } from '../../data/productsData';
-import { ProductImage } from '../../data/productImages';
-import { ProductCard } from './ProductCard';
 
 export const FilamentSection = () => {
-  const { products, filamentSubcategories, filamentSectionSettings, navigateToFilaments } = useCart();
+  const {
+    filamentSubcategories,
+    filamentSectionSettings,
+    navigateToFilaments
+  } = useCart();
+
+  const [activeTab, setActiveTab] = useState('all');
   const settings = filamentSectionSettings || {};
 
   if (settings.enabled === false) {
@@ -22,276 +26,223 @@ export const FilamentSection = () => {
     s => s.published !== false && !hiddenKeys.includes(s.subCategoryKey)
   );
 
-  // Pick filament products for the shelf: custom curated or auto from filaments category
-  let filamentProducts = [];
-  if (Array.isArray(settings.customShelfProductIds) && settings.customShelfProductIds.length > 0) {
-    filamentProducts = settings.customShelfProductIds
-      .map(id => (products || []).find(p => p.id === id))
-      .filter(Boolean);
-  } else {
-    const maxShelf = settings.maxShelfProducts || 4;
-    filamentProducts = (products || [])
-      .filter(p => p.category === 'filaments')
-      .slice(0, maxShelf);
-  }
+  // Material filter tabs
+  const filterTabs = [
+    {
+      id: 'all',
+      label: '✨ All Filaments',
+      filterFn: () => true
+    },
+    {
+      id: 'pla',
+      label: '⚡ Hyper PLA & Tough',
+      filterFn: (s) => s.displayName.includes('PLA') && !['PLA Stone', 'PLA Wood', 'PLA Starlight', 'PLA Glow in the Dark'].includes(s.displayName)
+    },
+    {
+      id: 'petg',
+      label: '🛡️ PETG & Translucent',
+      filterFn: (s) => s.displayName.includes('PETG')
+    },
+    {
+      id: 'engineering',
+      label: '⚙️ ABS, ASA & CF Carbon',
+      filterFn: (s) => ['ABS', 'ASA', 'PETG CF', 'PLA CF'].some(k => s.displayName.includes(k))
+    },
+    {
+      id: 'specialty',
+      label: '🌟 Glow, Wood & Stone',
+      filterFn: (s) => ['Stone', 'Wood', 'Glow', 'Starlight', 'Silk', 'Dual'].some(k => s.displayName.includes(k))
+    }
+  ];
 
-  const badgeText = settings.badgeText
-    ? settings.badgeText
-    : `${subcategoriesList.length} SUB-CATEGORIES AVAILABLE`;
+  const currentTabObj = filterTabs.find(t => t.id === activeTab) || filterTabs[0];
+  const displayedSubcategories = subcategoriesList.filter(currentTabObj.filterFn);
 
   return (
-    <section className="filament-section" id="filament-hub-section" style={{ position: 'relative' }}>
+    <section className="filament-section" id="filament-hub-section">
       <div className="container">
-        {/* 1. Header Banner */}
+        {/* 1. High-Tech Industrial Filament Banner Header */}
         <div className="deals-banner-header filament-banner-header">
-          <div className="deals-title-box">
-            <span className="deals-icon-fire" style={{ background: 'rgba(234, 88, 12, 0.2)', border: '1px solid #EA580C' }}>
-              {settings.icon || '🧵'}
-            </span>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h3 style={{ fontSize: '1.25rem', margin: 0, color: '#FFFFFF', fontWeight: '800' }}>
-                  {settings.title || '3D Printer Filament Spool Zone'}
-                </h3>
-                <span
+          <div style={{ position: 'relative', zIndex: 2, width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                  <div className="filament-live-radar">
+                    <span className="filament-live-dot" />
+                    <span>AMS & MULTI-MATERIAL IN STOCK</span>
+                  </div>
+                  <span
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      color: '#E2E8F0',
+                      fontSize: '11px',
+                      fontWeight: '800',
+                      padding: '4px 10px',
+                      borderRadius: '9999px',
+                      letterSpacing: '0.4px'
+                    }}
+                  >
+                    ±0.02MM LASER TOLERANCE
+                  </span>
+                </div>
+
+                <h3
                   style={{
-                    background: 'rgba(234, 88, 12, 0.25)',
-                    color: '#FF7A29',
-                    border: '1px solid #EA580C',
-                    padding: '2px 8px',
-                    borderRadius: '20px',
-                    fontSize: '11px',
-                    fontWeight: '800',
-                    letterSpacing: '0.5px'
+                    fontSize: '1.75rem',
+                    margin: '4px 0 6px',
+                    fontWeight: '900',
+                    background: 'linear-gradient(135deg, #FFFFFF 40%, #FB923C 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    letterSpacing: '-0.5px'
                   }}
                 >
-                  {badgeText}
-                </span>
+                  {settings.title || '3D Printer Filament Spool Zone'}
+                </h3>
+
+                <p
+                  style={{
+                    fontSize: '0.88rem',
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    margin: 0,
+                    maxWidth: '720px',
+                    lineHeight: '1.5'
+                  }}
+                >
+                  {settings.subtitle || 'Precision 1.75mm virgin polymers with ±0.02mm laser diameter inspection. Vacuum sealed with desiccant for high-speed Bambu Lab, Voron & Creality 3D printers.'}
+                </p>
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.75)', marginTop: '2px' }}>
-                {settings.subtitle || 'Precision 1.75mm engineering filaments for rapid prototyping, combat robots & heat-resistant parts'}
+
+              <button
+                type="button"
+                className="admin-action-pill-btn primary"
+                onClick={() => navigateToFilaments('all')}
+                style={{
+                  background: 'linear-gradient(135deg, #EA580C, #C2410C)',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: '9999px',
+                  padding: '12px 24px',
+                  fontSize: '13.5px',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 8px 24px rgba(234, 88, 12, 0.45)',
+                  transition: 'all 0.25s ease',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <span>{settings.buttonText || 'Explore Full Material Hub'}</span>
+                <span style={{ fontSize: '15px' }}>→</span>
+              </button>
+            </div>
+
+            {/* Quality & Performance Feature Ribbon */}
+            <div className="filament-feature-strip">
+              <div className="filament-feature-pill">
+                <span className="feat-icon">🌀</span>
+                <span>Zero-Tangle Precision Winding</span>
+              </div>
+              <div className="filament-feature-pill">
+                <span className="feat-icon">⚡</span>
+                <span>600 mm/s High-Flow Polymers</span>
+              </div>
+              <div className="filament-feature-pill">
+                <span className="feat-icon">🔬</span>
+                <span>±0.02mm Laser Inspected</span>
+              </div>
+              <div className="filament-feature-pill">
+                <span className="feat-icon">🏷️</span>
+                <span>Bambu AMS & Universal Spool Hub</span>
               </div>
             </div>
           </div>
-
-          <button
-            type="button"
-            className="admin-action-pill-btn primary"
-            onClick={() => navigateToFilaments('all')}
-            style={{
-              background: 'linear-gradient(135deg, #EA580C, #C2410C)',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: '9999px',
-              padding: '9px 20px',
-              fontSize: '13px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 4px 14px rgba(234, 88, 12, 0.35)',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            <span>{settings.buttonText || 'Explore All 3D Filaments'}</span>
-            <span style={{ fontSize: '14px' }}>→</span>
-          </button>
         </div>
 
-        {/* 2. Subcategory Visual Cards Grid (Large Product-Card Size + Clean Title) */}
+        {/* 2. Interactive Material Filter Navigation Tabs */}
         {settings.showSubcategoriesGrid !== false && subcategoriesList.length > 0 && (
-          <div style={{ marginTop: '20px' }}>
+          <div style={{ marginTop: '16px' }}>
+            <div className="filament-filter-tabs">
+              {filterTabs.map((tab) => {
+                const count = subcategoriesList.filter(tab.filterFn).length;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`filament-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+                  >
+                    <span>{tab.label}</span>
+                    <span className="filament-tab-count">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 3. Clean Visual Grid: ONLY IMAGE AND CATEGORY NAME */}
             <div
               className="filament-subcats-grid"
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                gap: '20px'
+                gap: '20px',
+                marginTop: '18px'
               }}
             >
-            {subcategoriesList.map((sub) => {
-              return (
-                <div
-                  key={sub.id}
-                  onClick={() => navigateToFilaments(sub.subCategoryKey)}
-                  className="filament-subcat-card"
-                  style={{
-                    background: 'var(--bg-card)',
-                    border: '1.5px solid var(--border-color)',
-                    borderTop: `3.5px solid ${sub.accentColor}`,
-                    borderRadius: '16px',
-                    padding: '16px',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    boxShadow: '0 4px 18px rgba(0, 0, 0, 0.05)'
-                  }}
-                >
-                  {/* Top Bar: Subcategory Badge & Spool Spec */}
+              {displayedSubcategories.map((sub) => {
+                return (
                   <div
+                    key={sub.id}
+                    className="filament-clean-card"
+                    onClick={() => navigateToFilaments(sub.subCategoryKey)}
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: '12px'
+                      '--card-accent': sub.accentColor || '#EA580C',
+                      '--card-glow': `${sub.accentColor || '#EA580C'}40`
                     }}
                   >
-                    <span
-                      style={{
-                        fontSize: '11px',
-                        fontWeight: '800',
-                        padding: '4px 10px',
-                        borderRadius: '6px',
-                        background: `${sub.badgeColor}1A`,
-                        color: sub.badgeColor,
-                        border: `1px solid ${sub.badgeColor}4D`,
-                        letterSpacing: '0.3px'
-                      }}
-                    >
-                      {sub.badge}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        color: 'var(--text-secondary)',
-                        background: 'var(--bg-surface)',
-                        border: '1px solid var(--border-color)',
-                        padding: '3px 8px',
-                        borderRadius: '6px'
-                      }}
-                    >
-                      1.75mm Spool
-                    </span>
-                  </div>
-
-                  {/* Big Product-Scale Spool Image Box */}
-                  <div
-                    className="filament-subcat-img-box"
-                    style={{
-                      width: '100%',
-                      height: '230px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: 'linear-gradient(145deg, #FFFFFF, #F1F5F9)',
-                      borderRadius: '12px',
-                      marginBottom: '14px',
-                      overflow: 'hidden',
-                      padding: '14px',
-                      boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.04)',
-                      border: '1px solid rgba(0, 0, 0, 0.05)',
-                      position: 'relative'
-                    }}
-                  >
-                    <img
-                      src={sub.image}
-                      alt={sub.displayName}
-                      loading="lazy"
-                      style={{
-                        maxHeight: '100%',
-                        maxWidth: '100%',
-                        objectFit: 'contain',
-                        transition: 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)'
-                      }}
-                      className="filament-card-img"
-                    />
-                  </div>
-
-                  {/* Subcategory Clean Title */}
-                  <div
-                    style={{
-                      padding: '2px 0 4px',
-                      textAlign: 'left'
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        color: 'var(--text-secondary)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        marginBottom: '4px'
-                      }}
-                    >
-                      Engineering 3D Filament
-                    </div>
-                    <h4
-                      style={{
-                        margin: 0,
-                        fontSize: '17px',
-                        fontWeight: '900',
-                        color: 'var(--text-primary)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        lineHeight: '1.3'
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: '10px',
-                          height: '10px',
-                          borderRadius: '50%',
-                          background: sub.accentColor,
-                          display: 'inline-block',
-                          flexShrink: 0,
-                          boxShadow: `0 0 6px ${sub.accentColor}80`
-                        }}
+                    {/* Big Crisp 3D Spool Image Box with Studio Lighting & Ambient Glow */}
+                    <div className="filament-clean-img-box">
+                      <div className="filament-clean-glow" />
+                      <img
+                        src={sub.image}
+                        alt={sub.displayName}
+                        loading="lazy"
+                        className="filament-clean-img"
                       />
-                      <span>{sub.displayName}</span>
-                    </h4>
+                      {sub.badge && (
+                        <span
+                          className="filament-clean-badge"
+                          style={{
+                            background: `${sub.badgeColor || sub.accentColor}25`,
+                            color: sub.badgeColor || sub.accentColor,
+                            borderColor: `${sub.badgeColor || sub.accentColor}50`
+                          }}
+                        >
+                          {sub.badge}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Clean Category Title */}
+                    <div className="filament-clean-info">
+                      <div className="filament-clean-category">3D Filament Spool</div>
+                      <h4 className="filament-clean-title">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span
+                            className="filament-clean-dot"
+                            style={{ background: sub.accentColor || '#EA580C' }}
+                          />
+                          <span>{sub.displayName}</span>
+                        </div>
+                        <span className="filament-clean-arrow">→</span>
+                      </h4>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-            </div>
-          </div>
-        )}
-
-        {/* 3. Featured Ready-to-Ship Spools Shelf */}
-        {settings.showShelf !== false && filamentProducts.length > 0 && (
-          <div style={{ marginTop: '28px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-              <div>
-                <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '800', color: 'var(--text-primary)' }}>
-                  {settings.shelfTitle || '⭐ Popular In-Stock 1KG Spools'}
-                </h4>
-                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                  {settings.shelfSubtitle || 'Bambu Lab RFID & Standard 1KG spools vacuum-sealed with desiccant'}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => navigateToFilaments('all')}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#EA580C',
-                  fontWeight: '700',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-              >
-                <span>{settings.shelfButtonText || 'View All Filaments'} ({filamentProducts.length}+)</span>
-                <span>→</span>
-              </button>
-            </div>
-
-            <div className="deals-grid">
-              {filamentProducts.map((p) => (
-                <ProductCard key={p.id} product={p} isDealCard={false} />
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

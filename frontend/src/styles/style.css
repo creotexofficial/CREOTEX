@@ -963,22 +963,356 @@ button {
 
 /* ================= 3D PRINTER FILAMENT HUB SECTION ================= */
 .filament-section {
-  padding: 12px 0 36px;
+  padding: 24px 0 54px;
+  position: relative;
 }
 
+/* High-Tech Industrial Filament Banner Header */
 .filament-banner-header {
-  background: linear-gradient(90deg, #7C2D12 0%, #C2410C 50%, #EA580C 100%) !important;
-  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #090D16 0%, #111827 50%, #17161F 100%) !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 26px 32px !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), 0 0 28px -5px rgba(249, 115, 22, 0.2) !important;
 }
 
-.filament-subcat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12), 0 0 15px rgba(234, 88, 12, 0.15) !important;
-  border-color: #EA580C !important;
+.filament-banner-header::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  right: -5%;
+  width: 440px;
+  height: 440px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: filamentGlowOrb 8s ease-in-out infinite alternate;
 }
 
-.filament-subcat-card:hover .filament-card-img {
-  transform: scale(1.08);
+.filament-banner-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #F97316 30%, #FB923C 70%, transparent);
+}
+
+@keyframes filamentGlowOrb {
+  0% { transform: translate(0, 0) scale(0.9); opacity: 0.45; }
+  100% { transform: translate(-30px, 25px) scale(1.2); opacity: 0.85; }
+}
+
+/* Animated Radar Live Pulse Dot */
+.filament-live-radar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  color: #FB923C;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.filament-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #F97316;
+  position: relative;
+  display: inline-block;
+}
+
+.filament-live-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid #F97316;
+  animation: radarPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes radarPing {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Feature Ribbons */
+.filament-feature-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.filament-feature-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 8px 14px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.filament-feature-pill:hover {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: rgba(249, 115, 22, 0.3);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+}
+
+.filament-feature-pill .feat-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Material Filter Navigation Tabs */
+.filament-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 20px 4px 10px;
+  scrollbar-width: none;
+}
+
+.filament-filter-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.filament-tab-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 9px 18px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filament-tab-btn:hover {
+  border-color: var(--primary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.filament-tab-btn.active {
+  background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%);
+  color: #FFFFFF;
+  border-color: #EA580C;
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.35);
+}
+
+.filament-tab-count {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.25);
+  font-weight: 800;
+}
+
+/* ================= CLEAN MINIMALIST FILAMENT CARD (IMAGE + CATEGORY NAME ONLY) ================= */
+.filament-clean-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  animation: filamentCardEntrance 0.35s ease-out backwards;
+}
+
+@keyframes filamentCardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filament-clean-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: var(--card-accent, #EA580C);
+  opacity: 0.85;
+  transition: all 0.3s ease;
+}
+
+.filament-clean-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--card-accent, #EA580C);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px -4px var(--card-glow, rgba(234, 88, 12, 0.3));
+}
+
+.filament-clean-card:hover::before {
+  height: 5px;
+  opacity: 1;
+}
+
+.filament-clean-img-box {
+  width: 100%;
+  height: 235px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(150deg, #FFFFFF 0%, #F8FAFC 55%, #EEF2F6 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 16px;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 12px;
+}
+
+.filament-clean-glow {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: var(--card-glow, rgba(234, 88, 12, 0.35));
+  filter: blur(34px);
+  opacity: 0.25;
+  transition: all 0.4s ease;
+  pointer-events: none;
+  animation: spoolAuraPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes spoolAuraPulse {
+  0% { transform: scale(0.9); opacity: 0.25; }
+  100% { transform: scale(1.15); opacity: 0.55; }
+}
+
+.filament-clean-card:hover .filament-clean-glow {
+  opacity: 0.75;
+  transform: scale(1.25);
+}
+
+.filament-clean-img {
+  max-width: 88%;
+  max-height: 88%;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.18));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+.filament-clean-card:hover .filament-clean-img {
+  transform: translateY(-8px) scale(1.08) rotate(2deg);
+  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.28));
+}
+
+.filament-clean-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.filament-clean-info {
+  padding: 2px 2px 2px;
+}
+
+.filament-clean-category {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 4px;
+}
+
+.filament-clean-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: color 0.2s ease;
+}
+
+.filament-clean-card:hover .filament-clean-title {
+  color: var(--card-accent, #EA580C);
+}
+
+.filament-clean-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.filament-clean-arrow {
+  font-size: 16px;
+  opacity: 0.4;
+  transform: translateX(-4px);
+  transition: all 0.25s ease;
+}
+
+.filament-clean-card:hover .filament-clean-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+  color: var(--card-accent, #EA580C);
+}
+
+@media (max-width: 900px) {
+  .filament-feature-strip {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 550px) {
+  .filament-feature-strip {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 @media (max-width: 900px) {
@@ -1960,9 +2294,11 @@ button {
   0% {
     background-position: 0% 0%;
   }
+
   50% {
     background-position: 100% 40%;
   }
+
   100% {
     background-position: 0% 0%;
   }
@@ -2016,7 +2352,7 @@ button {
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at 85% 15%, rgba(249, 115, 22, 0.08) 0%, transparent 60%),
-              linear-gradient(180deg, rgba(8, 8, 11, 0.82) 0%, rgba(8, 8, 11, 0.72) 45%, rgba(4, 4, 6, 0.90) 100%);
+    linear-gradient(180deg, rgba(8, 8, 11, 0.82) 0%, rgba(8, 8, 11, 0.72) 45%, rgba(4, 4, 6, 0.90) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -2043,7 +2379,7 @@ button {
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at 85% 15%, rgba(249, 115, 22, 0.05) 0%, transparent 60%),
-              linear-gradient(180deg, rgba(255, 253, 249, 0.85) 0%, rgba(255, 248, 240, 0.76) 50%, rgba(255, 255, 255, 0.92) 100%);
+    linear-gradient(180deg, rgba(255, 253, 249, 0.85) 0%, rgba(255, 248, 240, 0.76) 50%, rgba(255, 255, 255, 0.92) 100%);
   pointer-events: none;
   z-index: 1;
 }
