@@ -1500,24 +1500,6 @@ export const AdminFilamentHub = () => {
           </div>
 
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-            <button
-              type="button"
-              className="admin-action-pill-btn"
-              onClick={() => setAdminActiveTab('deals-filaments')}
-              style={{
-                background: 'rgba(234, 88, 12, 0.15)',
-                border: '1.5px solid #EA580C',
-                color: '#FF7A29',
-                fontWeight: '700',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-              title="Manage Homepage Flash Deals & Filament Spool Zone"
-            >
-              <Flame size={14} />
-              <span>Manage Spool Zone &amp; Deals</span>
-            </button>
 
             <button
               type="button"

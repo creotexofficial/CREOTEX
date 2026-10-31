@@ -75,42 +75,21 @@ export const CatalogSection = () => {
       <div id="store-catalog" style={{ position: 'absolute', top: '-20px' }}></div>
       <div className="container">
         {/* Section 2 Header Banner */}
-        <div
-          className="deals-banner-header filament-banner-header"
-          style={{
-            marginBottom: '24px',
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(5, 150, 105, 0.08))',
-            borderColor: 'rgba(16, 185, 129, 0.35)'
-          }}
-        >
+        <div className="deals-banner-header products-banner-header">
           <div className="deals-title-box">
-            <span
-              className="deals-icon-fire"
-              style={{ background: 'rgba(16, 185, 129, 0.2)', border: '1px solid #10B981' }}
-            >
+            <span className="products-banner-icon">
               📦
             </span>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h3 style={{ fontSize: '1.25rem', margin: 0, color: '#FFFFFF', fontWeight: '800' }}>
+                <h3 className="products-banner-title">
                   Ready-to-Ship 3D Printed Products
                 </h3>
-                <span
-                  style={{
-                    background: 'rgba(16, 185, 129, 0.25)',
-                    color: '#34D399',
-                    border: '1px solid #10B981',
-                    padding: '2px 8px',
-                    borderRadius: '20px',
-                    fontSize: '11px',
-                    fontWeight: '800',
-                    letterSpacing: '0.5px'
-                  }}
-                >
+                <span className="products-banner-badge">
                   PRECISION MANUFACTURED
                 </span>
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.75)', marginTop: '2px' }}>
+              <div className="products-banner-subtitle">
                 Functional parts, articulated models, desk organization, and engineering prototypes
               </div>
             </div>

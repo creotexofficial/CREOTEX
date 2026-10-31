@@ -1001,6 +1001,74 @@ button {
   background: linear-gradient(90deg, transparent, #F97316 30%, #FB923C 70%, transparent);
 }
 
+.filament-banner-title {
+  font-size: 1.75rem;
+  margin: 4px 0 6px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #FFFFFF 40%, #FB923C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.filament-banner-subtitle {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+.filament-banner-subtag {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #E2E8F0;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.4px;
+}
+
+/* Light Mode Overrides for Section 1 Filament Banner */
+[data-theme="light"] .filament-banner-header {
+  background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 45%, #FED7AA 100%) !important;
+  border: 1.5px solid #FDBA74 !important;
+  box-shadow: 0 12px 32px -8px rgba(234, 88, 12, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .filament-banner-header::before {
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.14) 0%, transparent 70%);
+}
+
+[data-theme="light"] .filament-banner-header::after {
+  background: linear-gradient(90deg, transparent, #EA580C 30%, #F97316 70%, transparent);
+}
+
+[data-theme="light"] .filament-banner-title {
+  background: linear-gradient(135deg, #1C1917 35%, #EA580C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .filament-banner-subtitle {
+  color: #44403C;
+  font-weight: 500;
+}
+
+[data-theme="light"] .filament-live-radar {
+  background: #FFFFFF;
+  border: 1.5px solid #FDBA74;
+  color: #C2410C;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.1);
+}
+
+[data-theme="light"] .filament-banner-subtag {
+  background: rgba(234, 88, 12, 0.1);
+  border: 1px solid rgba(234, 88, 12, 0.25);
+  color: #C2410C;
+}
+
 @keyframes filamentGlowOrb {
   0% { transform: translate(0, 0) scale(0.9); opacity: 0.45; }
   100% { transform: translate(-30px, 25px) scale(1.2); opacity: 0.85; }
@@ -1081,6 +1149,226 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+[data-theme="light"] .filament-feature-strip {
+  border-top: 1px solid rgba(234, 88, 12, 0.2);
+}
+
+[data-theme="light"] .filament-feature-pill {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #FED7AA;
+  color: #44403C;
+  box-shadow: 0 1px 4px rgba(124, 45, 18, 0.05);
+}
+
+[data-theme="light"] .filament-feature-pill:hover {
+  background: #FFFFFF;
+  border-color: #EA580C;
+  color: #1C1917;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
+}
+
+[data-theme="light"] .filament-clean-card {
+  background: #FFFFFF;
+  border: 1.5px solid #FED7AA;
+  box-shadow: 0 4px 16px rgba(124, 45, 18, 0.06);
+}
+
+[data-theme="light"] .filament-clean-card:hover {
+  border-color: var(--card-accent, #EA580C);
+  box-shadow: 0 16px 32px -8px rgba(124, 45, 18, 0.16), 0 0 20px -2px var(--card-glow, rgba(234, 88, 12, 0.25));
+}
+
+[data-theme="light"] .filament-clean-img-box {
+  background: linear-gradient(150deg, #FAFAFA 0%, #F5F5F4 60%, #E7E5E4 100%);
+  border: 1px solid #E7E5E4;
+}
+
+/* ================= SECTION 2: READY-TO-SHIP 3D PRINTED PRODUCTS BANNER ================= */
+.products-banner-header {
+  background: linear-gradient(135deg, #06281E 0%, #064E3B 50%, #022C22 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 22px 28px !important;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 14px 36px -10px rgba(0, 0, 0, 0.6), 0 0 24px -5px rgba(16, 185, 129, 0.2) !important;
+}
+
+.products-banner-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #10B981 30%, #34D399 70%, transparent);
+}
+
+.products-banner-icon {
+  font-size: 1.5rem;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10B981;
+}
+
+.products-banner-title {
+  font-size: 1.25rem;
+  margin: 0;
+  color: #FFFFFF;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.products-banner-badge {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34D399;
+  border: 1px solid #10B981;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.products-banner-subtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 3px;
+}
+
+/* Light Mode Overrides for Section 2 Products Banner */
+[data-theme="light"] .products-banner-header {
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 45%, #BBF7D0 100%) !important;
+  border: 1.5px solid #86EFAC !important;
+  box-shadow: 0 10px 28px -6px rgba(16, 185, 129, 0.14), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .products-banner-header::after {
+  background: linear-gradient(90deg, transparent, #059669 30%, #10B981 70%, transparent);
+}
+
+[data-theme="light"] .products-banner-icon {
+  background: #FFFFFF;
+  border: 1.5px solid #86EFAC;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);
+}
+
+[data-theme="light"] .products-banner-title {
+  color: #064E3B;
+  font-weight: 900;
+}
+
+[data-theme="light"] .products-banner-badge {
+  background: #FFFFFF;
+  color: #065F46;
+  border: 1.5px solid #86EFAC;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="light"] .products-banner-subtitle {
+  color: #166534;
+  font-weight: 500;
+}
+
+/* ================= SECTION 3: INSTANT CUSTOM 3D PRINTING SERVICE BANNER ================= */
+.custom-print-banner-header {
+  background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #172554 100%) !important;
+  border: 1px solid rgba(99, 102, 241, 0.35) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 22px 28px !important;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 14px 36px -10px rgba(0, 0, 0, 0.6), 0 0 24px -5px rgba(99, 102, 241, 0.2) !important;
+}
+
+.custom-print-banner-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #6366F1 30%, #818CF8 70%, transparent);
+}
+
+.custom-print-banner-icon {
+  font-size: 1.5rem;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid #6366F1;
+}
+
+.custom-print-banner-title {
+  font-size: 1.25rem;
+  margin: 0;
+  color: #FFFFFF;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.custom-print-banner-badge {
+  background: rgba(99, 102, 241, 0.25);
+  color: #A5B4FC;
+  border: 1px solid #6366F1;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.custom-print-banner-subtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 3px;
+}
+
+/* Light Mode Overrides for Section 3 Custom Print Banner */
+[data-theme="light"] .custom-print-banner-header {
+  background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 45%, #C7D2FE 100%) !important;
+  border: 1.5px solid #A5B4FC !important;
+  box-shadow: 0 10px 28px -6px rgba(99, 102, 241, 0.14), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .custom-print-banner-header::after {
+  background: linear-gradient(90deg, transparent, #4F46E5 30%, #6366F1 70%, transparent);
+}
+
+[data-theme="light"] .custom-print-banner-icon {
+  background: #FFFFFF;
+  border: 1.5px solid #A5B4FC;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.12);
+}
+
+[data-theme="light"] .custom-print-banner-title {
+  color: #1E1B4B;
+  font-weight: 900;
+}
+
+[data-theme="light"] .custom-print-banner-badge {
+  background: #FFFFFF;
+  color: #3730A3;
+  border: 1.5px solid #A5B4FC;
+  box-shadow: 0 1px 3px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="light"] .custom-print-banner-subtitle {
+  color: #3730A3;
+  font-weight: 500;
 }
 
 /* Material Filter Navigation Tabs */

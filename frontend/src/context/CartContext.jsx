@@ -160,17 +160,14 @@ export const useCart = () => {
 
 export const VALID_ADMIN_TABS = [
   'dashboard',
-  'users',
   'products',
-  'deals-filaments',
   'filaments',
   'hero-banners',
   'categories',
-  'robot-builder',
   'orders',
   'coupons',
   'customers',
-  'datasheets',
+  'users',
   'settings'
 ];
 
@@ -234,7 +231,7 @@ export const CartProvider = ({ children }) => {
   const wishlistKey = "creotex_wishlist_items";
   const compareKey = "creotex_compare_items";
   const couponKey = "creotex_applied_coupon";
-  const themeKey = "creotex_theme";
+  const themeKey = "creotex_theme_v3";
   const productsKey = "creotex_admin_products_v4";
   const ordersKey = "creotex_admin_orders";
   const couponsKey = "creotex_admin_coupons";
@@ -272,7 +269,13 @@ export const CartProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(() => load(wishlistKey, []));
   const [compareList, setCompareList] = useState(() => load(compareKey, []));
   const [appliedCoupon, setAppliedCoupon] = useState(() => load(couponKey, null));
-  const [theme, setTheme] = useState(() => localStorage.getItem(themeKey) || "dark");
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(themeKey);
+      if (saved === 'dark' || saved === 'light') return saved;
+    }
+    return "light";
+  });
   const [toasts, setToasts] = useState([]);
 
   // Auth & User State
@@ -504,7 +507,13 @@ export const CartProvider = ({ children }) => {
   // Sync Theme attribute
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem(themeKey, theme);
+    try {
+      localStorage.setItem(themeKey, theme);
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) {
+        metaTheme.setAttribute('content', theme === 'dark' ? '#0E0E11' : '#FFFDF9');
+      }
+    } catch (_) {}
   }, [theme]);
 
   // Toast Notification (Disabled globally as requested)

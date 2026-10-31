@@ -30,13 +30,10 @@ import { AdminOrders } from './AdminOrders';
 import { AdminCoupons } from './AdminCoupons';
 import { AdminUsers } from './AdminUsers';
 import { AdminCustomers } from './AdminCustomers';
-import { AdminDatasheets } from './AdminDatasheets';
 import { AdminSettings } from './AdminSettings';
-import { AdminRobotBuilder } from './AdminRobotBuilder';
 import { AdminCategories } from './AdminCategories';
 import { AdminHeroBanners } from './AdminHeroBanners';
 import { AdminFilamentHub } from './AdminFilamentHub';
-import { AdminDealsAndFilaments } from './AdminDealsAndFilaments';
 
 export const AdminLayout = () => {
   const {
@@ -60,33 +57,28 @@ export const AdminLayout = () => {
 
   const navItems = [
     { id: 'dashboard', label: 'Executive Dashboard', icon: LayoutDashboard, badge: null },
-    { id: 'users', label: 'User Logins & Accounts', icon: Users, badge: users?.length > 0 ? `${users.length} Users` : null },
-    { id: 'products', label: 'Robotics Catalog & Stock', icon: Boxes, badge: lowStockCount > 0 ? `${lowStockCount} Low` : null },
-    { id: 'deals-filaments', label: 'Flash Deals & Filament Zone', icon: Flame, badge: '2 Sections' },
-    { id: 'filaments', label: '3D Filaments & Colors', icon: CircleDot, badge: 'Color Swatches' },
+    { id: 'products', label: '3D Catalog & Inventory', icon: Boxes, badge: lowStockCount > 0 ? `${lowStockCount} Low` : null },
+    { id: 'filaments', label: '3D Filaments & Spool Hub', icon: CircleDot, badge: 'Materials Hub' },
     { id: 'hero-banners', label: 'Hero Banners & Slider', icon: ImageIcon, badge: 'Hero Section' },
-    { id: 'categories', label: 'Navbar Categories', icon: Layers, badge: 'Nav Strip' },
-    { id: 'robot-builder', label: 'Robot Builder Config', icon: Bot, badge: 'Interactive' },
+    { id: 'categories', label: 'Navbar 3D Categories', icon: Layers, badge: '3 Sections' },
     { id: 'orders', label: 'Orders & Fulfillment', icon: ShoppingBag, badge: pendingOrdersCount > 0 ? pendingOrdersCount : null },
     { id: 'coupons', label: 'Promotions & Coupons', icon: TicketPercent, badge: null },
-    { id: 'customers', label: 'Maker Accounts & Labs', icon: GraduationCap, badge: null },
-    { id: 'datasheets', label: 'Technical Datasheets', icon: FileText, badge: null },
+    { id: 'customers', label: 'Customer Accounts & Profiles', icon: GraduationCap, badge: null },
+    { id: 'users', label: 'User Logins & Accounts', icon: Users, badge: users?.length > 0 ? `${users.length} Users` : null },
     { id: 'settings', label: 'Global Store Settings', icon: Settings, badge: null }
   ];
+
   const renderActiveView = () => {
     switch (adminActiveTab) {
       case 'dashboard': return <AdminDashboard />;
-      case 'users': return <AdminUsers />;
       case 'products': return <AdminProducts />;
-      case 'deals-filaments': return <AdminDealsAndFilaments />;
       case 'filaments': return <AdminFilamentHub />;
       case 'hero-banners': return <AdminHeroBanners />;
       case 'categories': return <AdminCategories />;
-      case 'robot-builder': return <AdminRobotBuilder />;
       case 'orders': return <AdminOrders />;
       case 'coupons': return <AdminCoupons />;
       case 'customers': return <AdminCustomers />;
-      case 'datasheets': return <AdminDatasheets />;
+      case 'users': return <AdminUsers />;
       case 'settings': return <AdminSettings />;
       default: return <AdminDashboard />;
     }

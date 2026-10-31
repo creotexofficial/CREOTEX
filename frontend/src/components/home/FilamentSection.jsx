@@ -71,45 +71,16 @@ export const FilamentSection = () => {
                     <span className="filament-live-dot" />
                     <span>AMS & MULTI-MATERIAL IN STOCK</span>
                   </div>
-                  <span
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.08)',
-                      border: '1px solid rgba(255, 255, 255, 0.15)',
-                      color: '#E2E8F0',
-                      fontSize: '11px',
-                      fontWeight: '800',
-                      padding: '4px 10px',
-                      borderRadius: '9999px',
-                      letterSpacing: '0.4px'
-                    }}
-                  >
+                  <span className="filament-banner-subtag">
                     ±0.02MM LASER TOLERANCE
                   </span>
                 </div>
 
-                <h3
-                  style={{
-                    fontSize: '1.75rem',
-                    margin: '4px 0 6px',
-                    fontWeight: '900',
-                    background: 'linear-gradient(135deg, #FFFFFF 40%, #FB923C 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    letterSpacing: '-0.5px'
-                  }}
-                >
+                <h3 className="filament-banner-title">
                   {settings.title || '3D Printer Filament Spool Zone'}
                 </h3>
 
-                <p
-                  style={{
-                    fontSize: '0.88rem',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    margin: 0,
-                    maxWidth: '720px',
-                    lineHeight: '1.5'
-                  }}
-                >
+                <p className="filament-banner-subtitle">
                   {settings.subtitle || 'Precision 1.75mm virgin polymers with ±0.02mm laser diameter inspection. Vacuum sealed with desiccant for high-speed Bambu Lab, Voron & Creality 3D printers.'}
                 </p>
               </div>

@@ -30,12 +30,8 @@ export const AdminDashboard = () => {
     orders,
     customers,
     users,
-    datasheets,
     coupons,
     storeSettings,
-    robotBuilderPresets,
-    robotBuilderSlots,
-    robotBuilderSettings,
     updateStock,
     setAdminActiveTab
   } = useCart();
@@ -54,7 +50,6 @@ export const AdminDashboard = () => {
     (orders?.length || 0) +
     (customers?.length || 0) +
     (totalUsers || 0) +
-    (datasheets?.length || 0) +
     (Array.isArray(coupons) ? coupons.length : Object.keys(coupons || {}).length);
 
   // Calculate Real Database Memory / Storage Footprint (in bytes, KB, MB)
@@ -131,7 +126,7 @@ export const AdminDashboard = () => {
           </h1>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E', boxShadow: '0 0 8px #22C55E' }}></span>
-            <span>All Robotics Systems & Database Nodes Operational</span>
+            <span>All 3D Printing Systems & Database Nodes Operational</span>
           </p>
         </div>
 
@@ -140,13 +135,13 @@ export const AdminDashboard = () => {
             <Plus size={15} />
             <span>New Product</span>
           </button>
-          <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('deals-filaments')}>
-            <Flame size={15} style={{ color: '#EA580C' }} />
-            <span>Deals & Filament Zone</span>
+          <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('filaments')}>
+            <Layers size={15} style={{ color: '#EA580C' }} />
+            <span>3D Filaments Hub</span>
           </button>
           <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('categories')}>
             <Layers size={15} style={{ color: '#0EA5E9' }} />
-            <span>Categories</span>
+            <span>3D Navbar</span>
           </button>
           <button className="admin-action-pill-btn" onClick={() => setAdminActiveTab('users')}>
             <Users size={15} />
@@ -215,7 +210,7 @@ export const AdminDashboard = () => {
         {/* Customers */}
         <div className="admin-stat-card">
           <div className="admin-stat-header">
-            <span className="admin-stat-label">Robotics Labs & Makers</span>
+            <span className="admin-stat-label">3D Makers & Lab Accounts</span>
             <div className="admin-stat-icon icon-customers">
               <GraduationCap size={20} />
             </div>
@@ -223,7 +218,7 @@ export const AdminDashboard = () => {
           <div className="admin-stat-value">{totalCustomers}</div>
           <div className="admin-stat-footer">
             <span className="stat-trend-up">▲ 18%</span>
-            <span>active university labs</span>
+            <span>active 3D printing accounts</span>
           </div>
         </div>
 
@@ -256,7 +251,7 @@ export const AdminDashboard = () => {
         }}
       >
         <div
-          onClick={() => setAdminActiveTab('deals-filaments')}
+          onClick={() => setAdminActiveTab('filaments')}
           style={{
             background: 'linear-gradient(135deg, rgba(234, 88, 12, 0.12) 0%, rgba(249, 115, 22, 0.06) 100%)',
             border: '1px solid rgba(234, 88, 12, 0.35)',
@@ -281,11 +276,11 @@ export const AdminDashboard = () => {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <Flame size={22} />
+              <Layers size={22} />
             </div>
             <div>
-              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Flash Deals & Filament Zone</strong>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Manage 2 homepage sections, timers & spools</span>
+              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>3D Filaments & Spool Hub</strong>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Manage 17 materials, swatches & spool specs</span>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#EA580C', fontWeight: '700' }}>
@@ -324,7 +319,7 @@ export const AdminDashboard = () => {
             </div>
             <div>
               <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Hero Banners & Slider</strong>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Slides, side cards & publish toggle</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Slides, side cards & 3D promotional banners</span>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#EA580C', fontWeight: '700' }}>
@@ -362,8 +357,8 @@ export const AdminDashboard = () => {
               <Layers size={22} />
             </div>
             <div>
-              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Navbar Categories Strip</strong>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Nav badges, filters & publish toggle</span>
+              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Navbar 3D Categories</strong>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>3 Main Sections: Filaments, Prints, Custom Studio</span>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#0EA5E9', fontWeight: '700' }}>
@@ -373,7 +368,7 @@ export const AdminDashboard = () => {
         </div>
 
         <div
-          onClick={() => setAdminActiveTab('robot-builder')}
+          onClick={() => setAdminActiveTab('orders')}
           style={{
             background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.10) 0%, rgba(5, 150, 105, 0.05) 100%)',
             border: '1px solid rgba(16, 185, 129, 0.25)',
@@ -398,11 +393,11 @@ export const AdminDashboard = () => {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <Bot size={22} />
+              <ShoppingCart size={22} />
             </div>
             <div>
-              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Robot Builder Section</strong>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Presets, slots & publish toggle</span>
+              <strong style={{ fontSize: '14px', color: 'var(--text-primary)', display: 'block' }}>Orders & Fulfillment</strong>
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Customer orders, payments & parcel dispatch</span>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#10B981', fontWeight: '700' }}>

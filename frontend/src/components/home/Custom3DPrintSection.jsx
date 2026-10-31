@@ -721,42 +721,21 @@ export const Custom3DPrintSection = ({ hideHeader = false }) => {
       <div className="container">
         {/* Section 3 Header Banner */}
         {!hideHeader && (
-          <div
-            className="deals-banner-header filament-banner-header"
-            style={{
-              marginBottom: '24px',
-              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(79, 70, 229, 0.08))',
-              borderColor: 'rgba(99, 102, 241, 0.35)'
-            }}
-          >
+          <div className="deals-banner-header custom-print-banner-header">
             <div className="deals-title-box">
-              <span
-                className="deals-icon-fire"
-                style={{ background: 'rgba(99, 102, 241, 0.2)', border: '1px solid #6366F1' }}
-              >
+              <span className="custom-print-banner-icon">
                 🖨️
               </span>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  <h3 style={{ fontSize: '1.25rem', margin: 0, color: '#FFFFFF', fontWeight: '800' }}>
+                  <h3 className="custom-print-banner-title">
                     Instant Custom 3D Printing Service
                   </h3>
-                  <span
-                    style={{
-                      background: 'rgba(99, 102, 241, 0.25)',
-                      color: '#818CF8',
-                      border: '1px solid #6366F1',
-                      padding: '2px 8px',
-                      borderRadius: '20px',
-                      fontSize: '11px',
-                      fontWeight: '800',
-                      letterSpacing: '0.5px'
-                    }}
-                  >
+                  <span className="custom-print-banner-badge">
                     BAMBU LAB &amp; VORON FARM
                   </span>
                 </div>
-                <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.75)', marginTop: '2px' }}>
+                <div className="custom-print-banner-subtitle">
                   Upload .STL, .STEP or 2D image, select material &amp; infill, get instant automated pricing &amp; order online
                 </div>
               </div>
