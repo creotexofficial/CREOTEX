@@ -64,10 +64,10 @@ export const CatalogSection = () => {
 
       return true;
     }).sort((a, b) => {
-      if (sortBy === "price-low") return a.price - b.price;
-      if (sortBy === "price-high") return b.price - a.price;
-      if (sortBy === "rating") return b.rating - a.rating;
-      if (sortBy === "newest") return (b.id || '').localeCompare(a.id || '');
+      if (sortBy === "price-low") return (a.price || 0) - (b.price || 0);
+      if (sortBy === "price-high") return (b.price || 0) - (a.price || 0);
+      if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
+      if (sortBy === "newest") return String(b.id || '').localeCompare(String(a.id || ''));
       return 0;
     });
   }, [products, currentCategory, currentTag, maxPrice, searchQuery, sortBy]);

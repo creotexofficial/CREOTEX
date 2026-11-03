@@ -14,65 +14,78 @@ export const FilamentSpoolViewer = ({
 }) => {
   const [activeThumb, setActiveThumb] = useState(0);
 
-  // Automatically reset to main view when color changes so active color's image is visible
+  // Extract all photos attached to the active color variant
+  const colorImages = Array.isArray(activeColor?.images) && activeColor.images.length > 0
+    ? activeColor.images.filter(Boolean)
+    : (activeColor?.image ? [activeColor.image] : []);
+
+  // Automatically reset to main view #1 when color changes so active color's cover image is visible
   useEffect(() => {
     setActiveThumb(0);
-  }, [activeColor?.name, activeColor?.image]);
+  }, [activeColor?.name, activeColor?.image, colorImages.length]);
 
-  // 5 Thumbnails matching NuMakers reference image
-  const thumbnails = [
-    {
+  // Construct dynamic gallery thumbnails prioritizing all custom photos of active color
+  const thumbnails = [];
+  if (colorImages.length > 0) {
+    colorImages.forEach((imgUrl, idx) => {
+      thumbnails.push({
+        id: idx,
+        label: idx === 0 ? `${activeColor?.name || 'Spool'} (Main #1)` : `${activeColor?.name || 'Spool'} (Photo #${idx + 1})`,
+        getImage: () => imgUrl,
+        isDynamic: false,
+        isColorPhoto: true,
+        photoNum: idx + 1
+      });
+    });
+  } else {
+    thumbnails.push({
       id: 0,
-      label: "Spool + Dragon",
-      // Shows active color
-      getImage: () => activeColor?.image || "/filaments/spool_black_dragon.jpg",
-      isDynamic: !activeColor?.image
-    },
-    {
-      id: 1,
+      label: `${activeColor?.name || 'Spool'} (Smart Tint)`,
+      getImage: () => "/filaments/spool_white_dragon.jpg",
+      isDynamic: true,
+      isColorPhoto: false,
+      photoNum: 1
+    });
+  }
+
+  // Complementary secondary reference views if fewer than 5 images
+  if (thumbnails.length < 5) {
+    thumbnails.push({
+      id: thumbnails.length,
       label: "3D Dragon Model",
       getImage: () => "/filaments/dragon_model_black.jpg",
-      isDynamic: false
-    },
-    {
-      id: 2,
-      label: "Bone White View",
-      getImage: () => "/filaments/spool_white_dragon.jpg",
-      isDynamic: false
-    },
-    {
-      id: 3,
+      isDynamic: false,
+      isColorPhoto: false
+    });
+  }
+  if (thumbnails.length < 5) {
+    thumbnails.push({
+      id: thumbnails.length,
       label: "Refill Roll Pack",
       getImage: () => "/filaments/refill_spool_pack.jpg",
-      isDynamic: false
-    },
-    {
-      id: 4,
-      label: "Sunflower Yellow",
-      getImage: () => "/filaments/spool_yellow_dragon.jpg",
-      isDynamic: false
-    }
-  ];
+      isDynamic: false,
+      isColorPhoto: false
+    });
+  }
 
   // Determine main image to display
   const getMainImage = () => {
-    // If Refill selected and on default view, show refill
-    if (selectedType === "Refill" && activeThumb === 0) {
+    if (selectedType === "Refill" && activeThumb === 0 && colorImages.length <= 1) {
       return {
         url: "/filaments/refill_spool_pack.jpg",
         isTinted: false
       };
     }
 
-    if (activeThumb === 0) {
-      if (activeColor?.image) {
-        return { url: activeColor.image, isTinted: false };
-      }
-      // If no dedicated image, use white spool with dynamic CSS color tint!
-      return { url: "/filaments/spool_white_dragon.jpg", isTinted: true };
+    const currentThumb = thumbnails[activeThumb] || thumbnails[0];
+    if (currentThumb) {
+      return {
+        url: currentThumb.getImage() || "/filaments/spool_white_dragon.jpg",
+        isTinted: currentThumb.isDynamic
+      };
     }
 
-    return { url: thumbnails[activeThumb]?.getImage() || "/filaments/spool_black_dragon.jpg", isTinted: false };
+    return { url: "/filaments/spool_white_dragon.jpg", isTinted: true };
   };
 
   const currentMain = getMainImage();
@@ -212,12 +225,12 @@ export const FilamentSpoolViewer = ({
         </div>
       </div>
 
-      {/* 2. 5 Thumbnails Gallery Row */}
+      {/* 2. Color Photos & Reference Thumbnails Gallery Row */}
       <div
         className="filament-thumbs-gallery"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
+          gridTemplateColumns: `repeat(${Math.max(3, Math.min(6, thumbnails.length))}, 1fr)`,
           gap: '10px',
           marginTop: '16px'
         }}
@@ -228,19 +241,19 @@ export const FilamentSpoolViewer = ({
 
           return (
             <button
-              key={thumb.id}
+              key={thumb.id + (thumbImg || '')}
               type="button"
               onClick={() => setActiveThumb(thumb.id)}
               style={{
                 background: '#FFFFFF',
-                border: isSelected ? '2px solid #0066CC' : '1.5px solid #E2E8F0',
+                border: isSelected ? '2.5px solid #0066CC' : '1.5px solid #E2E8F0',
                 borderRadius: '10px',
                 padding: '4px',
                 cursor: 'pointer',
                 aspectRatio: '1 / 1',
                 overflow: 'hidden',
                 position: 'relative',
-                boxShadow: isSelected ? '0 0 0 3px rgba(0, 102, 204, 0.2)' : 'none',
+                boxShadow: isSelected ? '0 0 0 3px rgba(0, 102, 204, 0.25)' : 'none',
                 transition: 'all 0.2s ease',
                 display: 'flex',
                 alignItems: 'center',
@@ -254,12 +267,31 @@ export const FilamentSpoolViewer = ({
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover',
+                  objectFit: 'contain',
                   borderRadius: '6px',
                   opacity: isSelected ? 1 : 0.75,
                   transition: 'opacity 0.2s ease'
                 }}
               />
+              {/* Photo position indicator tag (#1, #2, #3) */}
+              {thumb.isColorPhoto && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '2px',
+                    left: '2px',
+                    background: isSelected ? '#0066CC' : 'rgba(15, 23, 42, 0.75)',
+                    color: '#FFFFFF',
+                    fontSize: '9px',
+                    fontWeight: '800',
+                    padding: '1px 5px',
+                    borderRadius: '4px',
+                    lineHeight: '1.2'
+                  }}
+                >
+                  #{thumb.photoNum}
+                </span>
+              )}
             </button>
           );
         })}

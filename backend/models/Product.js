@@ -114,7 +114,8 @@ const productSchema = new mongoose.Schema(
       {
         name: { type: String, default: '' },
         hex: { type: String, default: '#000000' },
-        image: { type: String, default: '' }
+        image: { type: String, default: '' },
+        images: { type: [String], default: [] }
       }
     ],
     spoolTypes: {

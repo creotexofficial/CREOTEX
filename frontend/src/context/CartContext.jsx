@@ -236,6 +236,15 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Safe Save helper - Never throws QuotaExceededError or crashes the app
+  const safeSave = (key, value) => {
+    try {
+      localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+    } catch (e) {
+      console.warn(`[LocalStorage] Quota exceeded or error saving "${key}":`, e.message);
+    }
+  };
+
   // State
   const [items, setItems] = useState(() => load(cartKey, []));
   const [wishlist, setWishlist] = useState(() => load(wishlistKey, []));
@@ -260,23 +269,19 @@ export const CartProvider = ({ children }) => {
       try {
         const p = window.location.pathname.toLowerCase();
         const h = window.location.hash.toLowerCase();
-        const s = window.location.search.toLowerCase();
-        if (p.includes('super') || h.includes('super') || s.includes('super') || p.includes('admin') || h.includes('admin')) {
+        if (p.includes('super') || h.includes('super') || p.includes('admin') || h.includes('admin')) {
           return "admin";
         }
-        if (p.includes('custom-3d') || h.includes('custom-3d') || s.includes('custom-3d')) {
+        if (p.includes('custom-3d') || h.includes('custom-3d')) {
           return "custom-3d-print";
         }
-        if (p.includes('filaments') || h.includes('filaments') || s.includes('filaments')) {
+        if (p.includes('filaments') || h.includes('filaments')) {
           return "filaments";
         }
-        const cleanPath = p.replace(/^\/+|\/+$/g, '');
-        if (cleanPath && !['super', 'admin', 'filaments', 'custom-3d-print', 'index.html'].includes(cleanPath)) {
-          return "storefront";
-        }
+        return "storefront";
       } catch {}
     }
-    return localStorage.getItem(viewKey) || "storefront";
+    return "storefront";
   };
 
   // Navigation & Admin View State
@@ -339,93 +344,97 @@ export const CartProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("featured");
 
-  // Persist State to LocalStorage
+  // Persist State to LocalStorage (Safely protected against QuotaExceededError)
   useEffect(() => {
-    localStorage.setItem(filamentSubcategoriesKey, JSON.stringify(filamentSubcategories));
+    safeSave(filamentSubcategoriesKey, filamentSubcategories);
   }, [filamentSubcategories]);
 
   useEffect(() => {
-    localStorage.setItem(cartKey, JSON.stringify(items));
+    safeSave(cartKey, items);
   }, [items]);
 
   useEffect(() => {
-    localStorage.setItem(wishlistKey, JSON.stringify(wishlist));
+    safeSave(wishlistKey, wishlist);
   }, [wishlist]);
 
   useEffect(() => {
     if (appliedCoupon) {
-      localStorage.setItem(couponKey, JSON.stringify(appliedCoupon));
+      safeSave(couponKey, appliedCoupon);
     } else {
-      localStorage.removeItem(couponKey);
+      try { localStorage.removeItem(couponKey); } catch {}
     }
   }, [appliedCoupon]);
 
   useEffect(() => {
-    localStorage.setItem(productsKey, JSON.stringify(products));
+    safeSave(productsKey, products);
   }, [products]);
 
   useEffect(() => {
-    localStorage.setItem(ordersKey, JSON.stringify(orders));
+    safeSave(ordersKey, orders);
   }, [orders]);
 
   useEffect(() => {
-    localStorage.setItem(couponsKey, JSON.stringify(coupons));
+    safeSave(couponsKey, coupons);
   }, [coupons]);
 
   useEffect(() => {
-    localStorage.setItem(customersKey, JSON.stringify(customers));
+    safeSave(customersKey, customers);
   }, [customers]);
 
   useEffect(() => {
-    localStorage.setItem(settingsKey, JSON.stringify(storeSettings));
+    safeSave(settingsKey, storeSettings);
   }, [storeSettings]);
 
   useEffect(() => {
-    localStorage.setItem(navbarCategoriesKey, JSON.stringify(navbarCategories));
+    safeSave(navbarCategoriesKey, navbarCategories);
   }, [navbarCategories]);
 
   useEffect(() => {
-    localStorage.setItem(navbarSettingsKey, JSON.stringify(navbarSettings));
+    safeSave(navbarSettingsKey, navbarSettings);
   }, [navbarSettings]);
 
   useEffect(() => {
-    localStorage.setItem(heroSlidesKey, JSON.stringify(heroSlides));
+    safeSave(heroSlidesKey, heroSlides);
   }, [heroSlides]);
 
   useEffect(() => {
-    localStorage.setItem(heroSideBannersKey, JSON.stringify(heroSideBanners));
+    safeSave(heroSideBannersKey, heroSideBanners);
   }, [heroSideBanners]);
 
   useEffect(() => {
-    localStorage.setItem(heroSettingsKey, JSON.stringify(heroSettings));
+    safeSave(heroSettingsKey, heroSettings);
   }, [heroSettings]);
 
   useEffect(() => {
-    localStorage.setItem(filamentSectionSettingsKey, JSON.stringify(filamentSectionSettings));
+    safeSave(filamentSectionSettingsKey, filamentSectionSettings);
   }, [filamentSectionSettings]);
 
   useEffect(() => {
-    localStorage.setItem(usersKey, JSON.stringify(users));
+    safeSave(usersKey, users);
   }, [users]);
 
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem(authKey, JSON.stringify(currentUser));
-      if (currentUser.role === 'super_admin' && !localStorage.getItem('creotex_auth_token')) {
-        localStorage.setItem('creotex_auth_token', currentUser.token || 'creotex_root_admin_session_token');
+      safeSave(authKey, currentUser);
+      if (currentUser.role === 'super_admin') {
+        try {
+          if (!localStorage.getItem('creotex_auth_token')) {
+            localStorage.setItem('creotex_auth_token', currentUser.token || 'creotex_root_admin_session_token');
+          }
+        } catch {}
       }
     } else {
-      localStorage.removeItem(authKey);
+      try { localStorage.removeItem(authKey); } catch {}
     }
   }, [currentUser]);
 
   useEffect(() => {
-    localStorage.setItem(viewKey, currentView);
+    safeSave(viewKey, currentView);
   }, [currentView]);
 
   useEffect(() => {
     if (adminActiveTab) {
-      localStorage.setItem(adminTabKey, adminActiveTab);
+      safeSave(adminTabKey, adminActiveTab);
     }
   }, [adminActiveTab]);
 
@@ -438,12 +447,19 @@ export const CartProvider = ({ children }) => {
           url.pathname = '/super';
           urlModified = true;
         }
-        if (url.searchParams.get('tab') !== adminActiveTab) {
-          url.searchParams.set('tab', adminActiveTab);
+        if (url.searchParams.has('tab') || url.searchParams.has('adminTab') || url.searchParams.has('section')) {
+          url.searchParams.delete('tab');
+          url.searchParams.delete('adminTab');
+          url.searchParams.delete('section');
+          urlModified = true;
+        }
+        if (url.hash && url.hash.toLowerCase().includes('super')) {
+          url.hash = '';
           urlModified = true;
         }
         if (urlModified) {
-          window.history.replaceState({ view: 'admin', tab: adminActiveTab }, '', url.pathname + url.search + url.hash);
+          const cleanSearch = url.searchParams.toString() ? `?${url.searchParams.toString()}` : '';
+          window.history.replaceState({ view: 'admin', tab: adminActiveTab }, '', `/super${cleanSearch}`);
         }
       } catch {}
     }
@@ -550,11 +566,14 @@ export const CartProvider = ({ children }) => {
       localStorage.setItem(adminTabKey, validTab);
       if (typeof window !== 'undefined') {
         const url = new URL(window.location.href);
-        if (!url.pathname.toLowerCase().includes('super')) {
+        if (url.pathname.toLowerCase() !== '/super' || url.searchParams.has('tab') || url.searchParams.has('adminTab') || url.searchParams.has('section')) {
           url.pathname = '/super';
+          url.searchParams.delete('tab');
+          url.searchParams.delete('adminTab');
+          url.searchParams.delete('section');
+          const cleanSearch = url.searchParams.toString() ? `?${url.searchParams.toString()}` : '';
+          window.history.replaceState({ view: 'admin', tab: validTab }, '', `/super${cleanSearch}`);
         }
-        url.searchParams.set('tab', validTab);
-        window.history.replaceState({ view: 'admin', tab: validTab }, '', url.pathname + url.search + url.hash);
       }
     } catch {}
   }, []);
@@ -564,14 +583,9 @@ export const CartProvider = ({ children }) => {
     setAdminActiveTab(targetTab);
     setCurrentView("admin");
     try {
-      const url = new URL(window.location.href);
-      if (!url.pathname.toLowerCase().includes('super')) {
-        url.pathname = '/super';
-      }
-      url.searchParams.set('tab', targetTab);
-      window.history.pushState({ view: 'admin', tab: targetTab }, '', url.pathname + url.search + url.hash);
+      window.history.pushState({ view: 'admin', tab: targetTab }, '', '/super');
     } catch {
-      window.location.hash = `super?tab=${targetTab}`;
+      window.location.hash = 'super';
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [setAdminActiveTab]);

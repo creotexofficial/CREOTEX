@@ -85,10 +85,14 @@ export const ProductCard = React.memo(({ product, isDealCard = false }) => {
 
         <div className="product-card-footer">
           <div className="price-container">
-            <div className="current-price">₹{product.price.toLocaleString('en-IN')}</div>
+            <div className="current-price">₹{(product?.price != null ? Number(product.price) : 0).toLocaleString('en-IN')}</div>
             <div className="price-details">
-              <span className="strike-price">₹{product.originalPrice.toLocaleString('en-IN')}</span>
-              <span className="discount-pill">{product.discount}</span>
+              {product?.originalPrice != null && Number(product.originalPrice) > 0 && (
+                <span className="strike-price">₹{Number(product.originalPrice).toLocaleString('en-IN')}</span>
+              )}
+              {product?.discount && (
+                <span className="discount-pill">{product.discount}</span>
+              )}
             </div>
           </div>
           <button

@@ -22,7 +22,10 @@ import {
   Palette,
   Sparkles,
   Info,
-  CheckCircle2
+  CheckCircle2,
+  ArrowUp,
+  ArrowDown,
+  Star
 } from 'lucide-react';
 
 // 11 Photorealistic 3D Spool Presets
@@ -46,6 +49,10 @@ const PRESET_SPOOL_IMAGES = [
  */
 const DynamicSpoolVisual = ({ colorHex = '#0066CC', colorName = 'Filament', customImage = '' }) => {
   const [imgFailed, setImgFailed] = useState(false);
+
+  React.useEffect(() => {
+    setImgFailed(false);
+  }, [customImage]);
 
   // If custom image exists and hasn't failed, show it
   if (customImage && !imgFailed) {
@@ -201,6 +208,13 @@ export const AdminFilamentHub = () => {
 
   // Selected Color variant currently being previewed / edited in the right-side Live Studio
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  // Active photo index within the selected color variant's gallery (0 = #1 primary cover)
+  const [activeStudioImageIndex, setActiveStudioImageIndex] = useState(0);
+
+  // Reset active photo index when switching color variant
+  React.useEffect(() => {
+    setActiveStudioImageIndex(0);
+  }, [selectedColorIndex]);
 
   // Left column color search & filter state
   const [colorSearchQuery, setColorSearchQuery] = useState('');
@@ -224,11 +238,26 @@ export const AdminFilamentHub = () => {
       p => p.subCategory && p.subCategory.toLowerCase() === sub.subCategoryKey.toLowerCase()
     );
 
-    const colorsToLoad = (matchedProduct?.colors && matchedProduct.colors.length > 0)
+    const rawColors = (matchedProduct?.colors && matchedProduct.colors.length > 0)
       ? matchedProduct.colors
       : (sub.colors && sub.colors.length > 0)
       ? sub.colors
       : DEFAULT_FILAMENT_COLORS;
+
+    // Ensure every color has both image string and images array for multi-photo support
+    const colorsToLoad = rawColors.map(c => {
+      let imgs = [];
+      if (Array.isArray(c?.images) && c.images.length > 0) {
+        imgs = c.images.filter(Boolean);
+      } else if (c?.image) {
+        imgs = [c.image];
+      }
+      return {
+        ...c,
+        image: imgs[0] || c?.image || '',
+        images: imgs
+      };
+    });
 
     setActiveSubKey(sub.subCategoryKey);
     setSubForm({
@@ -254,6 +283,7 @@ export const AdminFilamentHub = () => {
     });
 
     setSelectedColorIndex(0);
+    setActiveStudioImageIndex(0);
     setColorSearchQuery('');
     setColorFilterTab('all');
     setIsAddingColor(false);
@@ -343,6 +373,15 @@ export const AdminFilamentHub = () => {
       return;
     }
 
+    const finalizedColors = subForm.colors.map(c => {
+      const imgs = Array.isArray(c?.images) && c.images.length > 0 ? c.images.filter(Boolean) : (c?.image ? [c.image] : []);
+      return {
+        ...c,
+        image: imgs[0] || '',
+        images: imgs
+      };
+    });
+
     updateFilamentSubcategory(subForm.subCategoryKey, {
       id: subForm.id,
       displayName: subForm.displayName.trim(),
@@ -362,71 +401,129 @@ export const AdminFilamentHub = () => {
       strength: subForm.strength,
       published: subForm.published,
       image: subForm.image,
-      colors: subForm.colors
+      colors: finalizedColors
     });
 
-    showToast(`"${subForm.displayName}" and ${subForm.colors.length} colors saved successfully!`, 'success');
+    showToast(`"${subForm.displayName}" and ${finalizedColors.length} colors saved successfully!`, 'success');
+    handleBackToList();
   };
 
   // Active color currently selected in the Live Studio
   const activeColor = subForm.colors[selectedColorIndex] || subForm.colors[0] || {
     name: 'Pitch Black',
     hex: '#111111',
-    image: '/filaments/spool_black_dragon.jpg'
+    image: '/filaments/spool_black_dragon.jpg',
+    images: ['/filaments/spool_black_dragon.jpg']
   };
 
-  // 1-Click attach a preset spool photo to the active color
-  const handleSelectPresetForActiveColor = (presetUrl) => {
+  const activeColorImages = useMemo(() => {
+    if (Array.isArray(activeColor?.images) && activeColor.images.length > 0) {
+      return activeColor.images.filter(Boolean);
+    }
+    if (activeColor?.image) {
+      return [activeColor.image];
+    }
+    return [];
+  }, [activeColor]);
+
+  const currentStudioImage = activeColorImages[activeStudioImageIndex] || activeColorImages[0] || activeColor?.image || '';
+
+  const handleUpdateActiveColorImages = (newImages) => {
+    const validImages = Array.isArray(newImages) ? newImages.filter(Boolean) : [];
     setSubForm(prev => {
       const nextColors = [...prev.colors];
       if (nextColors[selectedColorIndex]) {
         nextColors[selectedColorIndex] = {
           ...nextColors[selectedColorIndex],
-          image: presetUrl
+          images: validImages,
+          image: validImages[0] || ''
         };
       }
       return { ...prev, colors: nextColors };
     });
-    showToast(`Preset spool attached to ${activeColor.name}!`, 'info');
   };
 
-  // 1-Click upload a custom photo for the active color
-  const handleProcessStudioFile = (file) => {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image file (PNG, JPG, WEBP).');
+  // Attach a preset spool photo to active color (appends as new photo or selects existing)
+  const handleSelectPresetForActiveColor = (presetUrl) => {
+    if (!presetUrl) return;
+    const currentImgs = [...activeColorImages];
+    if (currentImgs.includes(presetUrl)) {
+      setActiveStudioImageIndex(currentImgs.indexOf(presetUrl));
+      showToast(`Viewing preset photo for ${activeColor.name}`, 'info');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64 = e.target.result;
-      setSubForm(prev => {
-        const nextColors = [...prev.colors];
-        if (nextColors[selectedColorIndex]) {
-          nextColors[selectedColorIndex] = {
-            ...nextColors[selectedColorIndex],
-            image: base64
-          };
-        }
-        return { ...prev, colors: nextColors };
-      });
-      showToast(`Custom photo attached to ${activeColor.name}!`, 'success');
-    };
-    reader.readAsDataURL(file);
+    const updated = [...currentImgs, presetUrl];
+    handleUpdateActiveColorImages(updated);
+    setActiveStudioImageIndex(updated.length - 1);
+    showToast(`Added preset photo #${updated.length} to ${activeColor.name}!`, 'success');
   };
 
-  // Remove photo from active color and revert to dynamic color tint
-  const handleRemoveActiveColorPhoto = () => {
-    setSubForm(prev => {
-      const nextColors = [...prev.colors];
-      if (nextColors[selectedColorIndex]) {
-        nextColors[selectedColorIndex] = {
-          ...nextColors[selectedColorIndex],
-          image: ''
-        };
-      }
-      return { ...prev, colors: nextColors };
+  // Upload custom photo(s) for the active color
+  const handleProcessStudioFiles = (files) => {
+    if (!files || files.length === 0) return;
+    const validFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+    if (validFiles.length === 0) {
+      alert('Please select valid image file(s) (PNG, JPG, WEBP).');
+      return;
+    }
+
+    let loadedCount = 0;
+    const newBase64Images = [];
+
+    validFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        newBase64Images.push(e.target.result);
+        loadedCount++;
+        if (loadedCount === validFiles.length) {
+          const currentImgs = [...activeColorImages];
+          const updated = [...currentImgs, ...newBase64Images];
+          handleUpdateActiveColorImages(updated);
+          setActiveStudioImageIndex(updated.length - 1);
+          showToast(`Uploaded ${newBase64Images.length} photo(s) for ${activeColor.name}!`, 'success');
+        }
+      };
+      reader.readAsDataURL(file);
     });
+  };
+
+  // Remove single image from active color's gallery
+  const handleRemoveColorImage = (imgIndex) => {
+    const currentImgs = [...activeColorImages];
+    const updated = currentImgs.filter((_, idx) => idx !== imgIndex);
+    handleUpdateActiveColorImages(updated);
+    setActiveStudioImageIndex(prev => Math.max(0, Math.min(prev, updated.length - 1)));
+    showToast(`Photo #${imgIndex + 1} removed from ${activeColor.name}`, 'info');
+  };
+
+  // Set any image as #1 (Primary Cover Image)
+  const handleSetPrimaryColorImage = (imgIndex) => {
+    const currentImgs = [...activeColorImages];
+    if (imgIndex <= 0 || imgIndex >= currentImgs.length) return;
+    const target = currentImgs[imgIndex];
+    const remaining = currentImgs.filter((_, idx) => idx !== imgIndex);
+    const updated = [target, ...remaining];
+    handleUpdateActiveColorImages(updated);
+    setActiveStudioImageIndex(0);
+    showToast(`Set as Primary (#1 Cover) photo for ${activeColor.name}!`, 'success');
+  };
+
+  // Reorder image: move earlier (-1) or later (+1)
+  const handleMoveColorImage = (imgIndex, direction) => {
+    const currentImgs = [...activeColorImages];
+    const targetIdx = imgIndex + direction;
+    if (targetIdx < 0 || targetIdx >= currentImgs.length) return;
+    const temp = currentImgs[imgIndex];
+    currentImgs[imgIndex] = currentImgs[targetIdx];
+    currentImgs[targetIdx] = temp;
+    handleUpdateActiveColorImages(currentImgs);
+    setActiveStudioImageIndex(targetIdx);
+  };
+
+  // Revert active color to dynamic procedural color tint
+  const handleRevertActiveColorToTint = () => {
+    handleUpdateActiveColorImages([]);
+    setActiveStudioImageIndex(0);
     showToast(`${activeColor.name} now uses dynamic color tint!`, 'info');
   };
 
@@ -509,8 +606,9 @@ export const AdminFilamentHub = () => {
   const filteredColors = useMemo(() => {
     return subForm.colors.map((col, originalIndex) => ({ ...col, originalIndex })).filter((col) => {
       // 1. Tab filter
-      if (colorFilterTab === 'with-photo' && !col.image) return false;
-      if (colorFilterTab === 'auto-tint' && col.image) return false;
+      const hasPhoto = Boolean(col.image || (Array.isArray(col.images) && col.images.length > 0));
+      if (colorFilterTab === 'with-photo' && !hasPhoto) return false;
+      if (colorFilterTab === 'auto-tint' && hasPhoto) return false;
 
       // 2. Search query filter
       if (colorSearchQuery.trim()) {
@@ -524,7 +622,7 @@ export const AdminFilamentHub = () => {
     });
   }, [subForm.colors, colorFilterTab, colorSearchQuery]);
 
-  const withPhotosCount = subForm.colors.filter(c => c.image && c.image.length > 0).length;
+  const withPhotosCount = subForm.colors.filter(c => (c.images && c.images.length > 0) || (c.image && c.image.length > 0)).length;
   const autoTintCount = subForm.colors.length - withPhotosCount;
 
   // Calculate discount %
@@ -543,10 +641,12 @@ export const AdminFilamentHub = () => {
           type="file"
           ref={studioFileInputRef}
           accept="image/*"
+          multiple
           style={{ display: 'none' }}
           onChange={e => {
-            const file = e.target.files?.[0];
-            if (file) handleProcessStudioFile(file);
+            const files = e.target.files;
+            if (files && files.length > 0) handleProcessStudioFiles(files);
+            e.target.value = ''; // Reset input to allow uploading same file again if needed
           }}
         />
 
@@ -1153,10 +1253,10 @@ export const AdminFilamentHub = () => {
 
                             {/* Spool Asset Status Tag */}
                             <td style={{ padding: '8px 10px' }}>
-                              {col.image ? (
+                              {(col.image || (Array.isArray(col.images) && col.images.length > 0)) ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                   <img
-                                    src={col.image}
+                                    src={col.image || col.images[0]}
                                     alt={col.name}
                                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                                     style={{
@@ -1169,7 +1269,8 @@ export const AdminFilamentHub = () => {
                                     }}
                                   />
                                   <span style={{ fontSize: '11px', color: '#16A34A', fontWeight: '800', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                    <ImageIcon size={11} /> Photo
+                                    <ImageIcon size={11} />
+                                    {Array.isArray(col.images) && col.images.length > 1 ? `${col.images.length} Photos` : 'Photo Set'}
                                   </span>
                                 </div>
                               ) : (
@@ -1273,14 +1374,20 @@ export const AdminFilamentHub = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   padding: '16px',
-                  marginBottom: '14px'
+                  marginBottom: '10px'
                 }}
               >
                 {/* Spool Badges */}
-                <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
+                <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '5px' }}>
                   <span style={{ background: 'rgba(0, 0, 0, 0.75)', color: '#38BDF8', padding: '3px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: '800', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                     <CircleDot size={10} /> 1.75mm PRECISION
                   </span>
+                  {activeColorImages.length > 0 && (
+                    <span style={{ background: activeStudioImageIndex === 0 ? 'rgba(22, 163, 74, 0.9)' : 'rgba(0, 102, 204, 0.9)', color: '#FFFFFF', padding: '2px 7px', borderRadius: '4px', fontSize: '10px', fontWeight: '800', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      {activeStudioImageIndex === 0 ? <Star size={10} fill="#FFFFFF" /> : null}
+                      Photo #{activeStudioImageIndex + 1} of {activeColorImages.length}
+                    </span>
+                  )}
                 </div>
 
                 <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10, background: '#FFFFFF', padding: '3px 9px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
@@ -1292,12 +1399,116 @@ export const AdminFilamentHub = () => {
 
                 {/* 3D Spool Visualizer Component */}
                 <DynamicSpoolVisual
-                  key={activeColor.name + activeColor.hex + (activeColor.image || 'none')}
+                  key={activeColor.name + activeColor.hex + (currentStudioImage || 'none') + activeStudioImageIndex}
                   colorHex={activeColor.hex}
                   colorName={activeColor.name}
-                  customImage={activeColor.image}
+                  customImage={currentStudioImage}
                 />
               </div>
+
+              {/* 1b. Mini Thumbnails Row for Active Color's Photos */}
+              {activeColorImages.length > 0 && (
+                <div style={{ marginBottom: '14px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>Photos for {activeColor.name}:</span>
+                    <span style={{ fontSize: '10px', color: '#0066CC', fontWeight: '700' }}>#{activeStudioImageIndex + 1} active preview</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', alignItems: 'center' }}>
+                    {activeColorImages.map((imgUrl, imgIdx) => {
+                      const isCurrent = activeStudioImageIndex === imgIdx;
+                      return (
+                        <button
+                          key={imgUrl + imgIdx}
+                          type="button"
+                          onClick={() => setActiveStudioImageIndex(imgIdx)}
+                          style={{
+                            position: 'relative',
+                            width: '52px',
+                            height: '52px',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            border: isCurrent ? '2.5px solid #0066CC' : '1.5px solid var(--border-color)',
+                            background: '#0F172A',
+                            padding: 0,
+                            cursor: 'pointer',
+                            flexShrink: 0,
+                            boxShadow: isCurrent ? '0 0 10px rgba(0, 102, 204, 0.35)' : 'none',
+                            transform: isCurrent ? 'scale(1.05)' : 'scale(1)',
+                            transition: 'all 0.15s ease'
+                          }}
+                          title={`Preview Photo #${imgIdx + 1} ${imgIdx === 0 ? '(Cover / Primary #1)' : ''}`}
+                        >
+                          <img
+                            src={imgUrl}
+                            alt={`Photo ${imgIdx + 1}`}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                          <span
+                            style={{
+                              position: 'absolute',
+                              top: '2px',
+                              left: '2px',
+                              background: imgIdx === 0 ? '#16A34A' : 'rgba(0, 102, 204, 0.9)',
+                              color: '#FFFFFF',
+                              fontSize: '9px',
+                              fontWeight: '900',
+                              padding: '1px 4px',
+                              borderRadius: '3px',
+                              lineHeight: 1
+                            }}
+                          >
+                            #{imgIdx + 1}
+                          </span>
+                          {imgIdx === 0 && (
+                            <span
+                              style={{
+                                position: 'absolute',
+                                bottom: '2px',
+                                right: '2px',
+                                background: 'rgba(0,0,0,0.7)',
+                                color: '#FACC15',
+                                padding: '1px',
+                                borderRadius: '2px',
+                                display: 'flex'
+                              }}
+                            >
+                              <Star size={10} fill="#FACC15" />
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+
+                    {/* Quick Add More Photo Button */}
+                    <button
+                      type="button"
+                      onClick={() => studioFileInputRef.current?.click()}
+                      style={{
+                        width: '52px',
+                        height: '52px',
+                        borderRadius: '8px',
+                        border: '1.5px dashed #0066CC',
+                        background: 'rgba(0, 102, 204, 0.05)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                        color: '#0066CC',
+                        fontSize: '9px',
+                        fontWeight: '800',
+                        gap: '2px'
+                      }}
+                      title="Upload more photos for this color"
+                    >
+                      <Plus size={16} />
+                      <span>Add</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* 2. Subcategory & Price Preview Info */}
               <div style={{ marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
@@ -1332,7 +1543,10 @@ export const AdminFilamentHub = () => {
                     <button
                       key={col.name + idx}
                       type="button"
-                      onClick={() => setSelectedColorIndex(idx)}
+                      onClick={() => {
+                        setSelectedColorIndex(idx);
+                        setActiveStudioImageIndex(0);
+                      }}
                       title={`${col.name} (${col.hex})`}
                       style={{
                         width: '18px',
@@ -1362,30 +1576,198 @@ export const AdminFilamentHub = () => {
               >
                 <div style={{ fontSize: '12px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                    <ImageIcon size={14} color="#0066CC" /> Photo for: {activeColor.name}
+                    <ImageIcon size={14} color="#0066CC" /> Photos for: {activeColor.name}
                   </span>
-                  {activeColor.image ? (
+                  {activeColorImages.length > 0 ? (
                     <button
                       type="button"
-                      onClick={handleRemoveActiveColorPhoto}
+                      onClick={handleRevertActiveColorToTint}
                       style={{ background: 'none', border: 'none', color: '#EF4444', fontSize: '11px', fontWeight: '700', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
                     >
-                      Revert to Tint
+                      Clear All (Use Tint)
                     </button>
                   ) : (
                     <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Using smart color tint</span>
                   )}
                 </div>
 
+                {/* Multiple Image Order & Management List */}
+                {activeColorImages.length > 0 && (
+                  <div style={{ marginBottom: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
+                      <Sparkles size={12} color="#0066CC" /> Arrange Photo Order (1, 2, 3...):
+                    </div>
+
+                    <div style={{ maxHeight: '180px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '2px' }}>
+                      {activeColorImages.map((imgUrl, imgIdx) => {
+                        const isCover = imgIdx === 0;
+                        const isCurrentPreview = activeStudioImageIndex === imgIdx;
+                        return (
+                          <div
+                            key={imgUrl + imgIdx}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              padding: '6px 8px',
+                              borderRadius: '8px',
+                              background: isCurrentPreview ? 'rgba(0, 102, 204, 0.08)' : 'var(--bg-card)',
+                              border: isCurrentPreview ? '1.5px solid #0066CC' : '1px solid var(--border-color)',
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            {/* Order Number Badge */}
+                            <div
+                              style={{
+                                minWidth: '24px',
+                                height: '24px',
+                                borderRadius: '50%',
+                                background: isCover ? '#16A34A' : '#0066CC',
+                                color: '#FFFFFF',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '11px',
+                                fontWeight: '900',
+                                flexShrink: 0
+                              }}
+                            >
+                              #{imgIdx + 1}
+                            </div>
+
+                            {/* Thumbnail */}
+                            <img
+                              src={imgUrl}
+                              alt={`Photo ${imgIdx + 1}`}
+                              onClick={() => setActiveStudioImageIndex(imgIdx)}
+                              style={{
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '6px',
+                                objectFit: 'cover',
+                                border: '1px solid var(--border-color)',
+                                cursor: 'pointer',
+                                background: '#0F172A',
+                                flexShrink: 0
+                              }}
+                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              title="Click to view in Studio"
+                            />
+
+                            {/* Title & Info */}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                {isCover ? (
+                                  <span style={{ color: '#16A34A', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                                    <Star size={11} fill="#16A34A" /> Image #1 (Cover)
+                                  </span>
+                                ) : (
+                                  <span>Image #{imgIdx + 1}</span>
+                                )}
+                              </div>
+                              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {imgUrl.startsWith('data:') ? 'Uploaded custom photo' : imgUrl.split('/').pop()}
+                              </div>
+                            </div>
+
+                            {/* Reordering & Action Controls */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                              {/* Make Primary Cover (#1) */}
+                              {!isCover && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSetPrimaryColorImage(imgIdx)}
+                                  title="Set as Image #1 (Primary Storefront Cover)"
+                                  className="admin-action-pill-btn secondary"
+                                  style={{ fontSize: '10px', padding: '2px 6px', height: '24px', display: 'inline-flex', alignItems: 'center', gap: '2px', color: '#16A34A', borderColor: '#86EFAC' }}
+                                >
+                                  <Star size={10} /> Make #1
+                                </button>
+                              )}
+
+                              {/* Move Up/Earlier */}
+                              <button
+                                type="button"
+                                disabled={imgIdx === 0}
+                                onClick={() => handleMoveColorImage(imgIdx, -1)}
+                                title="Move earlier (e.g. #2 to #1)"
+                                className="admin-action-pill-btn secondary"
+                                style={{
+                                  padding: '2px 5px',
+                                  height: '24px',
+                                  opacity: imgIdx === 0 ? 0.35 : 1,
+                                  cursor: imgIdx === 0 ? 'not-allowed' : 'pointer'
+                                }}
+                              >
+                                <ArrowUp size={11} />
+                              </button>
+
+                              {/* Move Down/Later */}
+                              <button
+                                type="button"
+                                disabled={imgIdx === activeColorImages.length - 1}
+                                onClick={() => handleMoveColorImage(imgIdx, 1)}
+                                title="Move later (e.g. #1 to #2)"
+                                className="admin-action-pill-btn secondary"
+                                style={{
+                                  padding: '2px 5px',
+                                  height: '24px',
+                                  opacity: imgIdx === activeColorImages.length - 1 ? 0.35 : 1,
+                                  cursor: imgIdx === activeColorImages.length - 1 ? 'not-allowed' : 'pointer'
+                                }}
+                              >
+                                <ArrowDown size={11} />
+                              </button>
+
+                              {/* Remove this photo */}
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveColorImage(imgIdx)}
+                                title="Remove this photo"
+                                style={{
+                                  background: 'rgba(239, 68, 68, 0.08)',
+                                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                                  color: '#EF4444',
+                                  borderRadius: '6px',
+                                  width: '24px',
+                                  height: '24px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                  padding: 0
+                                }}
+                              >
+                                <Trash2 size={11} />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Upload Button */}
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
+                <div style={{ marginBottom: '10px' }}>
                   <button
                     type="button"
                     onClick={() => studioFileInputRef.current?.click()}
                     className="admin-action-pill-btn secondary"
-                    style={{ flex: 1, fontSize: '11px', padding: '7px', justifyContent: 'center', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    style={{
+                      width: '100%',
+                      fontSize: '11px',
+                      padding: '8px',
+                      justifyContent: 'center',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      border: '1.5px dashed #0066CC',
+                      background: 'rgba(0, 102, 204, 0.04)',
+                      fontWeight: '700'
+                    }}
                   >
-                    <UploadCloud size={13} /> Upload Custom Photo
+                    <UploadCloud size={14} color="#0066CC" /> + Upload Custom Photo(s) (Multi-select)
                   </button>
                 </div>
 
@@ -1403,31 +1785,55 @@ export const AdminFilamentHub = () => {
                     overflowY: 'auto'
                   }}
                 >
-                  {PRESET_SPOOL_IMAGES.map((pr) => (
-                    <div
-                      key={pr.url}
-                      onClick={() => handleSelectPresetForActiveColor(pr.url)}
-                      title={`Attach ${pr.label}`}
-                      style={{
-                        padding: '4px',
-                        border: `1.5px solid ${activeColor.image === pr.url ? '#0066CC' : 'var(--border-color)'}`,
-                        borderRadius: '6px',
-                        background: activeColor.image === pr.url ? 'rgba(0, 102, 204, 0.12)' : 'var(--bg-card)',
-                        cursor: 'pointer',
-                        textAlign: 'center'
-                      }}
-                    >
-                      <img
-                        src={pr.url}
-                        alt={pr.label}
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                        style={{ width: '100%', height: '28px', objectFit: 'contain' }}
-                      />
-                      <div style={{ fontSize: '9px', fontWeight: '700', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {pr.label.replace(' Spool', '')}
+                  {PRESET_SPOOL_IMAGES.map((pr) => {
+                    const isAttached = activeColorImages.includes(pr.url);
+                    const attachedIndex = activeColorImages.indexOf(pr.url);
+                    return (
+                      <div
+                        key={pr.url}
+                        onClick={() => handleSelectPresetForActiveColor(pr.url)}
+                        title={isAttached ? `Attached as Photo #${attachedIndex + 1} - Click to preview` : `Attach ${pr.label} to this color`}
+                        style={{
+                          position: 'relative',
+                          padding: '4px',
+                          border: `1.5px solid ${isAttached ? '#0066CC' : 'var(--border-color)'}`,
+                          borderRadius: '6px',
+                          background: isAttached ? 'rgba(0, 102, 204, 0.12)' : 'var(--bg-card)',
+                          cursor: 'pointer',
+                          textAlign: 'center',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        {isAttached && (
+                          <span
+                            style={{
+                              position: 'absolute',
+                              top: '2px',
+                              right: '2px',
+                              background: '#0066CC',
+                              color: '#FFFFFF',
+                              fontSize: '8px',
+                              fontWeight: '900',
+                              padding: '1px 3px',
+                              borderRadius: '3px',
+                              lineHeight: 1
+                            }}
+                          >
+                            #{attachedIndex + 1}
+                          </span>
+                        )}
+                        <img
+                          src={pr.url}
+                          alt={pr.label}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          style={{ width: '100%', height: '28px', objectFit: 'contain' }}
+                        />
+                        <div style={{ fontSize: '9px', fontWeight: '700', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {pr.label.replace(' Spool', '')}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1583,7 +1989,7 @@ export const AdminFilamentHub = () => {
             ? sub.colors
             : DEFAULT_FILAMENT_COLORS;
 
-          const colorsWithPhotos = colorsList.filter(c => c.image && c.image.length > 0).length;
+          const colorsWithPhotos = colorsList.filter(c => (c.images && c.images.length > 0) || (c.image && c.image.length > 0)).length;
           const displayPrice = matchedProduct?.price || sub.price || 899;
           const originalPrice = matchedProduct?.originalPrice || sub.originalPrice || 1399;
           const discountPct = originalPrice > displayPrice
