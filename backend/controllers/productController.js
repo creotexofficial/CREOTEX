@@ -76,10 +76,16 @@ export const getProducts = asyncHandler(async (req, res) => {
   const skip = (pageNum - 1) * limitNum;
 
   const total = await Product.countDocuments(query);
-  const products = await Product.find(query)
+  const productsRaw = await Product.find(query)
     .sort(sortOption)
     .skip(skip)
-    .limit(limitNum);
+    .limit(limitNum)
+    .lean();
+
+  const products = productsRaw.map(p => ({
+    ...p,
+    id: p.customId || (p._id ? p._id.toString() : '')
+  }));
 
   res.json({
     success: true,
@@ -99,21 +105,23 @@ export const getProductById = asyncHandler(async (req, res) => {
 
   let product;
   if (mongoose.Types.ObjectId.isValid(id)) {
-    product = await Product.findById(id);
+    product = await Product.findById(id).lean();
   }
 
   if (!product) {
-    product = await Product.findOne({ customId: id });
+    product = await Product.findOne({ customId: id }).lean();
   }
 
   if (!product) {
-    product = await Product.findOne({ sku: id.toUpperCase() });
+    product = await Product.findOne({ sku: id.toUpperCase() }).lean();
   }
 
   if (!product) {
     res.status(404);
     throw new Error('Product not found in catalog');
   }
+
+  product.id = product.customId || (product._id ? product._id.toString() : '');
 
   res.json({
     success: true,
@@ -154,18 +162,28 @@ export const createProduct = asyncHandler(async (req, res) => {
     throw new Error('Please provide name, sku, category, and price');
   }
 
-  const customId = req.body.customId || `ctx-${Date.now()}`;
+  const customId = req.body.customId || req.body.id || `ctx-${Date.now()}`;
+  const normalizedSku = sku.toUpperCase().trim();
+
+  // Check if SKU already exists
+  const existingProduct = await Product.findOne({ sku: normalizedSku });
+  if (existingProduct) {
+    res.status(400);
+    throw new Error(`A product with SKU "${normalizedSku}" already exists in catalog.`);
+  }
 
   const product = await Product.create({
     customId,
     name,
-    sku: sku.toUpperCase(),
+    sku: normalizedSku,
     category,
     categoryLabel: categoryLabel || category,
     price: Number(price),
     originalPrice: originalPrice ? Number(originalPrice) : Number(price),
     discount: discount || '',
     stock: Number(stock) || 0,
+    rating: req.body.rating ? Number(req.body.rating) : 4.8,
+    reviewsCount: req.body.reviewsCount ? Number(req.body.reviewsCount) : 1,
     isBestSeller: Boolean(isBestSeller),
     isFeatured: Boolean(isFeatured),
     isDeal: Boolean(isDeal),
@@ -181,10 +199,13 @@ export const createProduct = asyncHandler(async (req, res) => {
     weights: Array.isArray(weights) ? weights : ['1 kg', '3 kg']
   });
 
+  const productObj = product.toObject ? product.toObject() : product;
+  productObj.id = product.customId || product._id.toString();
+
   res.status(201).json({
     success: true,
     message: 'Product added successfully to catalog',
-    data: product
+    data: productObj
   });
 });
 
@@ -200,6 +221,9 @@ export const updateProduct = asyncHandler(async (req, res) => {
   }
   if (!product) {
     product = await Product.findOne({ customId: id });
+  }
+  if (!product) {
+    product = await Product.findOne({ sku: id.toUpperCase() });
   }
 
   if (!product) {
@@ -246,6 +270,9 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   }
   if (!product) {
     product = await Product.findOne({ customId: id });
+  }
+  if (!product) {
+    product = await Product.findOne({ sku: id.toUpperCase() });
   }
 
   if (!product) {

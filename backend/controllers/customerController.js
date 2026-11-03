@@ -27,7 +27,12 @@ export const getAllCustomers = asyncHandler(async (req, res) => {
     ];
   }
 
-  const customers = await Customer.find(filter).sort({ totalSpent: -1, createdAt: -1 });
+  const customersRaw = await Customer.find(filter).sort({ totalSpent: -1, createdAt: -1 }).lean();
+
+  const customers = customersRaw.map(c => ({
+    ...c,
+    id: c.customId || (c._id ? c._id.toString() : '')
+  }));
 
   res.json({
     success: true,
@@ -40,12 +45,14 @@ export const getAllCustomers = asyncHandler(async (req, res) => {
 // @route   GET /api/customers/:id
 // @access  Private/Admin
 export const getCustomerById = asyncHandler(async (req, res) => {
-  const customer = await Customer.findById(req.params.id);
+  const customer = await Customer.findById(req.params.id).lean();
 
   if (!customer) {
     res.status(404);
     throw new Error('Customer not found');
   }
+
+  customer.id = customer.customId || (customer._id ? customer._id.toString() : '');
 
   res.json({
     success: true,

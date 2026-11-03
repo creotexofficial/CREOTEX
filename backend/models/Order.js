@@ -108,6 +108,12 @@ orderSchema.virtual('id').get(function () {
   return this.orderId || this._id.toHexString();
 });
 
+// Performance indexes for admin listing and customer lookups
+orderSchema.index({ createdAt: -1 });
+orderSchema.index({ orderStatus: 1, createdAt: -1 });
+orderSchema.index({ 'customer.email': 1 });
+orderSchema.index({ user: 1 });
+
 // Auto-generate orderId if not provided
 orderSchema.pre('save', function (next) {
   if (!this.orderId) {

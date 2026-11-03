@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useCart } from '../../context/CartContext';
 
-export const NeuralBackground = () => {
+export const NeuralBackground = React.memo(() => {
   const { theme } = useCart();
   const isDark = theme === 'dark';
   const canvasRef = useRef(null);
@@ -248,6 +248,6 @@ export const NeuralBackground = () => {
       }} />
     </div>
   );
-};
+});
 
 export default NeuralBackground;

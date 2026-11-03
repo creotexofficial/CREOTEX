@@ -1,17 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { PRODUCTS_DATA, COUPON_CODES, FILAMENT_SUBCATEGORIES, DEFAULT_FILAMENT_COLORS } from '../data/productsData';
 import {
   INITIAL_ORDERS,
   INITIAL_CUSTOMERS,
-  INITIAL_DATASHEETS,
   INITIAL_SETTINGS,
   INITIAL_USERS
 } from '../data/adminDemoData';
-import {
-  DEFAULT_BUILDER_PRESETS,
-  DEFAULT_BUILDER_SLOTS,
-  DEFAULT_BUILDER_SETTINGS
-} from '../data/robotBuilderData';
 import { api } from '../services/api';
 
 export const DEFAULT_NAVBAR_CATEGORIES = [
@@ -21,7 +15,7 @@ export const DEFAULT_NAVBAR_CATEGORIES = [
 ];
 
 export const DEFAULT_NAVBAR_SETTINGS = {
-  enabled: true, // Master toggle: publish / unpublish on storefront home page
+  enabled: true,
   showToolsLink: true,
   toolsLinkLabel: 'Custom 3D Print Quote',
   toolsLinkUrl: '#custom-3d-print',
@@ -112,30 +106,18 @@ export const DEFAULT_HERO_SIDE_BANNERS = [
 ];
 
 export const DEFAULT_HERO_SETTINGS = {
-  enabled: true, // Master toggle: publish / unpublish Hero Section from home page
+  enabled: true,
   autoplay: true,
   autoplayInterval: 5000,
   showSideBanners: true
 };
 
-export const DEFAULT_FLASH_DEALS_SETTINGS = {
-  enabled: true, // Master toggle: publish / unpublish on home page
-  title: 'Flash Maker Deals of the Day',
-  subtitle: 'Limited stock at special tournament discount pricing',
-  icon: '🔥',
-  badgeText: 'ENDS TODAY',
-  showCountdown: true,
-  countdownSeconds: 14 * 3600 + 42 * 60 + 19,
-  maxProducts: 4,
-  customProductIds: [] // If empty, auto picks products with isDeal: true
-};
-
 export const DEFAULT_FILAMENT_SECTION_SETTINGS = {
-  enabled: true, // Master toggle: publish / unpublish on home page
+  enabled: true,
   title: '3D Printer Filament Spool Zone',
   subtitle: 'Precision 1.75mm engineering filaments for rapid prototyping, combat robots & heat-resistant parts',
   icon: '🧵',
-  badgeText: '', // empty = dynamic `${count} SUB-CATEGORIES AVAILABLE`
+  badgeText: '',
   buttonText: 'Explore All 3D Filaments',
   buttonLink: '#filaments-hub',
   showSubcategoriesGrid: true,
@@ -144,8 +126,8 @@ export const DEFAULT_FILAMENT_SECTION_SETTINGS = {
   shelfSubtitle: 'Bambu Lab RFID & Standard 1KG spools vacuum-sealed with desiccant',
   shelfButtonText: 'View All Filaments',
   maxShelfProducts: 4,
-  customShelfProductIds: [], // If empty, auto picks top filament products
-  hiddenSubcategoryKeys: [] // Keys of subcategories hidden specifically from the home section
+  customShelfProductIds: [],
+  hiddenSubcategoryKeys: []
 };
 
 const CartContext = createContext();
@@ -173,7 +155,6 @@ export const VALID_ADMIN_TABS = [
 
 export const getInitialAdminTab = () => {
   if (typeof window !== 'undefined') {
-    // 1. Check URL search query parameter: ?tab=products or ?adminTab=products
     try {
       const params = new URLSearchParams(window.location.search);
       const tabParam = params.get('tab') || params.get('adminTab') || params.get('section');
@@ -182,7 +163,6 @@ export const getInitialAdminTab = () => {
       }
     } catch {}
 
-    // 2. Check URL hash: #products or #tab=products
     try {
       const rawHash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
       if (rawHash) {
@@ -204,7 +184,6 @@ export const getInitialAdminTab = () => {
       }
     } catch {}
 
-    // 3. Check pathname: /super/products
     try {
       const pathParts = window.location.pathname.toLowerCase().split('/').filter(Boolean);
       const lastPart = pathParts[pathParts.length - 1];
@@ -212,15 +191,14 @@ export const getInitialAdminTab = () => {
         return lastPart;
       }
     } catch {}
-  }
 
-  // 4. Check localStorage fallback
-  try {
-    const saved = localStorage.getItem('creotex_admin_active_tab');
-    if (saved && VALID_ADMIN_TABS.includes(saved.toLowerCase())) {
-      return saved.toLowerCase();
-    }
-  } catch {}
+    try {
+      const saved = localStorage.getItem('creotex_admin_active_tab');
+      if (saved && VALID_ADMIN_TABS.includes(saved.toLowerCase())) {
+        return saved.toLowerCase();
+      }
+    } catch {}
+  }
 
   return 'dashboard';
 };
@@ -229,29 +207,23 @@ export const CartProvider = ({ children }) => {
   // Storage Keys
   const cartKey = "creotex_cart_items";
   const wishlistKey = "creotex_wishlist_items";
-  const compareKey = "creotex_compare_items";
   const couponKey = "creotex_applied_coupon";
   const themeKey = "creotex_theme_v3";
   const productsKey = "creotex_admin_products_v4";
   const ordersKey = "creotex_admin_orders";
   const couponsKey = "creotex_admin_coupons";
   const customersKey = "creotex_admin_customers";
-  const datasheetsKey = "creotex_admin_datasheets";
   const settingsKey = "creotex_admin_settings";
   const viewKey = "creotex_current_view";
   const adminTabKey = "creotex_admin_active_tab";
   const usersKey = "creotex_users";
   const authKey = "creotex_auth_user";
-  const builderPresetsKey = "creotex_admin_builder_presets";
-  const builderSlotsKey = "creotex_admin_builder_slots";
-  const builderSettingsKey = "creotex_admin_builder_settings";
   const navbarCategoriesKey = "creotex_navbar_categories_v4";
   const navbarSettingsKey = "creotex_navbar_settings_v4";
   const heroSlidesKey = "creotex_hero_slides_v4";
   const heroSideBannersKey = "creotex_hero_side_banners_v4";
   const heroSettingsKey = "creotex_hero_settings";
   const filamentSubcategoriesKey = "creotex_filament_subcategories";
-  const flashDealsSettingsKey = "creotex_flash_deals_settings";
   const filamentSectionSettingsKey = "creotex_filament_section_settings";
 
   // Load helper
@@ -267,7 +239,6 @@ export const CartProvider = ({ children }) => {
   // State
   const [items, setItems] = useState(() => load(cartKey, []));
   const [wishlist, setWishlist] = useState(() => load(wishlistKey, []));
-  const [compareList, setCompareList] = useState(() => load(compareKey, []));
   const [appliedCoupon, setAppliedCoupon] = useState(() => load(couponKey, null));
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -276,29 +247,40 @@ export const CartProvider = ({ children }) => {
     }
     return "light";
   });
-  const [toasts, setToasts] = useState([]);
 
   // Auth & User State
   const [users, setUsers] = useState(() => load(usersKey, INITIAL_USERS));
   const [currentUser, setCurrentUser] = useState(() => load(authKey, null));
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState("login"); // 'login' | 'signup' | 'profile'
+  const [authModalMode, setAuthModalMode] = useState("login");
 
-  // Navigation & Admin View State - persist across reload
-  const [currentView, setCurrentView] = useState(() => {
+  // Helper to determine active view based on browser URL / hash
+  const getViewFromLocation = () => {
     if (typeof window !== 'undefined') {
-      const p = window.location.pathname.toLowerCase();
-      const h = window.location.hash.toLowerCase();
-      const s = window.location.search.toLowerCase();
-      if (p.includes('super') || h.includes('super') || s.includes('super')) {
-        return "admin";
-      }
-      if (p.includes('custom-3d') || h.includes('custom-3d') || s.includes('custom-3d')) {
-        return "custom-3d-print";
-      }
+      try {
+        const p = window.location.pathname.toLowerCase();
+        const h = window.location.hash.toLowerCase();
+        const s = window.location.search.toLowerCase();
+        if (p.includes('super') || h.includes('super') || s.includes('super') || p.includes('admin') || h.includes('admin')) {
+          return "admin";
+        }
+        if (p.includes('custom-3d') || h.includes('custom-3d') || s.includes('custom-3d')) {
+          return "custom-3d-print";
+        }
+        if (p.includes('filaments') || h.includes('filaments') || s.includes('filaments')) {
+          return "filaments";
+        }
+        const cleanPath = p.replace(/^\/+|\/+$/g, '');
+        if (cleanPath && !['super', 'admin', 'filaments', 'custom-3d-print', 'index.html'].includes(cleanPath)) {
+          return "storefront";
+        }
+      } catch {}
     }
     return localStorage.getItem(viewKey) || "storefront";
-  });
+  };
+
+  // Navigation & Admin View State
+  const [currentView, setCurrentView] = useState(() => getViewFromLocation());
   const [adminActiveTab, setAdminActiveTabState] = useState(() => getInitialAdminTab());
 
   // Dynamic Store Data with LocalStorage Sync
@@ -308,16 +290,9 @@ export const CartProvider = ({ children }) => {
   );
   const [activeFilamentSubcategory, setActiveFilamentSubcategory] = useState("all");
   const [orders, setOrders] = useState(() => load(ordersKey, INITIAL_ORDERS));
-
   const [coupons, setCoupons] = useState(() => load(couponsKey, COUPON_CODES));
   const [customers, setCustomers] = useState(() => load(customersKey, INITIAL_CUSTOMERS));
-  const [datasheets, setDatasheets] = useState(() => load(datasheetsKey, INITIAL_DATASHEETS));
   const [storeSettings, setStoreSettings] = useState(() => load(settingsKey, INITIAL_SETTINGS));
-
-  // Custom Competition Robot Builder Data State
-  const [robotBuilderPresets, setRobotBuilderPresets] = useState(() => load(builderPresetsKey, DEFAULT_BUILDER_PRESETS));
-  const [robotBuilderSlots, setRobotBuilderSlots] = useState(() => load(builderSlotsKey, DEFAULT_BUILDER_SLOTS));
-  const [robotBuilderSettings, setRobotBuilderSettings] = useState(() => load(builderSettingsKey, DEFAULT_BUILDER_SETTINGS));
 
   // Storefront Navbar Categories & Navigation Data State
   const [navbarCategories, setNavbarCategories] = useState(() => {
@@ -346,14 +321,14 @@ export const CartProvider = ({ children }) => {
   const [heroSideBanners, setHeroSideBanners] = useState(() => load(heroSideBannersKey, DEFAULT_HERO_SIDE_BANNERS));
   const [heroSettings, setHeroSettings] = useState(() => load(heroSettingsKey, DEFAULT_HERO_SETTINGS));
 
-  // Storefront Home Page Sections: Flash Deals & Filament Spool Zone
-  const [flashDealsSettings, setFlashDealsSettings] = useState(() => load(flashDealsSettingsKey, DEFAULT_FLASH_DEALS_SETTINGS));
-  const [filamentSectionSettings, setFilamentSectionSettings] = useState(() => load(filamentSectionSettingsKey, DEFAULT_FILAMENT_SECTION_SETTINGS));
+  // Storefront Home Page Section: Filament Spool Zone
+  const [filamentSectionSettings, setFilamentSectionSettings] = useState(
+    () => load(filamentSectionSettingsKey, DEFAULT_FILAMENT_SECTION_SETTINGS)
+  );
 
   // Modals & Drawers state
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
-  const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(1);
 
@@ -364,15 +339,11 @@ export const CartProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("featured");
 
-  const freeShippingThreshold = storeSettings.freeShippingThreshold || 999;
-  const standardShippingCost = storeSettings.standardShippingCost || 79;
-  const gstRate = (storeSettings.gstRate || 18) / 100;
-
+  // Persist State to LocalStorage
   useEffect(() => {
     localStorage.setItem(filamentSubcategoriesKey, JSON.stringify(filamentSubcategories));
   }, [filamentSubcategories]);
 
-  // Persist State to LocalStorage
   useEffect(() => {
     localStorage.setItem(cartKey, JSON.stringify(items));
   }, [items]);
@@ -380,10 +351,6 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(wishlistKey, JSON.stringify(wishlist));
   }, [wishlist]);
-
-  useEffect(() => {
-    localStorage.setItem(compareKey, JSON.stringify(compareList));
-  }, [compareList]);
 
   useEffect(() => {
     if (appliedCoupon) {
@@ -410,24 +377,8 @@ export const CartProvider = ({ children }) => {
   }, [customers]);
 
   useEffect(() => {
-    localStorage.setItem(datasheetsKey, JSON.stringify(datasheets));
-  }, [datasheets]);
-
-  useEffect(() => {
     localStorage.setItem(settingsKey, JSON.stringify(storeSettings));
   }, [storeSettings]);
-
-  useEffect(() => {
-    localStorage.setItem(builderPresetsKey, JSON.stringify(robotBuilderPresets));
-  }, [robotBuilderPresets]);
-
-  useEffect(() => {
-    localStorage.setItem(builderSlotsKey, JSON.stringify(robotBuilderSlots));
-  }, [robotBuilderSlots]);
-
-  useEffect(() => {
-    localStorage.setItem(builderSettingsKey, JSON.stringify(robotBuilderSettings));
-  }, [robotBuilderSettings]);
 
   useEffect(() => {
     localStorage.setItem(navbarCategoriesKey, JSON.stringify(navbarCategories));
@@ -448,10 +399,6 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(heroSettingsKey, JSON.stringify(heroSettings));
   }, [heroSettings]);
-
-  useEffect(() => {
-    localStorage.setItem(flashDealsSettingsKey, JSON.stringify(flashDealsSettings));
-  }, [flashDealsSettings]);
 
   useEffect(() => {
     localStorage.setItem(filamentSectionSettingsKey, JSON.stringify(filamentSectionSettings));
@@ -476,14 +423,12 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem(viewKey, currentView);
   }, [currentView]);
 
-  // Persist admin active tab in localStorage
   useEffect(() => {
     if (adminActiveTab) {
       localStorage.setItem(adminTabKey, adminActiveTab);
     }
   }, [adminActiveTab]);
 
-  // Keep browser URL in sync when in Super Admin view so page refresh stays on this exact page
   useEffect(() => {
     if (currentView === 'admin' && typeof window !== 'undefined') {
       try {
@@ -504,7 +449,6 @@ export const CartProvider = ({ children }) => {
     }
   }, [currentView, adminActiveTab]);
 
-  // Sync Theme attribute
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     try {
@@ -516,8 +460,70 @@ export const CartProvider = ({ children }) => {
     } catch (_) {}
   }, [theme]);
 
-  // Toast Notification (Disabled globally as requested)
-  const showToast = () => {};
+  // Initial Sync with Live Backend API on Render
+  useEffect(() => {
+    let isMounted = true;
+
+    // 1. Fetch live products from backend
+    api.products.getAll({ limit: 150 })
+      .then(res => {
+        if (!isMounted) return;
+        if (res && res.data && Array.isArray(res.data)) {
+          setProducts(res.data);
+        }
+      })
+      .catch(err => {
+        console.info('[Creotex API] Operating in hybrid fallback mode:', err.message);
+      });
+
+    // 2. Fetch live store settings from backend
+    api.settings.get()
+      .then(res => {
+        if (!isMounted) return;
+        if (res && res.data) {
+          setStoreSettings(prev => ({ ...prev, ...res.data }));
+          if (res.data.navbarCategories && Array.isArray(res.data.navbarCategories) && res.data.navbarCategories.length > 0) {
+            setNavbarCategories(res.data.navbarCategories);
+          }
+          if (res.data.heroSlides && Array.isArray(res.data.heroSlides) && res.data.heroSlides.length > 0) {
+            setHeroSlides(res.data.heroSlides);
+          }
+          if (res.data.filamentSubcategories && Array.isArray(res.data.filamentSubcategories) && res.data.filamentSubcategories.length > 0) {
+            setFilamentSubcategories(res.data.filamentSubcategories);
+          }
+        }
+      })
+      .catch(() => {});
+
+    // 3. If admin token exists, fetch live orders & customers
+    const token = localStorage.getItem('creotex_auth_token');
+    if (token) {
+      api.orders.getAll()
+        .then(res => {
+          if (!isMounted) return;
+          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+            setOrders(res.data);
+          }
+        })
+        .catch(() => {});
+
+      api.customers.getAll()
+        .then(res => {
+          if (!isMounted) return;
+          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+            setCustomers(res.data);
+          }
+        })
+        .catch(() => {});
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Silent Toast Notification handler
+  const showToast = useCallback(() => {}, []);
 
   const persistDelete = async (request, updateLocalState, itemLabel) => {
     try {
@@ -532,14 +538,12 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const toggleTheme = () => {
-    const nextTheme = theme === "dark" ? "light" : "dark";
-    setTheme(nextTheme);
-    showToast(`Switched to ${nextTheme === 'dark' ? 'Dark Maker' : 'Light Maker'} Mode`, "info");
-  };
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => (prev === "dark" ? "light" : "dark"));
+  }, []);
 
   // View Navigation
-  const setAdminActiveTab = (tab) => {
+  const setAdminActiveTab = useCallback((tab) => {
     const validTab = VALID_ADMIN_TABS.includes(tab) ? tab : 'dashboard';
     setAdminActiveTabState(validTab);
     try {
@@ -553,12 +557,10 @@ export const CartProvider = ({ children }) => {
         window.history.replaceState({ view: 'admin', tab: validTab }, '', url.pathname + url.search + url.hash);
       }
     } catch {}
-  };
+  }, []);
 
-  const navigateToAdmin = (tab = null) => {
-    const targetTab = (tab && VALID_ADMIN_TABS.includes(tab))
-      ? tab
-      : (adminActiveTab && VALID_ADMIN_TABS.includes(adminActiveTab) ? adminActiveTab : getInitialAdminTab());
+  const navigateToAdmin = useCallback((tab = null) => {
+    const targetTab = (tab && VALID_ADMIN_TABS.includes(tab)) ? tab : 'dashboard';
     setAdminActiveTab(targetTab);
     setCurrentView("admin");
     try {
@@ -572,9 +574,9 @@ export const CartProvider = ({ children }) => {
       window.location.hash = `super?tab=${targetTab}`;
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, [setAdminActiveTab]);
 
-  const navigateToStorefront = () => {
+  const navigateToStorefront = useCallback(() => {
     setCurrentView("storefront");
     try {
       if (window.location.pathname.toLowerCase().includes('super') || window.location.hash.toLowerCase().includes('super') || window.location.search.toLowerCase().includes('tab=')) {
@@ -584,9 +586,9 @@ export const CartProvider = ({ children }) => {
       window.location.hash = '';
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, []);
 
-  const navigateToHome = () => {
+  const navigateToHome = useCallback(() => {
     setCurrentCategory("all");
     setCurrentView("storefront");
     try {
@@ -595,40 +597,64 @@ export const CartProvider = ({ children }) => {
       }
     } catch {}
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, []);
 
-  const navigateToFilaments = (subCat = "all") => {
+  const navigateToFilaments = useCallback((subCat = "all") => {
     setActiveFilamentSubcategory(subCat);
     setCurrentCategory("filaments");
     setCurrentView("filaments");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, []);
 
-  const navigateToCustom3DPrint = () => {
+  const navigateToCustom3DPrint = useCallback(() => {
     setCurrentCategory("custom-3d-print");
     setCurrentView("custom-3d-print");
     try {
       window.history.pushState({ view: 'custom-3d-print' }, '', '/#custom-3d-print');
     } catch {}
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, []);
 
-  // ================= 3D FILAMENT SUBCATEGORY & COLOR VARIANT CRUD =================
-  const updateFilamentSubcategory = (subCategoryKey, updatedMeta) => {
-    // 1. Update subcategory metadata list
-    setFilamentSubcategories(prev => prev.map(sub => {
-      const match = (sub.subCategoryKey && sub.subCategoryKey.toLowerCase() === subCategoryKey.toLowerCase()) ||
-                    (sub.id && updatedMeta.id && sub.id === updatedMeta.id);
-      if (match) {
-        return {
-          ...sub,
-          ...updatedMeta
-        };
-      }
-      return sub;
-    }));
+  const navigateTo404 = useCallback(() => {
+    setCurrentView("404");
+    try {
+      window.history.pushState({ view: '404' }, '', '/404');
+    } catch {
+      window.location.hash = '404';
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
-    // 2. Synchronize the corresponding product in catalog
+  // Sync state on browser back/forward or hash changes
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const detected = getViewFromLocation();
+      setCurrentView(detected);
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  // 3D Filament Subcategory & Color Variant CRUD
+  const updateFilamentSubcategory = useCallback((subCategoryKey, updatedMeta) => {
+    setFilamentSubcategories(prev => {
+      const next = prev.map(sub => {
+        const match = (sub.subCategoryKey && sub.subCategoryKey.toLowerCase() === subCategoryKey.toLowerCase()) ||
+                      (sub.id && updatedMeta.id && sub.id === updatedMeta.id);
+        if (match) {
+          return { ...sub, ...updatedMeta };
+        }
+        return sub;
+      });
+      api.settings.update({ filamentSubcategories: next }).catch(err => console.warn('[CartContext] Could not update filament subcategories in MongoDB:', err.message));
+      return next;
+    });
+
     setProducts(prev => prev.map(prod => {
       const match = (prod.subCategory && prod.subCategory.toLowerCase() === subCategoryKey.toLowerCase()) ||
                     (prod.category === 'filaments' && updatedMeta.productId && prod.id === updatedMeta.productId);
@@ -639,7 +665,7 @@ export const CartProvider = ({ children }) => {
           ? `${Math.round(((updatedMeta.originalPrice - updatedMeta.price) / updatedMeta.originalPrice) * 100)}% OFF`
           : prod.discount;
 
-        return {
+        const updatedProd = {
           ...prod,
           name: updatedMeta.productName || prod.name,
           price: updatedMeta.price !== undefined ? parseFloat(updatedMeta.price) : prod.price,
@@ -660,14 +686,15 @@ export const CartProvider = ({ children }) => {
             "Impact Strength": updatedMeta.strength || prod.specs?.["Impact Strength"]
           }
         };
+
+        api.products.update(prod.id, updatedProd).catch(err => console.warn('[CartContext] Could not update filament product in MongoDB:', err.message));
+        return updatedProd;
       }
       return prod;
     }));
+  }, []);
 
-    showToast(`Updated subcategory "${updatedMeta.displayName || subCategoryKey}" & colors!`, 'success');
-  };
-
-  const addFilamentSubcategory = (newSub) => {
+  const addFilamentSubcategory = useCallback((newSub) => {
     const subKey = (newSub.subCategoryKey || newSub.name || 'CUSTOM').trim().toUpperCase().replace(/\s+/g, '_');
     const subId = newSub.id || `sub-${Date.now().toString(36)}`;
     const fullSub = {
@@ -693,7 +720,11 @@ export const CartProvider = ({ children }) => {
       published: newSub.published !== undefined ? Boolean(newSub.published) : true
     };
 
-    setFilamentSubcategories(prev => [fullSub, ...prev]);
+    setFilamentSubcategories(prev => {
+      const next = [fullSub, ...prev];
+      api.settings.update({ filamentSubcategories: next }).catch(err => console.warn('[CartContext] Could not sync filament subcategories to MongoDB:', err.message));
+      return next;
+    });
 
     const newProduct = {
       id: `fil-${subId}`,
@@ -729,329 +760,172 @@ export const CartProvider = ({ children }) => {
     };
 
     setProducts(prev => [newProduct, ...prev]);
-    showToast(`Added new filament subcategory "${fullSub.displayName}"!`, 'success');
-    return fullSub;
-  };
 
-  const toggleFilamentSubcategoryPublish = (subKey) => {
-    setFilamentSubcategories(prev => prev.map(s => {
-      if (s.subCategoryKey.toLowerCase() === subKey.toLowerCase()) {
-        const nextStatus = s.published === false ? true : false;
-        return { ...s, published: nextStatus };
-      }
-      return s;
-    }));
+    api.products.create({
+      ...newProduct,
+      customId: newProduct.id
+    }).catch(err => console.warn('[CartContext] Could not persist filament product to MongoDB:', err.message));
+
+    return fullSub;
+  }, []);
+
+  const toggleFilamentSubcategoryPublish = useCallback((subKey) => {
+    setFilamentSubcategories(prev => {
+      const next = prev.map(s => {
+        if (s.subCategoryKey.toLowerCase() === subKey.toLowerCase()) {
+          return { ...s, published: s.published === false };
+        }
+        return s;
+      });
+      api.settings.update({ filamentSubcategories: next }).catch(err => console.warn('[CartContext] Could not sync filament publish state to MongoDB:', err.message));
+      return next;
+    });
 
     setProducts(prev => prev.map(p => {
       if (p.subCategory && p.subCategory.toLowerCase() === subKey.toLowerCase()) {
-        return { ...p, isFeatured: !p.isFeatured };
+        const updated = { ...p, isFeatured: !p.isFeatured };
+        api.products.update(p.id, { isFeatured: updated.isFeatured }).catch(err => console.warn('[CartContext] Could not update featured status in MongoDB:', err.message));
+        return updated;
       }
       return p;
     }));
+  }, []);
 
-    showToast(`Toggled visibility for subcategory "${subKey}".`, 'info');
-  };
+  const deleteFilamentSubcategory = useCallback((subKey) => {
+    setFilamentSubcategories(prev => {
+      const next = prev.filter(s => s.subCategoryKey.toLowerCase() !== subKey.toLowerCase());
+      api.settings.update({ filamentSubcategories: next }).catch(err => console.warn('[CartContext] Could not sync deleted filament subcategory to MongoDB:', err.message));
+      return next;
+    });
 
-  const deleteFilamentSubcategory = async (subKey) => {
-    const nextSubcategories = filamentSubcategories.filter(
-      s => s.subCategoryKey.toLowerCase() !== subKey.toLowerCase()
-    );
+    setProducts(prev => prev.filter(p => !p.subCategory || p.subCategory.toLowerCase() !== subKey.toLowerCase()));
+    api.products.deleteBySubcategory(subKey).catch(err => console.warn('[CartContext] Could not delete products by subcategory from MongoDB:', err.message));
+  }, []);
 
-    await persistDelete(
-      () => Promise.all([
-        api.products.deleteBySubcategory(subKey),
-        api.settings.update({ filamentSubcategories: nextSubcategories })
-      ]),
-      () => {
-        setFilamentSubcategories(nextSubcategories);
-        setProducts(prev => prev.filter(p => !p.subCategory || p.subCategory.toLowerCase() !== subKey.toLowerCase()));
-        showToast(`Removed subcategory "${subKey}" from system.`, 'info');
-      },
-      `subcategory "${subKey}"`
-    );
-  };
-
-  const resetFilamentSubcategoriesDefaults = () => {
-    try {
-      localStorage.removeItem(filamentSubcategoriesKey);
-    } catch {}
+  const resetFilamentSubcategoriesDefaults = useCallback(() => {
+    localStorage.removeItem(filamentSubcategoriesKey);
     setFilamentSubcategories(FILAMENT_SUBCATEGORIES);
-    showToast(`Reset filament subcategories to factory defaults.`, 'info');
-  };
+    api.settings.update({ filamentSubcategories: FILAMENT_SUBCATEGORIES }).catch(err => console.warn('[CartContext] Could not reset filament subcategories in MongoDB:', err.message));
+  }, [filamentSubcategoriesKey]);
 
-
-  // URL route change listener (popstate / hashchange)
-  useEffect(() => {
-    const handleUrlChange = () => {
-      const p = window.location.pathname.toLowerCase();
-      const h = window.location.hash.toLowerCase();
-      const s = window.location.search.toLowerCase();
-      if (p.includes('super') || h.includes('super') || s.includes('super')) {
-        setCurrentView("admin");
-        const detectedTab = getInitialAdminTab();
-        if (detectedTab && detectedTab !== adminActiveTab) {
-          setAdminActiveTabState(detectedTab);
-          localStorage.setItem(adminTabKey, detectedTab);
-        }
-      } else {
-        const storedView = localStorage.getItem(viewKey);
-        if (storedView !== 'admin') {
-          setCurrentView("storefront");
-        }
-      }
-    };
-
-    window.addEventListener('popstate', handleUrlChange);
-    window.addEventListener('hashchange', handleUrlChange);
-    return () => {
-      window.removeEventListener('popstate', handleUrlChange);
-      window.removeEventListener('hashchange', handleUrlChange);
-    };
-  }, [adminActiveTab]);
-
-  // ================= AUTHENTICATION METHODS =================
-  const openAuthModal = (mode = "login") => {
+  // Auth Handlers
+  const openAuthModal = useCallback((mode = 'login') => {
     setAuthModalMode(mode);
     setIsAuthModalOpen(true);
-  };
+  }, []);
 
-  const closeAuthModal = () => {
+  const closeAuthModal = useCallback(() => {
     setIsAuthModalOpen(false);
-  };
+  }, []);
 
-  const login = (email, password, authenticatedUser = null) => {
-    const cleanEmail = email.trim().toLowerCase();
-    const found = users.find(u => u.email.toLowerCase() === cleanEmail);
+  const login = useCallback(async (email, password) => {
+    try {
+      const response = await api.auth.login({ email, password });
+      if (response && response.data) {
+        const u = response.data;
+        setCurrentUser(u);
+        closeAuthModal();
+        return { success: true };
+      }
+    } catch {}
 
-    if (authenticatedUser) {
-      const loggedInUser = {
-        ...(found || {}),
-        ...authenticatedUser,
-        email: authenticatedUser.email.toLowerCase()
-      };
-      setUsers(prev => (
-        prev.some(u => u.email.toLowerCase() === cleanEmail)
-          ? prev.map(u => u.email.toLowerCase() === cleanEmail ? loggedInUser : u)
-          : [loggedInUser, ...prev]
-      ));
-      setCurrentUser(loggedInUser);
-      setIsAuthModalOpen(false);
-      return { success: true, user: loggedInUser };
-    }
-
+    const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
     if (!found) {
-      showToast("Account not found. Please sign up or check email.", "error");
       return { success: false, message: "Account not found." };
     }
-
-    if (found.password !== password) {
-      showToast("Invalid password! Please try again.", "error");
-      return { success: false, message: "Invalid password." };
+    if (found.password && found.password !== password) {
+      return { success: false, message: "Invalid password!" };
     }
 
     setCurrentUser(found);
-    setIsAuthModalOpen(false);
-    showToast(`Welcome back, ${found.name}! 👋`, "success");
+    closeAuthModal();
+    return { success: true };
+  }, [users, closeAuthModal]);
 
-    return { success: true, user: found };
-  };
-
-  const signup = (userData) => {
-    const cleanEmail = userData.email.trim().toLowerCase();
-    const exists = users.some(u => u.email.toLowerCase() === cleanEmail);
-
+  const signup = useCallback(async (formData) => {
+    const exists = users.some(u => u.email.toLowerCase() === formData.email.toLowerCase());
     if (exists) {
-      showToast("An account with this email already exists. Please log in.", "error");
       return { success: false, message: "Email already registered." };
     }
 
     const newUser = {
-      id: `usr-${Date.now().toString(36)}`,
-      name: userData.name.trim(),
-      email: cleanEmail,
-      password: userData.password,
-      phone: userData.phone ? userData.phone.trim() : "+91 98765 00000",
-      city: userData.city ? userData.city.trim() : "India",
-      role: "customer",
-      tier: userData.tier || "Student Maker",
-      joinedDate: new Date().toISOString().slice(0, 10)
-    };
-
-    // Add to users
-    setUsers(prev => [newUser, ...prev]);
-
-    // Add to customer accounts
-    setCustomers(prev => [
-      {
-        id: `CUST-${Date.now().toString().slice(-4)}`,
-        name: newUser.name,
-        email: newUser.email,
-        phone: newUser.phone,
-        city: newUser.city,
-        tier: newUser.tier,
-        totalOrders: 0,
-        totalSpent: 0,
-        status: "Active",
-        joinedDate: newUser.joinedDate
-      },
-      ...prev
-    ]);
-
-    // Auto-login
-    setCurrentUser(newUser);
-    setIsAuthModalOpen(false);
-    showToast(`Account created! Welcome to Creotex, ${newUser.name}! 🚀`, "success");
-
-    return { success: true, user: newUser };
-  };
-
-  const logout = () => {
-    const wasAdmin = currentUser?.role === 'super_admin';
-    localStorage.removeItem('creotex_auth_token');
-    localStorage.removeItem(adminTabKey);
-    setCurrentUser(null);
-    setIsAuthModalOpen(false);
-    if (wasAdmin && currentView === 'admin') {
-      navigateToStorefront();
-    }
-    showToast("You have been logged out successfully.", "info");
-  };
-
-  const updateProfile = (updatedFields) => {
-    if (!currentUser) return;
-    const updated = { ...currentUser, ...updatedFields };
-    setCurrentUser(updated);
-    setUsers(prev => prev.map(u => u.id === updated.id ? updated : u));
-    setCustomers(prev => prev.map(c => c.email === updated.email ? { ...c, ...updatedFields } : c));
-    showToast("Profile updated successfully!", "success");
-  };
-
-  // ================= ADMIN USER ACCOUNTS CRUD =================
-  const addUser = (userData) => {
-    const cleanEmail = userData.email.trim().toLowerCase();
-    const exists = users.some(u => u.email.toLowerCase() === cleanEmail);
-
-    if (exists) {
-      showToast("A user account with this email already exists.", "error");
-      return { success: false, message: "Email already registered." };
-    }
-
-    const newUser = {
-      id: `usr-${Date.now().toString(36)}`,
-      name: userData.name.trim(),
-      email: cleanEmail,
-      password: userData.password || "maker123",
-      phone: userData.phone ? userData.phone.trim() : "+91 98765 00000",
-      city: userData.city ? userData.city.trim() : "Bengaluru",
-      role: userData.role || "customer",
-      tier: userData.tier || (userData.role === 'super_admin' ? 'Super Admin' : 'Maker Pro'),
-      status: userData.status || "Active",
+      id: `USR-${Date.now().toString().slice(-4)}`,
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      role: 'customer',
+      tier: 'Maker Pro',
+      phone: formData.phone || '',
+      city: formData.city || 'Bengaluru',
+      state: formData.state || 'Karnataka',
+      address: formData.address || '',
+      pincode: formData.pincode || '',
+      status: 'Active',
       joinedDate: new Date().toISOString().slice(0, 10),
-      lastLogin: "Never"
+      lastLogin: 'Just now'
     };
 
     setUsers(prev => [newUser, ...prev]);
+    setCurrentUser(newUser);
+    closeAuthModal();
+    return { success: true };
+  }, [users, closeAuthModal]);
 
-    // Also sync to customer accounts directory if it's a customer / maker
-    if (newUser.role !== 'super_admin') {
-      setCustomers(prev => [
-        {
-          id: `CUST-${Date.now().toString().slice(-4)}`,
-          name: newUser.name,
-          email: newUser.email,
-          phone: newUser.phone,
-          city: newUser.city,
-          tier: newUser.tier,
-          totalOrders: 0,
-          totalSpent: 0,
-          status: newUser.status,
-          joinedDate: newUser.joinedDate
-        },
-        ...prev
-      ]);
+  const logout = useCallback(() => {
+    setCurrentUser(null);
+    localStorage.removeItem(authKey);
+    localStorage.removeItem('creotex_auth_token');
+    setCurrentView('storefront');
+  }, [authKey]);
+
+  const updateProfile = useCallback((profileData) => {
+    if (!currentUser) return;
+    const updated = { ...currentUser, ...profileData };
+    setCurrentUser(updated);
+    setUsers(prev => prev.map(u => (u.id === currentUser.id ? updated : u)));
+  }, [currentUser]);
+
+  // Admin User CRUD
+  const addUser = useCallback((userData) => {
+    const newUser = {
+      id: `USR-${Math.floor(1000 + Math.random() * 9000)}`,
+      status: 'Active',
+      joinedDate: new Date().toISOString().slice(0, 10),
+      lastLogin: 'Never',
+      tier: 'Hobbyist',
+      role: 'customer',
+      ...userData
+    };
+    setUsers(prev => [newUser, ...prev]);
+    return newUser;
+  }, []);
+
+  const updateUser = useCallback((userId, updatedData) => {
+    setUsers(prev => prev.map(u => (u.id === userId ? { ...u, ...updatedData } : u)));
+    if (currentUser?.id === userId) {
+      setCurrentUser(prev => ({ ...prev, ...updatedData }));
     }
+  }, [currentUser]);
 
-    showToast(`User account for ${newUser.name} created!`, "success");
-    return { success: true, user: newUser };
-  };
+  const deleteUser = useCallback((userId) => {
+    setUsers(prev => prev.filter(u => u.id !== userId));
+  }, []);
 
-  const updateUser = (id, updatedFields) => {
+  const resetUserPassword = useCallback((userId, newPassword) => {
+    setUsers(prev => prev.map(u => (u.id === userId ? { ...u, password: newPassword } : u)));
+  }, []);
+
+  const toggleUserStatus = useCallback((userId) => {
     setUsers(prev => prev.map(u => {
-      if (u.id === id) {
-        const merged = { ...u, ...updatedFields };
-        if (currentUser && currentUser.id === id) {
-          setCurrentUser(merged);
-        }
-        return merged;
+      if (u.id === userId) {
+        return { ...u, status: u.status === 'Active' ? 'Suspended' : 'Active' };
       }
       return u;
     }));
+  }, []);
 
-    // Sync corresponding customer record
-    setCustomers(prev => prev.map(c => {
-      const user = users.find(u => u.id === id);
-      if (user && (c.email.toLowerCase() === user.email.toLowerCase() || (updatedFields.email && c.email.toLowerCase() === updatedFields.email.toLowerCase()))) {
-        return {
-          ...c,
-          name: updatedFields.name !== undefined ? updatedFields.name : c.name,
-          email: updatedFields.email !== undefined ? updatedFields.email : c.email,
-          phone: updatedFields.phone !== undefined ? updatedFields.phone : c.phone,
-          city: updatedFields.city !== undefined ? updatedFields.city : c.city,
-          tier: updatedFields.tier !== undefined ? updatedFields.tier : c.tier,
-          status: updatedFields.status !== undefined ? updatedFields.status : c.status
-        };
-      }
-      return c;
-    }));
-
-    showToast("User account details updated!", "success");
-  };
-
-  const deleteUser = (id) => {
-    const target = users.find(u => u.id === id);
-    if (target && target.role === 'super_admin' && users.filter(u => u.role === 'super_admin').length <= 1) {
-      showToast("Cannot delete the primary Super Admin account!", "error");
-      return;
-    }
-
-    setUsers(prev => prev.filter(u => u.id !== id));
-    if (target) {
-      setCustomers(prev => prev.filter(c => c.email.toLowerCase() !== target.email.toLowerCase()));
-    }
-    showToast("User account removed from database.", "info");
-  };
-
-  const resetUserPassword = (id, newPassword) => {
-    setUsers(prev => prev.map(u => {
-      if (u.id === id) {
-        const updated = { ...u, password: newPassword };
-        if (currentUser && currentUser.id === id) {
-          setCurrentUser(updated);
-        }
-        return updated;
-      }
-      return u;
-    }));
-    showToast("Password updated for user!", "success");
-  };
-
-  const toggleUserStatus = (id) => {
-    setUsers(prev => prev.map(u => {
-      if (u.id === id) {
-        const nextStatus = u.status === 'Active' ? 'Suspended' : 'Active';
-        const updated = { ...u, status: nextStatus };
-        if (currentUser && currentUser.id === id) {
-          setCurrentUser(updated);
-        }
-        return updated;
-      }
-      return u;
-    }));
-    showToast("User account status toggled!", "info");
-  };
-
-  // ================= CART METHODS =================
-  const addItem = (productId, quantity = 1, customConfig = null) => {
+  // Cart Methods
+  const addItem = useCallback((productId, quantity = 1, customConfig = null) => {
     const product = typeof productId === 'object' ? productId : products.find(p => p.id === productId);
     if (!product) return false;
 
@@ -1084,14 +958,13 @@ export const CartProvider = ({ children }) => {
       }
     });
 
-    showToast(`Added ${product.name.substring(0, 24)}... to cart!`, "success");
     setIsCartOpen(true);
     return true;
-  };
+  }, [products]);
 
-  const updateQuantity = (cartItemId, quantity) => {
+  const updateQuantity = useCallback((cartItemId, quantity) => {
     if (quantity <= 0) {
-      removeItem(cartItemId);
+      setItems(prev => prev.filter(item => item.cartItemId !== cartItemId));
     } else {
       setItems(prev => prev.map(item => {
         if (item.cartItemId === cartItemId) {
@@ -1100,308 +973,269 @@ export const CartProvider = ({ children }) => {
         return item;
       }));
     }
-  };
+  }, []);
 
-  const removeItem = (cartItemId) => {
+  const removeItem = useCallback((cartItemId) => {
     setItems(prev => prev.filter(item => item.cartItemId !== cartItemId));
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setItems([]);
     setAppliedCoupon(null);
-  };
+  }, []);
 
-  // ================= COUPON METHODS =================
-  const applyCoupon = (code) => {
+  // Coupon Methods
+  const applyCoupon = useCallback((code) => {
     const upperCode = code.trim().toUpperCase();
     const coupon = coupons[upperCode];
 
     if (!coupon) {
-      showToast("Invalid coupon code! Try ROBO10 or MAKER50", "error");
       return { success: false, message: "Invalid coupon code!" };
     }
 
-    const subtotal = getSubtotal();
-    if (subtotal < coupon.minOrder) {
-      const msg = `Order subtotal must be at least ₹${coupon.minOrder} to apply ${upperCode}`;
-      showToast(msg, "error");
-      return { success: false, message: msg };
+    const currentSubtotal = items.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+    if (currentSubtotal < coupon.minOrder) {
+      return { success: false, message: `Minimum order of ₹${coupon.minOrder} required.` };
     }
 
     setAppliedCoupon({ code: upperCode, ...coupon });
-    showToast(`Coupon ${upperCode} applied successfully!`, "success");
     return { success: true, message: "Coupon applied!" };
-  };
+  }, [coupons, items]);
 
-  const removeCoupon = () => {
+  const removeCoupon = useCallback(() => {
     setAppliedCoupon(null);
-    showToast("Coupon removed.", "info");
-  };
+  }, []);
 
-  // ================= WISHLIST & COMPARE =================
-  const toggleWishlist = (productId) => {
-    const exists = wishlist.includes(productId);
-    if (exists) {
-      setWishlist(prev => prev.filter(id => id !== productId));
-      showToast("Removed from Wishlist", "info");
-    } else {
-      setWishlist(prev => [...prev, productId]);
-      showToast("Added to Wishlist!", "success");
+  // Wishlist
+  const toggleWishlist = useCallback((productId) => {
+    setWishlist(prev => (prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]));
+  }, []);
+
+  const isInWishlist = useCallback((productId) => wishlist.includes(productId), [wishlist]);
+
+  // Unified Cart Calculations (Single memoized loop for max performance)
+  const cartCalculations = useMemo(() => {
+    let count = 0;
+    let subtotal = 0;
+    let originalSubtotal = 0;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      const qty = item.quantity || 1;
+      count += qty;
+      subtotal += (item.price || 0) * qty;
+      originalSubtotal += (item.originalPrice || item.price || 0) * qty;
     }
-  };
 
-  const isInWishlist = (productId) => wishlist.includes(productId);
-
-  const toggleCompare = (productId) => {
-    const exists = compareList.includes(productId);
-    if (exists) {
-      setCompareList(prev => prev.filter(id => id !== productId));
-      showToast("Removed from comparison", "info");
-    } else {
-      if (compareList.length >= 4) {
-        showToast("You can compare a maximum of 4 products at once.", "error");
-        return;
+    let discountAmount = 0;
+    if (appliedCoupon) {
+      if (appliedCoupon.flatDiscount) {
+        discountAmount = Math.min(appliedCoupon.flatDiscount, subtotal);
+      } else if (appliedCoupon.discountPercent) {
+        discountAmount = Math.round((subtotal * appliedCoupon.discountPercent) / 100);
       }
-      setCompareList(prev => [...prev, productId]);
-      showToast(`Added to comparison (${compareList.length + 1}/4)`, "info");
     }
-  };
 
-  const isInCompare = (productId) => compareList.includes(productId);
-  const clearCompare = () => setCompareList([]);
+    const freeThreshold = storeSettings.freeShippingThreshold || 999;
+    const stdShipping = storeSettings.standardShippingCost || 79;
+    const gstRateVal = (storeSettings.gstRate || 18) / 100;
 
-  // ================= CALCULATIONS =================
-  const getSubtotal = () => items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const getOriginalSubtotal = () => items.reduce((sum, item) => sum + item.originalPrice * item.quantity, 0);
-
-  const getDiscountAmount = () => {
-    const subtotal = getSubtotal();
-    if (!appliedCoupon) return 0;
-    if (appliedCoupon.flatDiscount) {
-      return Math.min(appliedCoupon.flatDiscount, subtotal);
-    } else if (appliedCoupon.discountPercent) {
-      return Math.round((subtotal * appliedCoupon.discountPercent) / 100);
-    }
-    return 0;
-  };
-
-  const getShippingCost = () => {
-    const subtotal = getSubtotal();
-    if (subtotal === 0 || subtotal >= freeShippingThreshold) return 0;
-    return standardShippingCost;
-  };
-
-  const getTotal = () => {
-    const subtotal = getSubtotal();
-    if (subtotal === 0) return 0;
-    const discount = getDiscountAmount();
-    const shipping = getShippingCost();
-    return Math.max(0, subtotal - discount + shipping);
-  };
-
-  const getGstBreakdown = () => {
-    const total = getTotal();
-    const basePrice = Math.round(total / (1 + gstRate));
+    const shippingCost = (subtotal === 0 || subtotal >= freeThreshold) ? 0 : stdShipping;
+    const total = Math.max(0, subtotal - discountAmount + shippingCost);
+    const basePrice = Math.round(total / (1 + gstRateVal));
     const gstAmount = total - basePrice;
-    return { basePrice, gstAmount };
-  };
 
-  const getFreeShippingProgress = () => {
-    const subtotal = getSubtotal();
-    const needed = Math.max(0, freeShippingThreshold - subtotal);
-    const percent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
+    const needed = Math.max(0, freeThreshold - subtotal);
+    const percent = Math.min(100, Math.round((subtotal / freeThreshold) * 100));
+
     return {
-      qualified: subtotal >= freeShippingThreshold,
+      totalCount: count,
       subtotal,
-      threshold: freeShippingThreshold,
-      needed,
-      percent
+      originalSubtotal,
+      discountAmount,
+      shippingCost,
+      total,
+      gst: { basePrice, gstAmount },
+      freeShipping: {
+        qualified: subtotal >= freeThreshold,
+        subtotal,
+        threshold: freeThreshold,
+        needed,
+        percent
+      },
+      totalSavings: (originalSubtotal - subtotal) + discountAmount
     };
-  };
-
-  const totalCount = items.reduce((count, item) => count + item.quantity, 0);
+  }, [items, appliedCoupon, storeSettings.freeShippingThreshold, storeSettings.standardShippingCost, storeSettings.gstRate]);
 
   // Filters Reset
-  const resetFilters = () => {
+  const resetFilters = useCallback(() => {
     setCurrentCategory("all");
     setCurrentTag("all");
     setMaxPrice(5000);
     setSearchQuery("");
     setSortBy("featured");
-    showToast("All filters have been reset", "info");
-  };
+  }, []);
 
-  const openQuickView = (productId) => {
+  const openQuickView = useCallback((productId) => {
     const product = typeof productId === 'object' ? productId : products.find(p => p.id === productId);
     if (product) {
       setQuickViewProduct(product);
     }
-  };
+  }, [products]);
 
-  const closeQuickView = () => setQuickViewProduct(null);
+  const closeQuickView = useCallback(() => setQuickViewProduct(null), []);
 
-  const openCheckoutModal = () => {
-    if (items.length === 0) {
-      showToast("Your cart is empty! Add products first.", "error");
-      return;
-    }
+  const openCheckoutModal = useCallback(() => {
+    if (items.length === 0) return;
     setIsCartOpen(false);
     setCheckoutStep(1);
     setIsCheckoutOpen(true);
-  };
+  }, [items.length]);
 
-  const closeCheckoutModal = () => setIsCheckoutOpen(false);
+  const closeCheckoutModal = useCallback(() => setIsCheckoutOpen(false), []);
 
-  // ================= ADMIN PRODUCT CRUD =================
-  const addProduct = (newProduct) => {
-    const id = newProduct.id || `prod-${Date.now().toString(36)}`;
+  // Product CRUD
+  const addProduct = useCallback(async (productData) => {
+    const newId = productData.id || `3dp-${Date.now().toString().slice(-4)}`;
     const productToAdd = {
-      ...newProduct,
-      id,
-      rating: newProduct.rating || 4.8,
-      reviewsCount: newProduct.reviewsCount || 1,
-      stock: parseInt(newProduct.stock, 10) || 0,
-      price: parseFloat(newProduct.price) || 0,
-      originalPrice: parseFloat(newProduct.originalPrice) || parseFloat(newProduct.price) || 0,
-      tags: Array.isArray(newProduct.tags) ? newProduct.tags : (newProduct.tags || "").split(",").map(t => t.trim()).filter(Boolean),
-      specs: typeof newProduct.specs === 'object' ? newProduct.specs : {}
+      ...productData,
+      id: newId,
+      customId: newId,
+      rating: productData.rating || 5.0,
+      reviewsCount: productData.reviewsCount || 1,
+      createdAt: new Date().toISOString()
     };
 
+    // 1. Instantly update local state so UI updates with zero lag
     setProducts(prev => [productToAdd, ...prev]);
-    showToast(`Product "${productToAdd.name}" added successfully!`, "success");
-    return productToAdd;
-  };
 
-  const updateProduct = (id, updatedFields) => {
-    setProducts(prev => prev.map(p => {
-      if (p.id === id) {
-        return {
-          ...p,
-          ...updatedFields,
-          stock: updatedFields.stock !== undefined ? parseInt(updatedFields.stock, 10) : p.stock,
-          price: updatedFields.price !== undefined ? parseFloat(updatedFields.price) : p.price,
-          originalPrice: updatedFields.originalPrice !== undefined ? parseFloat(updatedFields.originalPrice) : p.originalPrice
+    // 2. Persist to MongoDB database via Backend API
+    try {
+      const response = await api.products.create({
+        ...productToAdd,
+        customId: newId,
+        sku: (productToAdd.sku || `CTX-${Date.now()}`).toUpperCase().trim()
+      });
+      if (response && response.data) {
+        const saved = response.data;
+        const normalized = {
+          ...saved,
+          id: saved.customId || (saved._id ? saved._id.toString() : newId)
         };
+        setProducts(prev => prev.map(p => (p.id === newId ? normalized : p)));
+        return normalized;
       }
-      return p;
-    }));
-    showToast(`Product updated successfully!`, "success");
-  };
+    } catch (err) {
+      console.warn('[CartContext] Could not persist product to MongoDB:', err.message);
+    }
+    return productToAdd;
+  }, []);
 
-  const deleteProduct = async (id) => {
+  const updateProduct = useCallback(async (id, updatedData) => {
+    setProducts(prev => prev.map(p => (p.id === id ? { ...p, ...updatedData } : p)));
+
+    try {
+      await api.products.update(id, updatedData);
+    } catch (err) {
+      console.warn('[CartContext] Could not update product in MongoDB:', err.message);
+    }
+  }, []);
+
+  const deleteProduct = useCallback(async (id) => {
     await persistDelete(
       () => api.products.delete(id),
-      () => {
-        setProducts(prev => prev.filter(p => p.id !== id));
-        showToast("Product deleted from catalog", "info");
-      },
+      () => setProducts(prev => prev.filter(p => p.id !== id)),
       'product'
     );
-  };
+  }, []);
 
-  const updateStock = (id, newStock) => {
-    setProducts(prev => prev.map(p => (p.id === id ? { ...p, stock: Math.max(0, parseInt(newStock, 10) || 0) } : p)));
-    showToast("Stock updated successfully!", "success");
-  };
+  const updateStock = useCallback(async (id, newStock) => {
+    const stockVal = Math.max(0, parseInt(newStock, 10));
+    setProducts(prev => prev.map(p => (p.id === id ? { ...p, stock: stockVal } : p)));
 
-  // ================= ADMIN ORDER MANAGEMENT =================
-  const createOrder = (orderData) => {
+    try {
+      await api.products.update(id, { stock: stockVal });
+    } catch (err) {
+      console.warn('[CartContext] Could not update stock in MongoDB:', err.message);
+    }
+  }, []);
+
+  // Order CRUD
+  const createOrder = useCallback(async (orderData) => {
+    try {
+      const response = await api.orders.create(orderData);
+      if (response && response.data) {
+        const o = response.data;
+        const normalized = {
+          ...o,
+          id: o.orderId || o.id || `ORD-${Date.now().toString().slice(-4)}`
+        };
+        setOrders(prev => [normalized, ...prev]);
+        clearCart();
+        return normalized;
+      }
+    } catch {}
+
+    const randomId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
     const newOrder = {
-      id: orderData.id || `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
-      date: new Date().toISOString().replace('T', ' ').substring(0, 16),
-      customer: orderData.customer,
-      items: orderData.items || items,
-      subtotal: orderData.subtotal || getSubtotal(),
-      discount: orderData.discount || getDiscountAmount(),
-      shipping: orderData.shipping || getShippingCost(),
-      tax: orderData.tax || getGstBreakdown().gstAmount,
-      totalAmount: orderData.totalAmount || getTotal(),
-      couponApplied: orderData.couponApplied || (appliedCoupon ? appliedCoupon.code : null),
-      paymentMethod: orderData.paymentMethod || "UPI",
-      paymentStatus: orderData.paymentStatus || "Paid",
-      orderStatus: orderData.orderStatus || "Processing",
-      trackingNumber: orderData.trackingNumber || `BLUEDART-${Math.floor(10000000 + Math.random() * 90000000)}`
+      id: randomId,
+      date: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      orderStatus: "Processing",
+      paymentStatus: "Paid",
+      trackingNumber: `CTX-EXPRESS-${Date.now().toString().slice(-6)}`,
+      ...orderData
     };
 
-    // Deduct stock
-    setProducts(prev => prev.map(prod => {
-      const purchased = (orderData.items || items).find(item => item.id === prod.id);
-      if (purchased) {
-        return { ...prod, stock: Math.max(0, prod.stock - purchased.quantity) };
-      }
-      return prod;
-    }));
+    setOrders(prev => [newOrder, ...prev]);
 
-    // Update customer stats
-    if (orderData.customer && orderData.customer.email) {
-      setCustomers(prev => {
-        const existing = prev.find(c => c.email === orderData.customer.email);
-        if (existing) {
-          return prev.map(c => c.email === orderData.customer.email ? {
-            ...c,
-            totalOrders: c.totalOrders + 1,
-            totalSpent: c.totalSpent + (orderData.totalAmount || getTotal())
-          } : c);
-        } else {
-          return [
-            ...prev,
-            {
-              id: `CUST-${Date.now().toString().slice(-4)}`,
-              name: orderData.customer.name,
-              email: orderData.customer.email,
-              phone: orderData.customer.phone,
-              city: orderData.customer.city || "India",
-              tier: "Hobbyist",
-              totalOrders: 1,
-              totalSpent: orderData.totalAmount || getTotal(),
-              status: "Active",
-              joinedDate: new Date().toISOString().slice(0, 10)
-            }
-          ];
-        }
+    // Deduct stock locally
+    if (orderData.items) {
+      orderData.items.forEach(item => {
+        updateStock(item.id, (products.find(p => p.id === item.id)?.stock || 10) - item.quantity);
       });
     }
 
-    setOrders(prev => [newOrder, ...prev]);
+    clearCart();
     return newOrder;
-  };
+  }, [clearCart, products, updateStock]);
 
-  const updateOrderStatus = (orderId, newStatus, trackingNumber = null) => {
-    setOrders(prev => prev.map(ord => {
-      if (ord.id === orderId) {
-        return {
-          ...ord,
-          orderStatus: newStatus,
-          trackingNumber: trackingNumber !== null ? trackingNumber : ord.trackingNumber
-        };
-      }
-      return ord;
-    }));
-    showToast(`Order ${orderId} status set to ${newStatus}`, "success");
-  };
+  const updateOrderStatus = useCallback(async (orderId, newStatus) => {
+    setOrders(prev => prev.map(o => (o.id === orderId ? { ...o, orderStatus: newStatus } : o)));
 
-  const deleteOrder = async (orderId) => {
+    try {
+      await api.orders.updateStatus(orderId, { status: newStatus });
+    } catch (err) {
+      console.warn('[CartContext] Could not update order status in MongoDB:', err.message);
+    }
+  }, []);
+
+  const deleteOrder = useCallback(async (orderId) => {
     await persistDelete(
       () => api.orders.delete(orderId),
-      () => {
-        setOrders(prev => prev.filter(o => o.id !== orderId));
-        showToast(`Order ${orderId} removed`, "info");
-      },
-      `order ${orderId}`
+      () => setOrders(prev => prev.filter(o => o.id !== orderId)),
+      'order'
     );
-  };
+  }, []);
 
-  // ================= ADMIN COUPONS =================
-  const addCoupon = (code, couponData) => {
+  // Coupon CRUD
+  const addCoupon = useCallback(async (code, couponData) => {
     const upper = code.trim().toUpperCase();
-    setCoupons(prev => ({
-      ...prev,
-      [upper]: couponData
-    }));
-    showToast(`Coupon ${upper} added!`, "success");
-  };
+    setCoupons(prev => ({ ...prev, [upper]: couponData }));
 
-  const deleteCoupon = async (code) => {
+    try {
+      await api.coupons.create({
+        code: upper,
+        discountType: couponData.discountType || (couponData.type === 'percentage' ? 'percentage' : 'fixed'),
+        discountValue: couponData.discount || couponData.discountValue || 10,
+        minOrderAmount: couponData.minOrderAmount || couponData.minOrder || 0,
+        description: couponData.description || `Special coupon ${upper}`
+      });
+    } catch (err) {
+      console.warn('[CartContext] Could not persist coupon to MongoDB:', err.message);
+    }
+  }, []);
+
+  const deleteCoupon = useCallback(async (code) => {
     await persistDelete(
       () => api.coupons.delete(code),
       () => {
@@ -1410,669 +1244,461 @@ export const CartProvider = ({ children }) => {
           delete next[code];
           return next;
         });
-        showToast(`Coupon ${code} deleted`, "info");
       },
-      `coupon ${code}`
+      'coupon'
     );
-  };
+  }, []);
 
-  // ================= ADMIN CUSTOMERS =================
-  const addCustomer = (customerData) => {
-    const id = `CUST-${Date.now().toString().slice(-4)}`;
+  // Customer CRUD
+  const addCustomer = useCallback(async (customerData) => {
+    const id = `CUST-${Date.now().toString().slice(-3)}`;
     const newCust = {
       ...customerData,
       id,
-      totalOrders: 0,
-      totalSpent: 0,
-      status: "Active",
-      joinedDate: new Date().toISOString().slice(0, 10)
+      totalOrders: 1,
+      joinedDate: new Date().toISOString().slice(0, 10),
+      status: "Active"
     };
     setCustomers(prev => [newCust, ...prev]);
-    showToast(`Customer ${newCust.name} added!`, "success");
-  };
 
-  const updateCustomer = (id, updated) => {
-    setCustomers(prev => prev.map(c => (c.id === id ? { ...c, ...updated } : c)));
-    showToast("Customer record updated", "success");
-  };
+    try {
+      await api.customers.create(newCust);
+    } catch (err) {
+      console.warn('[CartContext] Could not persist customer to MongoDB:', err.message);
+    }
+  }, []);
 
-  const deleteCustomer = async (id) => {
+  const updateCustomer = useCallback(async (id, data) => {
+    setCustomers(prev => prev.map(c => (c.id === id ? { ...c, ...data } : c)));
+
+    try {
+      await api.customers.update(id, data);
+    } catch (err) {
+      console.warn('[CartContext] Could not update customer in MongoDB:', err.message);
+    }
+  }, []);
+
+  const deleteCustomer = useCallback(async (id) => {
     await persistDelete(
       () => api.customers.delete(id),
-      () => {
-        setCustomers(prev => prev.filter(c => c.id !== id));
-        showToast("Customer record deleted", "info");
-      },
+      () => setCustomers(prev => prev.filter(c => c.id !== id)),
       'customer'
     );
-  };
+  }, []);
 
-  // ================= ADMIN DATASHEETS =================
-  const addDatasheet = (data) => {
-    const id = `DS-${Date.now().toString().slice(-3)}`;
-    const newDs = {
-      ...data,
-      id,
-      downloads: 0,
-      lastUpdated: new Date().toISOString().slice(0, 10)
-    };
-    setDatasheets(prev => [newDs, ...prev]);
-    showToast("Technical Datasheet added!", "success");
-  };
-
-  const deleteDatasheet = async (id) => {
-    await persistDelete(
-      () => api.datasheets.delete(id),
-      () => {
-        setDatasheets(prev => prev.filter(d => d.id !== id));
-        showToast("Datasheet removed", "info");
-      },
-      'datasheet'
-    );
-  };
-
-  // ================= ROBOT BUILDER ADMIN CRUD =================
-  const updateRobotBuilderSettings = (newSettings) => {
-    setRobotBuilderSettings(prev => ({ ...prev, ...newSettings }));
-    showToast("Robot Builder settings updated!", "success");
-  };
-
-  const saveRobotBuilderPreset = (presetKey, presetData) => {
-    setRobotBuilderPresets(prev => ({
-      ...prev,
-      [presetKey]: {
-        ...prev[presetKey],
-        ...presetData,
-        id: presetKey
-      }
-    }));
-    showToast(`Preset "${presetData.name || presetKey}" saved successfully!`, "success");
-  };
-
-  const deleteRobotBuilderPreset = async (presetKey) => {
-    const nextPresets = { ...robotBuilderPresets };
-    delete nextPresets[presetKey];
-
-    await persistDelete(
-      () => api.robotBuilder.updatePresets(nextPresets),
-      () => {
-        setRobotBuilderPresets(nextPresets);
-        showToast(`Preset "${presetKey}" removed`, "info");
-      },
-      `robot preset "${presetKey}"`
-    );
-  };
-
-  const saveRobotBuilderSlot = (slotKey, slotData) => {
-    setRobotBuilderSlots(prev => {
-      const existingIdx = prev.findIndex(s => s.key === slotKey);
-      if (existingIdx >= 0) {
-        const updated = [...prev];
-        updated[existingIdx] = { ...updated[existingIdx], ...slotData };
-        return updated;
-      } else {
-        return [...prev, { key: slotKey, ...slotData, options: slotData.options || [] }];
-      }
-    });
-    showToast(`Slot "${slotData.name || slotKey}" saved!`, "success");
-  };
-
-  const deleteRobotBuilderSlot = async (slotKey) => {
-    const nextSlots = robotBuilderSlots.filter(s => s.key !== slotKey);
-    await persistDelete(
-      () => api.robotBuilder.updateSlots(nextSlots),
-      () => {
-        setRobotBuilderSlots(nextSlots);
-        showToast(`Slot "${slotKey}" deleted`, "info");
-      },
-      `robot builder slot "${slotKey}"`
-    );
-  };
-
-  const addSlotOption = (slotKey, optionData) => {
-    const optId = optionData.id || `opt-${Date.now().toString(36)}`;
-    const newOpt = {
-      ...optionData,
-      id: optId,
-      price: parseFloat(optionData.price) || 0
-    };
-
-    setRobotBuilderSlots(prev => prev.map(slot => {
-      if (slot.key === slotKey) {
-        return {
-          ...slot,
-          options: [...(slot.options || []), newOpt]
-        };
-      }
-      return slot;
-    }));
-    showToast(`Added "${newOpt.name}" to ${slotKey}!`, "success");
-  };
-
-  const updateSlotOption = (slotKey, optionId, optionData) => {
-    setRobotBuilderSlots(prev => prev.map(slot => {
-      if (slot.key === slotKey) {
-        return {
-          ...slot,
-          options: (slot.options || []).map(opt => (
-            opt.id === optionId
-              ? { ...opt, ...optionData, price: parseFloat(optionData.price !== undefined ? optionData.price : opt.price) || 0 }
-              : opt
-          ))
-        };
-      }
-      return slot;
-    }));
-    showToast("Component option updated successfully!", "success");
-  };
-
-  const deleteSlotOption = async (slotKey, optionId) => {
-    const nextSlots = robotBuilderSlots.map(slot => {
-      if (slot.key === slotKey) {
-        return {
-          ...slot,
-          options: (slot.options || []).filter(opt => opt.id !== optionId)
-        };
-      }
-      return slot;
-    });
-
-    await persistDelete(
-      () => api.robotBuilder.updateSlots(nextSlots),
-      () => {
-        setRobotBuilderSlots(nextSlots);
-        showToast("Component option removed from slot", "info");
-      },
-      'robot builder component'
-    );
-  };
-
-  const resetRobotBuilderDefaults = () => {
-    localStorage.removeItem(builderPresetsKey);
-    localStorage.removeItem(builderSlotsKey);
-    localStorage.removeItem(builderSettingsKey);
-    setRobotBuilderPresets(DEFAULT_BUILDER_PRESETS);
-    setRobotBuilderSlots(DEFAULT_BUILDER_SLOTS);
-    setRobotBuilderSettings(DEFAULT_BUILDER_SETTINGS);
-    showToast("Restored Robot Builder factory presets & slots!", "info");
-  };
-
-  // ================= SETTINGS & RESET =================
-  const updateStoreSettings = (newSettings) => {
+  // Store Settings & Reset
+  const updateStoreSettings = useCallback(async (newSettings) => {
     setStoreSettings(prev => ({ ...prev, ...newSettings }));
-    showToast("Store settings saved successfully!", "success");
-  };
 
-  const resetDemoData = () => {
+    try {
+      await api.settings.update(newSettings);
+    } catch (err) {
+      console.warn('[CartContext] Could not persist settings to MongoDB:', err.message);
+    }
+  }, []);
+
+  const resetDemoData = useCallback(() => {
     localStorage.removeItem(productsKey);
     localStorage.removeItem(ordersKey);
     localStorage.removeItem(couponsKey);
     localStorage.removeItem(customersKey);
-    localStorage.removeItem(datasheetsKey);
     localStorage.removeItem(settingsKey);
     localStorage.removeItem(usersKey);
     localStorage.removeItem(authKey);
-    localStorage.removeItem(builderPresetsKey);
-    localStorage.removeItem(builderSlotsKey);
-    localStorage.removeItem(builderSettingsKey);
-
     localStorage.removeItem(navbarCategoriesKey);
     localStorage.removeItem(navbarSettingsKey);
-    localStorage.removeItem(flashDealsSettingsKey);
     localStorage.removeItem(filamentSectionSettingsKey);
 
     setProducts(PRODUCTS_DATA);
     setOrders(INITIAL_ORDERS);
     setCoupons(COUPON_CODES);
     setCustomers(INITIAL_CUSTOMERS);
-    setDatasheets(INITIAL_DATASHEETS);
     setStoreSettings(INITIAL_SETTINGS);
     setUsers(INITIAL_USERS);
     setCurrentUser(null);
-    setRobotBuilderPresets(DEFAULT_BUILDER_PRESETS);
-    setRobotBuilderSlots(DEFAULT_BUILDER_SLOTS);
-    setRobotBuilderSettings(DEFAULT_BUILDER_SETTINGS);
     setNavbarCategories(DEFAULT_NAVBAR_CATEGORIES);
     setNavbarSettings(DEFAULT_NAVBAR_SETTINGS);
-    setFlashDealsSettings(DEFAULT_FLASH_DEALS_SETTINGS);
     setFilamentSectionSettings(DEFAULT_FILAMENT_SECTION_SETTINGS);
+  }, [productsKey, ordersKey, couponsKey, customersKey, settingsKey, usersKey, authKey, navbarCategoriesKey, navbarSettingsKey, filamentSectionSettingsKey]);
 
-    showToast("Reset all store, accounts & demo data to original state", "info");
-  };
-
-  // ================= NAVBAR CATEGORIES CRUD =================
-  const addNavbarCategory = (newCat) => {
+  // Navbar Categories CRUD
+  const addNavbarCategory = useCallback((newCat) => {
     const id = newCat.id ? newCat.id.toLowerCase().replace(/[^a-z0-9_-]/g, '-') : `cat-${Date.now().toString(36)}`;
     const order = newCat.order || (navbarCategories.length + 1);
     const catToAdd = {
       ...newCat,
       id,
       order: Number(order),
-      active: newCat.active !== false
+      active: newCat.active !== undefined ? newCat.active : true
     };
     setNavbarCategories(prev => [...prev, catToAdd]);
-    showToast(`Category "${catToAdd.name}" added to Navbar!`, "success");
-    return catToAdd;
-  };
+  }, [navbarCategories.length]);
 
-  const updateNavbarCategory = (id, updatedCat) => {
-    setNavbarCategories(prev => prev.map(c => c.id === id ? { ...c, ...updatedCat } : c));
-    showToast(`Navbar category updated!`, "success");
-  };
+  const updateNavbarCategory = useCallback((id, updatedData) => {
+    setNavbarCategories(prev => prev.map(c => (c.id === id ? { ...c, ...updatedData } : c)));
+  }, []);
 
-  const deleteNavbarCategory = async (id) => {
-    const nextCategories = navbarCategories.filter(c => c.id !== id);
-    await persistDelete(
-      () => api.settings.update({ navbarCategories: nextCategories }),
-      () => {
-        setNavbarCategories(nextCategories);
-        showToast(`Category removed from Navbar!`, "info");
-      },
-      'navbar category'
-    );
-  };
+  const deleteNavbarCategory = useCallback((id) => {
+    setNavbarCategories(prev => prev.filter(c => c.id !== id));
+  }, []);
 
-  const toggleNavbarCategoryActive = (id) => {
-    setNavbarCategories(prev => prev.map(c => {
-      if (c.id === id) {
-        const nextActive = !c.active;
-        showToast(`Category "${c.name}" is now ${nextActive ? 'PUBLISHED' : 'UNPUBLISHED (Hidden)'}!`, nextActive ? "success" : "info");
-        return { ...c, active: nextActive };
-      }
-      return c;
-    }));
-  };
+  const toggleNavbarCategoryActive = useCallback((id) => {
+    setNavbarCategories(prev => prev.map(c => (c.id === id ? { ...c, active: !c.active } : c)));
+  }, []);
 
-  const updateNavbarSettings = (newSettings) => {
+  const updateNavbarSettings = useCallback((newSettings) => {
     setNavbarSettings(prev => ({ ...prev, ...newSettings }));
-    showToast("Navbar categories settings updated!", "success");
-  };
+  }, []);
 
-  const reorderNavbarCategories = (reorderedList) => {
-    setNavbarCategories(reorderedList.map((cat, idx) => ({ ...cat, order: idx + 1 })));
-    showToast("Navbar order updated!", "success");
-  };
+  const reorderNavbarCategories = useCallback((reorderedCats) => {
+    setNavbarCategories(reorderedCats);
+  }, []);
 
-  const resetNavbarCategoriesDefaults = () => {
+  const resetNavbarCategoriesDefaults = useCallback(() => {
     localStorage.removeItem(navbarCategoriesKey);
     localStorage.removeItem(navbarSettingsKey);
     setNavbarCategories(DEFAULT_NAVBAR_CATEGORIES);
     setNavbarSettings(DEFAULT_NAVBAR_SETTINGS);
-    showToast("Navbar categories reset to factory defaults!", "info");
-  };
+  }, [navbarCategoriesKey, navbarSettingsKey]);
 
-  // ================= HERO SLIDES & SIDE PROMO BANNERS CRUD =================
-  const addHeroSlide = (slideData) => {
-    const id = slideData.id || `slide-${Date.now()}`;
-    const newSlide = {
-      ...slideData,
+  // Hero Slides & Banners CRUD
+  const addHeroSlide = useCallback((newSlide) => {
+    const id = newSlide.id || `slide-${Date.now().toString(36)}`;
+    const order = newSlide.order || (heroSlides.length + 1);
+    const slideToAdd = {
+      ...newSlide,
       id,
-      order: slideData.order || (heroSlides.length + 1),
-      active: slideData.active !== false
+      order: Number(order),
+      active: newSlide.active !== undefined ? newSlide.active : true
     };
-    setHeroSlides(prev => [...prev, newSlide]);
-    showToast(`Hero Slide "${slideData.titleHighlight || slideData.title}" added successfully!`, "success");
-    return newSlide;
-  };
+    setHeroSlides(prev => [...prev, slideToAdd]);
+  }, [heroSlides.length]);
 
-  const updateHeroSlide = (id, updatedData) => {
+  const updateHeroSlide = useCallback((id, updatedData) => {
     setHeroSlides(prev => prev.map(s => (s.id === id ? { ...s, ...updatedData } : s)));
-    showToast("Hero Slide updated successfully!", "success");
-  };
+  }, []);
 
-  const deleteHeroSlide = async (id) => {
-    const nextSlides = heroSlides.filter(s => s.id !== id);
-    await persistDelete(
-      () => api.settings.update({ heroSlides: nextSlides }),
-      () => {
-        setHeroSlides(nextSlides);
-        showToast("Hero Slide removed!", "info");
-      },
-      'hero slide'
-    );
-  };
+  const deleteHeroSlide = useCallback((id) => {
+    setHeroSlides(prev => prev.filter(s => s.id !== id));
+  }, []);
 
-  const toggleHeroSlideActive = (id) => {
-    setHeroSlides(prev => prev.map(s => {
-      if (s.id === id) {
-        const nextActive = !s.active;
-        showToast(`Hero Slide is now ${nextActive ? 'PUBLISHED (Visible)' : 'UNPUBLISHED (Hidden)'}!`, nextActive ? "success" : "info");
-        return { ...s, active: nextActive };
-      }
-      return s;
-    }));
-  };
+  const toggleHeroSlideActive = useCallback((id) => {
+    setHeroSlides(prev => prev.map(s => (s.id === id ? { ...s, active: !s.active } : s)));
+  }, []);
 
-  const reorderHeroSlides = (reorderedList) => {
-    setHeroSlides(reorderedList.map((slide, idx) => ({ ...slide, order: idx + 1 })));
-    showToast("Hero slides order updated!", "success");
-  };
+  const reorderHeroSlides = useCallback((reorderedSlides) => {
+    setHeroSlides(reorderedSlides);
+  }, []);
 
-  const addHeroSideBanner = (bannerData) => {
-    const id = bannerData.id || `side-${Date.now()}`;
-    const newBanner = {
-      ...bannerData,
+  const addHeroSideBanner = useCallback((newBanner) => {
+    const id = newBanner.id || `side-${Date.now().toString(36)}`;
+    const order = newBanner.order || (heroSideBanners.length + 1);
+    const bannerToAdd = {
+      ...newBanner,
       id,
-      order: bannerData.order || (heroSideBanners.length + 1),
-      active: bannerData.active !== false
+      order: Number(order),
+      active: newBanner.active !== undefined ? newBanner.active : true
     };
-    setHeroSideBanners(prev => [...prev, newBanner]);
-    showToast(`Side Promo Banner "${bannerData.title}" added successfully!`, "success");
-    return newBanner;
-  };
+    setHeroSideBanners(prev => [...prev, bannerToAdd]);
+  }, [heroSideBanners.length]);
 
-  const updateHeroSideBanner = (id, updatedData) => {
+  const updateHeroSideBanner = useCallback((id, updatedData) => {
     setHeroSideBanners(prev => prev.map(b => (b.id === id ? { ...b, ...updatedData } : b)));
-    showToast("Side Banner updated successfully!", "success");
-  };
+  }, []);
 
-  const deleteHeroSideBanner = async (id) => {
-    const nextBanners = heroSideBanners.filter(b => b.id !== id);
-    await persistDelete(
-      () => api.settings.update({ heroSideBanners: nextBanners }),
-      () => {
-        setHeroSideBanners(nextBanners);
-        showToast("Side Banner removed!", "info");
-      },
-      'side banner'
-    );
-  };
+  const deleteHeroSideBanner = useCallback((id) => {
+    setHeroSideBanners(prev => prev.filter(b => b.id !== id));
+  }, []);
 
-  const toggleHeroSideBannerActive = (id) => {
-    setHeroSideBanners(prev => prev.map(b => {
-      if (b.id === id) {
-        const nextActive = !b.active;
-        showToast(`Side Banner is now ${nextActive ? 'PUBLISHED (Visible)' : 'UNPUBLISHED (Hidden)'}!`, nextActive ? "success" : "info");
-        return { ...b, active: nextActive };
-      }
-      return b;
-    }));
-  };
+  const toggleHeroSideBannerActive = useCallback((id) => {
+    setHeroSideBanners(prev => prev.map(b => (b.id === id ? { ...b, active: !b.active } : b)));
+  }, []);
 
-  const reorderHeroSideBanners = (reorderedList) => {
-    setHeroSideBanners(reorderedList.map((banner, idx) => ({ ...banner, order: idx + 1 })));
-    showToast("Side banners order updated!", "success");
-  };
+  const reorderHeroSideBanners = useCallback((reorderedBanners) => {
+    setHeroSideBanners(reorderedBanners);
+  }, []);
 
-  const updateHeroSettings = (newSettings) => {
+  const updateHeroSettings = useCallback((newSettings) => {
     setHeroSettings(prev => ({ ...prev, ...newSettings }));
-    showToast("Hero section settings updated!", "success");
-  };
+  }, []);
 
-  const resetHeroDefaults = () => {
+  const resetHeroDefaults = useCallback(() => {
     localStorage.removeItem(heroSlidesKey);
     localStorage.removeItem(heroSideBannersKey);
     localStorage.removeItem(heroSettingsKey);
     setHeroSlides(DEFAULT_HERO_SLIDES);
     setHeroSideBanners(DEFAULT_HERO_SIDE_BANNERS);
     setHeroSettings(DEFAULT_HERO_SETTINGS);
-    showToast("Hero slider & banners reset to factory defaults!", "info");
-  };
+  }, [heroSlidesKey, heroSideBannersKey, heroSettingsKey]);
 
-  // ================= FLASH DEALS & FILAMENT SECTION MANAGEMENT =================
-  const updateFlashDealsSettings = (newSettings) => {
-    setFlashDealsSettings(prev => {
-      const updated = { ...prev, ...newSettings };
-      try {
-        api.settings.update({ flashDealsSettings: updated }).catch(() => {});
-      } catch {}
-      return updated;
-    });
-    showToast("Flash Deals settings saved successfully!", "success");
-  };
+  // Filament Section Settings
+  const updateFilamentSectionSettings = useCallback((newSettings) => {
+    setFilamentSectionSettings(prev => ({ ...prev, ...newSettings }));
+  }, []);
 
-  const updateFilamentSectionSettings = (newSettings) => {
-    setFilamentSectionSettings(prev => {
-      const updated = { ...prev, ...newSettings };
-      try {
-        api.settings.update({ filamentSectionSettings: updated }).catch(() => {});
-      } catch {}
-      return updated;
-    });
-    showToast("3D Filament Spool Zone settings saved successfully!", "success");
-  };
-
-  const toggleProductFlashDeal = (productId) => {
-    const prod = (products || []).find(p => p.id === productId);
-    if (!prod) return;
-    const nextDealState = !prod.isDeal;
-
-    setProducts(prev => prev.map(p => p.id === productId ? { ...p, isDeal: nextDealState } : p));
-
-    setFlashDealsSettings(prev => {
-      const currentList = prev.customProductIds || [];
-      let nextList;
-      if (nextDealState) {
-        if (!currentList.includes(productId)) {
-          nextList = [...currentList, productId];
-        } else {
-          nextList = currentList;
-        }
-      } else {
-        nextList = currentList.filter(id => id !== productId);
-      }
-      return { ...prev, customProductIds: nextList };
-    });
-
-    showToast(`Product "${prod.name}" ${nextDealState ? 'added to' : 'removed from'} Flash Deals!`, nextDealState ? 'success' : 'info');
-  };
-
-  const addProductToFlashDeals = (productId) => {
-    setProducts(prev => prev.map(p => p.id === productId ? { ...p, isDeal: true } : p));
-    setFlashDealsSettings(prev => {
-      const baseList = prev.customProductIds && prev.customProductIds.length > 0
-        ? prev.customProductIds
-        : (products || []).filter(p => p.isDeal).map(p => p.id);
-      if (!baseList.includes(productId)) {
-        return { ...prev, customProductIds: [productId, ...baseList] };
-      }
-      return prev;
-    });
-    showToast("Added product to Flash Deals!", "success");
-  };
-
-  const removeProductFromFlashDeals = (productId) => {
-    setProducts(prev => prev.map(p => p.id === productId ? { ...p, isDeal: false } : p));
-    setFlashDealsSettings(prev => {
-      const baseList = prev.customProductIds && prev.customProductIds.length > 0
-        ? prev.customProductIds
-        : (products || []).filter(p => p.isDeal).map(p => p.id);
-      return { ...prev, customProductIds: baseList.filter(id => id !== productId) };
-    });
-    showToast("Removed product from Flash Deals!", "info");
-  };
-
-  const reorderFlashDeals = (reorderedIds) => {
-    setFlashDealsSettings(prev => ({ ...prev, customProductIds: reorderedIds }));
-    showToast("Flash Deals display order updated!", "success");
-  };
-
-  const resetFlashDealsDefaults = () => {
-    localStorage.removeItem(flashDealsSettingsKey);
-    setFlashDealsSettings(DEFAULT_FLASH_DEALS_SETTINGS);
-    showToast("Flash Deals restored to factory defaults!", "info");
-  };
-
-  const resetFilamentSectionDefaults = () => {
+  const resetFilamentSectionDefaults = useCallback(() => {
     localStorage.removeItem(filamentSectionSettingsKey);
     setFilamentSectionSettings(DEFAULT_FILAMENT_SECTION_SETTINGS);
-    showToast("Filament Spool Zone restored to factory defaults!", "info");
-  };
+  }, [filamentSectionSettingsKey]);
+
+  // Master Memoized Context Value
+  const contextValue = useMemo(() => ({
+    // Auth & Profile
+    currentUser,
+    users,
+    isAuthModalOpen,
+    authModalMode,
+    openAuthModal,
+    closeAuthModal,
+    login,
+    signup,
+    logout,
+    updateProfile,
+
+    // Cart & Navigation
+    items,
+    wishlist,
+    appliedCoupon,
+    theme,
+    currentView,
+    setCurrentView,
+    adminActiveTab,
+    setAdminActiveTab,
+    navigateToAdmin,
+    navigateToStorefront,
+    navigateToHome,
+    navigateToFilaments,
+    navigateToCustom3DPrint,
+    navigateTo404,
+    isCartOpen,
+    setIsCartOpen,
+    quickViewProduct,
+    openQuickView,
+    closeQuickView,
+    isCheckoutOpen,
+    checkoutStep,
+    setCheckoutStep,
+    openCheckoutModal,
+    closeCheckoutModal,
+
+    // Storefront Filters
+    currentCategory,
+    setCurrentCategory,
+    currentTag,
+    setCurrentTag,
+    maxPrice,
+    setMaxPrice,
+    searchQuery,
+    setSearchQuery,
+    sortBy,
+    setSortBy,
+    resetFilters,
+
+    // Performance-Calculated Cart Totals
+    totalCount: cartCalculations.totalCount,
+    subtotal: cartCalculations.subtotal,
+    originalSubtotal: cartCalculations.originalSubtotal,
+    discountAmount: cartCalculations.discountAmount,
+    shippingCost: cartCalculations.shippingCost,
+    total: cartCalculations.total,
+    gst: cartCalculations.gst,
+    freeShipping: cartCalculations.freeShipping,
+    totalSavings: cartCalculations.totalSavings,
+
+    // Cart Actions
+    addItem,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    applyCoupon,
+    removeCoupon,
+    toggleWishlist,
+    isInWishlist,
+    toggleTheme,
+    showToast,
+
+    // Admin Catalog & Operations
+    products,
+    orders,
+    coupons,
+    customers,
+    storeSettings,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    updateStock,
+    createOrder,
+    updateOrderStatus,
+    deleteOrder,
+    addCoupon,
+    deleteCoupon,
+    addCustomer,
+    updateCustomer,
+    deleteCustomer,
+    addUser,
+    updateUser,
+    deleteUser,
+    resetUserPassword,
+    toggleUserStatus,
+    updateStoreSettings,
+    resetDemoData,
+
+    // Navbar Categories Manager
+    navbarCategories,
+    navbarSettings,
+    addNavbarCategory,
+    updateNavbarCategory,
+    deleteNavbarCategory,
+    toggleNavbarCategoryActive,
+    updateNavbarSettings,
+    reorderNavbarCategories,
+    resetNavbarCategoriesDefaults,
+
+    // Hero Carousel Manager
+    heroSlides,
+    heroSideBanners,
+    heroSettings,
+    addHeroSlide,
+    updateHeroSlide,
+    deleteHeroSlide,
+    toggleHeroSlideActive,
+    reorderHeroSlides,
+    addHeroSideBanner,
+    updateHeroSideBanner,
+    deleteHeroSideBanner,
+    toggleHeroSideBannerActive,
+    reorderHeroSideBanners,
+    updateHeroSettings,
+    resetHeroDefaults,
+
+    // 3D Filaments & Materials Hub
+    filamentSubcategories,
+    activeFilamentSubcategory,
+    setActiveFilamentSubcategory,
+    updateFilamentSubcategory,
+    addFilamentSubcategory,
+    toggleFilamentSubcategoryPublish,
+    deleteFilamentSubcategory,
+    resetFilamentSubcategoriesDefaults,
+
+    // Storefront Filament Section Settings
+    filamentSectionSettings,
+    updateFilamentSectionSettings,
+    resetFilamentSectionDefaults
+  }), [
+    currentUser,
+    users,
+    isAuthModalOpen,
+    authModalMode,
+    openAuthModal,
+    closeAuthModal,
+    login,
+    signup,
+    logout,
+    updateProfile,
+    items,
+    wishlist,
+    appliedCoupon,
+    theme,
+    currentView,
+    adminActiveTab,
+    setAdminActiveTab,
+    navigateToAdmin,
+    navigateToStorefront,
+    navigateToHome,
+    navigateToFilaments,
+    navigateToCustom3DPrint,
+    navigateTo404,
+    isCartOpen,
+    quickViewProduct,
+    openQuickView,
+    closeQuickView,
+    isCheckoutOpen,
+    checkoutStep,
+    openCheckoutModal,
+    closeCheckoutModal,
+    currentCategory,
+    currentTag,
+    maxPrice,
+    searchQuery,
+    sortBy,
+    resetFilters,
+    cartCalculations,
+    addItem,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    applyCoupon,
+    removeCoupon,
+    toggleWishlist,
+    isInWishlist,
+    toggleTheme,
+    showToast,
+    products,
+    orders,
+    coupons,
+    customers,
+    storeSettings,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    updateStock,
+    createOrder,
+    updateOrderStatus,
+    deleteOrder,
+    addCoupon,
+    deleteCoupon,
+    addCustomer,
+    updateCustomer,
+    deleteCustomer,
+    addUser,
+    updateUser,
+    deleteUser,
+    resetUserPassword,
+    toggleUserStatus,
+    updateStoreSettings,
+    resetDemoData,
+    navbarCategories,
+    navbarSettings,
+    addNavbarCategory,
+    updateNavbarCategory,
+    deleteNavbarCategory,
+    toggleNavbarCategoryActive,
+    updateNavbarSettings,
+    reorderNavbarCategories,
+    resetNavbarCategoriesDefaults,
+    heroSlides,
+    heroSideBanners,
+    heroSettings,
+    addHeroSlide,
+    updateHeroSlide,
+    deleteHeroSlide,
+    toggleHeroSlideActive,
+    reorderHeroSlides,
+    addHeroSideBanner,
+    updateHeroSideBanner,
+    deleteHeroSideBanner,
+    toggleHeroSideBannerActive,
+    reorderHeroSideBanners,
+    updateHeroSettings,
+    resetHeroDefaults,
+    filamentSubcategories,
+    activeFilamentSubcategory,
+    updateFilamentSubcategory,
+    addFilamentSubcategory,
+    toggleFilamentSubcategoryPublish,
+    deleteFilamentSubcategory,
+    resetFilamentSubcategoriesDefaults,
+    filamentSectionSettings,
+    updateFilamentSectionSettings,
+    resetFilamentSectionDefaults
+  ]);
 
   return (
-    <CartContext.Provider
-      value={{
-        // Authentication & Profile State
-        currentUser,
-        users,
-        isAuthModalOpen,
-        authModalMode,
-        openAuthModal,
-        closeAuthModal,
-        login,
-        signup,
-        logout,
-        updateProfile,
-
-        // Storefront Cart & Nav
-        items,
-        wishlist,
-        compareList,
-        appliedCoupon,
-        theme,
-        toasts,
-        currentView,
-        setCurrentView,
-        adminActiveTab,
-        setAdminActiveTab,
-        navigateToAdmin,
-        navigateToStorefront,
-        isCartOpen,
-        setIsCartOpen,
-        quickViewProduct,
-        openQuickView,
-        closeQuickView,
-        isCompareOpen,
-        setIsCompareOpen,
-        isCheckoutOpen,
-        checkoutStep,
-        setCheckoutStep,
-        openCheckoutModal,
-        closeCheckoutModal,
-        currentCategory,
-        setCurrentCategory,
-        currentTag,
-        setCurrentTag,
-        maxPrice,
-        setMaxPrice,
-        searchQuery,
-        setSearchQuery,
-        sortBy,
-        setSortBy,
-        totalCount,
-        subtotal: getSubtotal(),
-        originalSubtotal: getOriginalSubtotal(),
-        discountAmount: getDiscountAmount(),
-        shippingCost: getShippingCost(),
-        total: getTotal(),
-        gst: getGstBreakdown(),
-        freeShipping: getFreeShippingProgress(),
-        totalSavings: (getOriginalSubtotal() - getSubtotal()) + getDiscountAmount(),
-        addItem,
-        updateQuantity,
-        removeItem,
-        clearCart,
-        applyCoupon,
-        removeCoupon,
-        toggleWishlist,
-        isInWishlist,
-        toggleCompare,
-        isInCompare,
-        clearCompare,
-        toggleTheme,
-        showToast,
-        resetFilters,
-
-        // Super Admin Dynamic Data & CRUD
-        products,
-        orders,
-        coupons,
-        customers,
-        datasheets,
-        storeSettings,
-        addProduct,
-        updateProduct,
-        deleteProduct,
-        updateStock,
-        createOrder,
-        updateOrderStatus,
-        deleteOrder,
-        addCoupon,
-        deleteCoupon,
-        addCustomer,
-        updateCustomer,
-        deleteCustomer,
-        addUser,
-        updateUser,
-        deleteUser,
-        resetUserPassword,
-        toggleUserStatus,
-        addDatasheet,
-        deleteDatasheet,
-        updateStoreSettings,
-        resetDemoData,
-
-        // Custom Competition Robot Builder State & CRUD
-        robotBuilderPresets,
-        robotBuilderSlots,
-        robotBuilderSettings,
-        updateRobotBuilderSettings,
-        saveRobotBuilderPreset,
-        deleteRobotBuilderPreset,
-        saveRobotBuilderSlot,
-        deleteRobotBuilderSlot,
-        addSlotOption,
-        updateSlotOption,
-        deleteSlotOption,
-        resetRobotBuilderDefaults,
-
-        // Storefront Navbar Categories & Navigation Manager State & CRUD
-        navbarCategories,
-        navbarSettings,
-        addNavbarCategory,
-        updateNavbarCategory,
-        deleteNavbarCategory,
-        toggleNavbarCategoryActive,
-        updateNavbarSettings,
-        reorderNavbarCategories,
-        resetNavbarCategoriesDefaults,
-
-        // Storefront Hero Carousel & Side Promo Banners State & CRUD
-        heroSlides,
-        heroSideBanners,
-        heroSettings,
-        addHeroSlide,
-        updateHeroSlide,
-        deleteHeroSlide,
-        toggleHeroSlideActive,
-        reorderHeroSlides,
-        addHeroSideBanner,
-        updateHeroSideBanner,
-        deleteHeroSideBanner,
-        toggleHeroSideBannerActive,
-        reorderHeroSideBanners,
-        updateHeroSettings,
-        resetHeroDefaults,
-
-        // 3D Printer Filaments State, Subcategories & Colors
-        filamentSubcategories,
-        activeFilamentSubcategory,
-        setActiveFilamentSubcategory,
-        updateFilamentSubcategory,
-        addFilamentSubcategory,
-        toggleFilamentSubcategoryPublish,
-        deleteFilamentSubcategory,
-        resetFilamentSubcategoriesDefaults,
-        navigateToFilaments,
-        navigateToCustom3DPrint,
-        navigateToHome,
-
-        // Homepage Featured Sections: Flash Deals & Filament Spool Zone
-        flashDealsSettings,
-        filamentSectionSettings,
-        updateFlashDealsSettings,
-        updateFilamentSectionSettings,
-        toggleProductFlashDeal,
-        addProductToFlashDeals,
-        removeProductFromFlashDeals,
-        reorderFlashDeals,
-        resetFlashDealsDefaults,
-        resetFilamentSectionDefaults
-      }}
-
-    >
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );
 };
 
+export default CartContext;

@@ -28,21 +28,19 @@ export const Header = () => {
   const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false);
   const searchBoxRef = useRef(null);
 
-  // Search matches using dynamic catalog products
-  const getSearchMatches = () => {
+  // Search matches using dynamic catalog products (Memoized)
+  const matches = React.useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
     return (products || []).filter(p => {
       if (searchCat !== "all" && p.category !== searchCat) return false;
       return (
-        p.name.toLowerCase().includes(q) ||
+        p.name?.toLowerCase().includes(q) ||
         (p.tags && p.tags.some(t => t.toLowerCase().includes(q))) ||
-        p.sku.toLowerCase().includes(q)
+        p.sku?.toLowerCase().includes(q)
       );
     }).slice(0, 6);
-  };
-
-  const matches = getSearchMatches();
+  }, [searchQuery, searchCat, products]);
 
   // Close search popup when clicking outside
   useEffect(() => {

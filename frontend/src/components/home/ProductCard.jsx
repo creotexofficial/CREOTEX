@@ -2,7 +2,7 @@ import React from 'react';
 import { useCart } from '../../context/CartContext';
 import { ProductImage } from '../../data/productImages';
 
-export const ProductCard = ({ product, isDealCard = false }) => {
+export const ProductCard = React.memo(({ product, isDealCard = false }) => {
   const {
     addItem,
     toggleWishlist,
@@ -110,4 +110,6 @@ export const ProductCard = ({ product, isDealCard = false }) => {
       </div>
     </div>
   );
-};
+});
+
+export default ProductCard;

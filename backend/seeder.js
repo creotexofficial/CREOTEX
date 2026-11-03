@@ -26,8 +26,15 @@ import {
   seedRobotBuilderSettings
 } from './data/seedRobotBuilder.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Load env vars
 dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 /**
  * Import Demo Data into MongoDB

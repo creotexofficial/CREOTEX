@@ -2,6 +2,34 @@ import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { FILAMENT_SUBCATEGORIES } from '../../data/productsData';
 
+const FILTER_TABS = [
+  {
+    id: 'all',
+    label: '✨ All Filaments',
+    filterFn: () => true
+  },
+  {
+    id: 'pla',
+    label: '⚡ Hyper PLA & Tough',
+    filterFn: (s) => s.displayName?.includes('PLA') && !['PLA Stone', 'PLA Wood', 'PLA Starlight', 'PLA Glow in the Dark'].includes(s.displayName)
+  },
+  {
+    id: 'petg',
+    label: '🛡️ PETG & Translucent',
+    filterFn: (s) => s.displayName?.includes('PETG')
+  },
+  {
+    id: 'engineering',
+    label: '⚙️ ABS, ASA & CF Carbon',
+    filterFn: (s) => ['ABS', 'ASA', 'PETG CF', 'PLA CF'].some(k => s.displayName?.includes(k))
+  },
+  {
+    id: 'specialty',
+    label: '🌟 Glow, Wood & Stone',
+    filterFn: (s) => ['Stone', 'Wood', 'Glow', 'Starlight', 'Silk', 'Dual'].some(k => s.displayName?.includes(k))
+  }
+];
+
 export const FilamentSection = () => {
   const {
     filamentSubcategories,
@@ -12,51 +40,26 @@ export const FilamentSection = () => {
   const [activeTab, setActiveTab] = useState('all');
   const settings = filamentSectionSettings || {};
 
-  if (settings.enabled === false) {
-    return null;
-  }
-
   const allSubcategories = (filamentSubcategories && filamentSubcategories.length > 0)
     ? filamentSubcategories
     : FILAMENT_SUBCATEGORIES;
 
-  // Filter out unpublished or admin-hidden subcategories
-  const hiddenKeys = settings.hiddenSubcategoryKeys || [];
-  const subcategoriesList = allSubcategories.filter(
-    s => s.published !== false && !hiddenKeys.includes(s.subCategoryKey)
-  );
+  // Filter out unpublished or admin-hidden subcategories (Memoized)
+  const subcategoriesList = React.useMemo(() => {
+    const hiddenKeys = settings.hiddenSubcategoryKeys || [];
+    return allSubcategories.filter(
+      s => s.published !== false && !hiddenKeys.includes(s.subCategoryKey)
+    );
+  }, [allSubcategories, settings.hiddenSubcategoryKeys]);
 
-  // Material filter tabs
-  const filterTabs = [
-    {
-      id: 'all',
-      label: '✨ All Filaments',
-      filterFn: () => true
-    },
-    {
-      id: 'pla',
-      label: '⚡ Hyper PLA & Tough',
-      filterFn: (s) => s.displayName.includes('PLA') && !['PLA Stone', 'PLA Wood', 'PLA Starlight', 'PLA Glow in the Dark'].includes(s.displayName)
-    },
-    {
-      id: 'petg',
-      label: '🛡️ PETG & Translucent',
-      filterFn: (s) => s.displayName.includes('PETG')
-    },
-    {
-      id: 'engineering',
-      label: '⚙️ ABS, ASA & CF Carbon',
-      filterFn: (s) => ['ABS', 'ASA', 'PETG CF', 'PLA CF'].some(k => s.displayName.includes(k))
-    },
-    {
-      id: 'specialty',
-      label: '🌟 Glow, Wood & Stone',
-      filterFn: (s) => ['Stone', 'Wood', 'Glow', 'Starlight', 'Silk', 'Dual'].some(k => s.displayName.includes(k))
-    }
-  ];
+  const displayedSubcategories = React.useMemo(() => {
+    const currentTabObj = FILTER_TABS.find(t => t.id === activeTab) || FILTER_TABS[0];
+    return subcategoriesList.filter(currentTabObj.filterFn);
+  }, [subcategoriesList, activeTab]);
 
-  const currentTabObj = filterTabs.find(t => t.id === activeTab) || filterTabs[0];
-  const displayedSubcategories = subcategoriesList.filter(currentTabObj.filterFn);
+  if (settings.enabled === false) {
+    return null;
+  }
 
   return (
     <section className="filament-section" id="filament-hub-section">
@@ -137,7 +140,7 @@ export const FilamentSection = () => {
         {settings.showSubcategoriesGrid !== false && subcategoriesList.length > 0 && (
           <div style={{ marginTop: '16px' }}>
             <div className="filament-filter-tabs">
-              {filterTabs.map((tab) => {
+              {FILTER_TABS.map((tab) => {
                 const count = subcategoriesList.filter(tab.filterFn).length;
                 return (
                   <button

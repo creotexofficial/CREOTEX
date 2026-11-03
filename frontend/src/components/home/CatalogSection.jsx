@@ -3,6 +3,19 @@ import { useCart } from '../../context/CartContext';
 import { CATEGORIES_METADATA } from '../../data/productsData';
 import { ProductCard } from './ProductCard';
 
+const POPULAR_TAGS = [
+  "All Tags",
+  "Articulated & Toys",
+  "Desk Organizers",
+  "Functional & Mechanics",
+  "Enclosures & Mounts",
+  "Decor & Lighting",
+  "Silk PLA",
+  "TPU 95A",
+  "Carbon Fiber",
+  "PETG"
+];
+
 export const CatalogSection = () => {
   const {
     products,
@@ -18,57 +31,46 @@ export const CatalogSection = () => {
     resetFilters
   } = useCart();
 
-  const popularTags = [
-    "All Tags",
-    "Articulated & Toys",
-    "Desk Organizers",
-    "Functional & Mechanics",
-    "Enclosures & Mounts",
-    "Decor & Lighting",
-    "Silk PLA",
-    "TPU 95A",
-    "Carbon Fiber",
-    "PETG"
-  ];
+  // Filtering & Sorting Logic (Memoized)
+  const filteredProducts = React.useMemo(() => {
+    return (products || []).filter((p) => {
+      // Category match
+      if (currentCategory !== "all" && p.category !== currentCategory) {
+        return false;
+      }
 
-  // Filtering & Sorting Logic
-  const filteredProducts = (products || []).filter((p) => {
-    // Category match
-    if (currentCategory !== "all" && p.category !== currentCategory) {
-      return false;
-    }
+      // Tag filter
+      if (
+        currentTag !== "all" &&
+        !p.tags?.some((t) => t.toLowerCase() === currentTag.toLowerCase())
+      ) {
+        return false;
+      }
 
-    // Tag filter
-    if (
-      currentTag !== "all" &&
-      !p.tags.some((t) => t.toLowerCase() === currentTag.toLowerCase())
-    ) {
-      return false;
-    }
+      // Price match
+      if (p.price > maxPrice) {
+        return false;
+      }
 
-    // Price match
-    if (p.price > maxPrice) {
-      return false;
-    }
+      // Search match
+      if (searchQuery.trim() !== "") {
+        const q = searchQuery.toLowerCase();
+        const inName = p.name?.toLowerCase().includes(q);
+        const inDesc = p.shortDesc?.toLowerCase().includes(q);
+        const inSku = p.sku?.toLowerCase().includes(q);
+        const inTags = p.tags?.some((t) => t.toLowerCase().includes(q));
+        if (!inName && !inDesc && !inSku && !inTags) return false;
+      }
 
-    // Search match
-    if (searchQuery.trim() !== "") {
-      const q = searchQuery.toLowerCase();
-      const inName = p.name.toLowerCase().includes(q);
-      const inDesc = p.shortDesc.toLowerCase().includes(q);
-      const inSku = p.sku.toLowerCase().includes(q);
-      const inTags = p.tags.some((t) => t.toLowerCase().includes(q));
-      if (!inName && !inDesc && !inSku && !inTags) return false;
-    }
-
-    return true;
-  }).sort((a, b) => {
-    if (sortBy === "price-low") return a.price - b.price;
-    if (sortBy === "price-high") return b.price - a.price;
-    if (sortBy === "rating") return b.rating - a.rating;
-    if (sortBy === "newest") return b.id.localeCompare(a.id);
-    return 0; // featured default
-  });
+      return true;
+    }).sort((a, b) => {
+      if (sortBy === "price-low") return a.price - b.price;
+      if (sortBy === "price-high") return b.price - a.price;
+      if (sortBy === "rating") return b.rating - a.rating;
+      if (sortBy === "newest") return (b.id || '').localeCompare(a.id || '');
+      return 0;
+    });
+  }, [products, currentCategory, currentTag, maxPrice, searchQuery, sortBy]);
 
   return (
     <section className="catalog-section" id="section-3d-print-products" style={{ position: 'relative' }}>
@@ -131,7 +133,7 @@ export const CatalogSection = () => {
                 value={currentTag}
                 onChange={(e) => setCurrentTag(e.target.value === "All Tags" ? "all" : e.target.value)}
               >
-                {popularTags.map((tag) => (
+                {POPULAR_TAGS.map((tag) => (
                   <option key={tag} value={tag === "All Tags" ? "all" : tag}>
                     {tag}
                   </option>

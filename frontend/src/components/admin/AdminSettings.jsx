@@ -18,8 +18,7 @@ export const AdminSettings = () => {
     products,
     orders,
     coupons,
-    customers,
-    datasheets
+    customers
   } = useCart();
 
   const [formData, setFormData] = useState({ ...storeSettings });
@@ -49,8 +48,7 @@ export const AdminSettings = () => {
       products,
       orders,
       coupons,
-      customers,
-      datasheets
+      customers
     };
 
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));

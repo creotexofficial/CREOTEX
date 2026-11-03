@@ -1,9 +1,13 @@
 /**
  * CreotexShop API Client Service
- * Configured to communicate with the Node.js Express backend (http://localhost:5000/api)
+ * Configured to communicate with the Node.js Express backend (Render / Production / Local)
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_URL ||
+  'https://creotex-backend.onrender.com/api'
+).replace(/\/+$/, '');
 
 /**
  * Custom fetch wrapper with automatic JWT Authorization header and JSON response parsing

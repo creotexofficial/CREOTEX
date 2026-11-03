@@ -56,11 +56,11 @@ export const AdminProducts = () => {
     setIsModalOpen(true);
   };
 
-  const handleSaveProduct = (productData) => {
+  const handleSaveProduct = async (productData) => {
     if (editingProduct) {
-      updateProduct(editingProduct.id, productData);
+      await updateProduct(editingProduct.id, productData);
     } else {
-      addProduct(productData);
+      await addProduct(productData);
     }
   };
 

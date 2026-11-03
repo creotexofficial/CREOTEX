@@ -35,23 +35,23 @@ export const AdminUsers = () => {
     city: 'Bengaluru'
   });
 
-  // Filtered Users
-  const filteredUsers = users.filter(u => {
+  // Filtered Users (Memoized)
+  const filteredUsers = React.useMemo(() => {
     const q = search.toLowerCase().trim();
-    return (
-      !q ||
+    if (!q) return users;
+    return users.filter(u => (
       (u.name && u.name.toLowerCase().includes(q)) ||
       (u.email && u.email.toLowerCase().includes(q)) ||
       (u.phone && u.phone.toLowerCase().includes(q)) ||
       (u.city && u.city.toLowerCase().includes(q)) ||
       (u.id && u.id.toLowerCase().includes(q))
-    );
-  });
+    ));
+  }, [users, search]);
 
-  // KPI Calculations
+  // KPI Calculations (Memoized)
   const totalUsers = users.length;
-  const verifiedEmails = users.filter(u => u.email).length;
-  const verifiedPhones = users.filter(u => u.phone && u.phone !== 'Not Provided').length;
+  const verifiedEmails = React.useMemo(() => users.filter(u => u.email).length, [users]);
+  const verifiedPhones = React.useMemo(() => users.filter(u => u.phone && u.phone !== 'Not Provided').length, [users]);
 
   // Copy to clipboard helper
   const copyToClipboard = (text, label, key) => {

@@ -18,11 +18,19 @@ import settingsRoutes from './routes/settingsRoutes.js';
 import robotBuilderRoutes from './routes/robotBuilderRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Middleware Imports
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-// Initialize environment variables
+// Initialize environment variables (check both current dir and backend dir)
 dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 // Initialize Express App
 const app = express();

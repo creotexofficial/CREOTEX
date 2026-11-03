@@ -184,7 +184,11 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 // @route   GET /api/auth/users
 // @access  Private/Admin
 export const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({}).sort({ createdAt: -1 });
+  const usersRaw = await User.find({}).sort({ createdAt: -1 }).lean();
+  const users = usersRaw.map(u => ({
+    ...u,
+    id: u._id ? u._id.toString() : ''
+  }));
   res.json({
     success: true,
     count: users.length,
@@ -196,12 +200,14 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/auth/users/:id
 // @access  Private/Admin
 export const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).lean();
 
   if (!user) {
     res.status(404);
     throw new Error('User not found');
   }
+
+  user.id = user._id ? user._id.toString() : '';
 
   res.json({
     success: true,

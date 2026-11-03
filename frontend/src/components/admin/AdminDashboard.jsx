@@ -36,60 +36,45 @@ export const AdminDashboard = () => {
     setAdminActiveTab
   } = useCart();
 
-  // Metrics Calculations
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-  const totalOrders = orders.length;
-  const pendingOrders = orders.filter(o => ['pending', 'processing'].includes(o.orderStatus?.toLowerCase())).length;
-  const lowStockProducts = products.filter(p => p.stock <= 15);
-  const totalCustomers = customers.length;
-  const totalUsers = users?.length || 0;
+  // Metrics Calculations (Memoized for high performance)
+  const metrics = React.useMemo(() => {
+    let rev = 0;
+    let pending = 0;
+    for (let i = 0; i < orders.length; i++) {
+      rev += orders[i].totalAmount || 0;
+      const st = (orders[i].orderStatus || '').toLowerCase();
+      if (st === 'pending' || st === 'processing') pending++;
+    }
+    const lowStock = (products || []).filter(p => p.stock <= 15);
+    return {
+      totalRevenue: rev,
+      totalOrders: orders.length,
+      pendingOrders: pending,
+      lowStockProducts: lowStock,
+      totalCustomers: customers.length,
+      totalUsers: users?.length || 0
+    };
+  }, [orders, products, customers.length, users?.length]);
+
+  const {
+    totalRevenue,
+    totalOrders,
+    pendingOrders,
+    lowStockProducts,
+    totalCustomers,
+    totalUsers
+  } = metrics;
 
   // Real Database Records Count
-  const totalDbRecords =
+  const totalDbRecords = React.useMemo(() => (
     (products?.length || 0) +
     (orders?.length || 0) +
     (customers?.length || 0) +
     (totalUsers || 0) +
-    (Array.isArray(coupons) ? coupons.length : Object.keys(coupons || {}).length);
+    (Array.isArray(coupons) ? coupons.length : Object.keys(coupons || {}).length)
+  ), [products?.length, orders?.length, customers?.length, totalUsers, coupons]);
 
-  // Calculate Real Database Memory / Storage Footprint (in bytes, KB, MB)
-  const calculateRealMemorySize = () => {
-    try {
-      const fullStorePayload = {
-        products,
-        orders,
-        customers,
-        users,
-        datasheets,
-        coupons,
-        storeSettings,
-        robotBuilderPresets,
-        robotBuilderSlots,
-        robotBuilderSettings
-      };
-
-      const jsonStr = JSON.stringify(fullStorePayload);
-      let bytes = new Blob([jsonStr]).size;
-
-      if (typeof window !== 'undefined' && window.localStorage) {
-        let lsBytes = 0;
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && key.startsWith('creotex_')) {
-            const val = localStorage.getItem(key) || '';
-            lsBytes += new Blob([key, val]).size;
-          }
-        }
-        if (lsBytes > bytes) {
-          bytes = lsBytes;
-        }
-      }
-      return bytes;
-    } catch {
-      return 0;
-    }
-  };
-
+  // Calculate Real Database Memory / Storage Footprint (Memoized)
   const formatStorageSize = (bytes) => {
     if (!bytes || bytes <= 0) return '0 B';
     const k = 1024;
@@ -99,8 +84,26 @@ export const AdminDashboard = () => {
     return `${value} ${sizes[i]}`;
   };
 
-  const dbSizeBytes = calculateRealMemorySize();
-  const formattedDbSize = formatStorageSize(dbSizeBytes);
+  const dbSizeBytes = React.useMemo(() => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        let lsBytes = 0;
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('creotex_')) {
+            const val = localStorage.getItem(key) || '';
+            lsBytes += key.length + val.length;
+          }
+        }
+        if (lsBytes > 0) return lsBytes;
+      }
+      return totalDbRecords * 1024;
+    } catch {
+      return totalDbRecords * 1024;
+    }
+  }, [totalDbRecords]);
+
+  const formattedDbSize = React.useMemo(() => formatStorageSize(dbSizeBytes), [dbSizeBytes]);
 
   const weeklySalesData = [
     { day: 'Mon', amount: 14200, height: '45%' },

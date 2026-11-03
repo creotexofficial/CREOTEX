@@ -101,12 +101,17 @@ export const createOrder = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/my-orders
 // @access  Private
 export const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({
+  const ordersRaw = await Order.find({
     $or: [
       { user: req.user._id },
       { 'customer.email': req.user.email.toLowerCase() }
     ]
-  }).sort({ createdAt: -1 });
+  }).sort({ createdAt: -1 }).lean();
+
+  const orders = ordersRaw.map(o => ({
+    ...o,
+    id: o.orderId || (o._id ? o._id.toString() : '')
+  }));
 
   res.json({
     success: true,
@@ -136,7 +141,12 @@ export const getAllOrders = asyncHandler(async (req, res) => {
     ];
   }
 
-  const orders = await Order.find(filter).sort({ createdAt: -1 });
+  const ordersRaw = await Order.find(filter).sort({ createdAt: -1 }).lean();
+
+  const orders = ordersRaw.map(o => ({
+    ...o,
+    id: o.orderId || (o._id ? o._id.toString() : '')
+  }));
 
   res.json({
     success: true,
@@ -153,17 +163,19 @@ export const getOrderById = asyncHandler(async (req, res) => {
 
   let order;
   if (mongoose.Types.ObjectId.isValid(id)) {
-    order = await Order.findById(id);
+    order = await Order.findById(id).lean();
   }
 
   if (!order) {
-    order = await Order.findOne({ orderId: id.toUpperCase() });
+    order = await Order.findOne({ orderId: id.toUpperCase() }).lean();
   }
 
   if (!order) {
     res.status(404);
     throw new Error('Order not found');
   }
+
+  order.id = order.orderId || (order._id ? order._id.toString() : '');
 
   res.json({
     success: true,

@@ -1,3 +1,16 @@
+export const DEFAULT_FILAMENT_COLORS = [
+  { name: "Pitch Black", hex: "#111111", image: "/filaments/spool_black_dragon.jpg" },
+  { name: "Bone White", hex: "#F5F0EB", image: "/filaments/spool_white_dragon.jpg" },
+  { name: "Sunburst Yellow", hex: "#EAB308", image: "/filaments/spool_yellow_dragon.jpg" },
+  { name: "Crimson Red", hex: "#DC2626", image: "/filaments/spool_abs_red.jpg" },
+  { name: "Signal Orange", hex: "#EA580C", image: "/filaments/spool_petg_orange.jpg" },
+  { name: "Royal Blue", hex: "#1D4ED8", image: "/filaments/spool_pla_blue.jpg" },
+  { name: "Olive Green", hex: "#4D7C0F", image: "/filaments/spool_pla_matte.jpg" },
+  { name: "Graphite Charcoal", hex: "#374151", image: "/filaments/spool_petg_cf.jpg" },
+  { name: "Pacific Cyan", hex: "#06B6D4", image: "/filaments/spool_asa_teal.jpg" },
+  { name: "Pure White", hex: "#FFFFFF", image: "/filaments/spool_white_dragon.jpg" }
+];
+
 export const seedProducts = [
 // ===================== 1. 3D PRINTER FILAMENT SPOOLS =====================
   {
@@ -632,10 +645,6 @@ export const seedProducts = [
     sku: "CTX-3DP-HC-WALL",
     image: "print-hc-wall"
   }
-
-];
-
-// Product Category Metadata for Filters and Mega Menu
 ];
 
 export default seedProducts;

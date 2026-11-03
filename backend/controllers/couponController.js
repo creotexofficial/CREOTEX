@@ -16,12 +16,14 @@ export const validateCoupon = asyncHandler(async (req, res) => {
   const coupon = await Coupon.findOne({
     code: code.trim().toUpperCase(),
     isActive: true
-  });
+  }).lean();
 
   if (!coupon) {
     res.status(404);
     throw new Error('Invalid or expired coupon code');
   }
+
+  coupon.id = coupon._id ? coupon._id.toString() : '';
 
   // Check expiry date
   if (coupon.expiryDate && new Date(coupon.expiryDate) < new Date()) {
@@ -71,7 +73,11 @@ export const validateCoupon = asyncHandler(async (req, res) => {
 // @route   GET /api/coupons
 // @access  Public / Admin
 export const getAllCoupons = asyncHandler(async (req, res) => {
-  const coupons = await Coupon.find({}).sort({ createdAt: -1 });
+  const couponsRaw = await Coupon.find({}).sort({ createdAt: -1 }).lean();
+  const coupons = couponsRaw.map(c => ({
+    ...c,
+    id: c._id ? c._id.toString() : ''
+  }));
   res.json({
     success: true,
     count: coupons.length,

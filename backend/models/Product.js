@@ -150,6 +150,12 @@ productSchema.index({
   tags: 'text'
 });
 
+// Performance compound indexes for high-speed storefront & admin filtering
+productSchema.index({ isActive: 1, category: 1, createdAt: -1 });
+productSchema.index({ isActive: 1, isFeatured: -1, rating: -1 });
+productSchema.index({ isActive: 1, isDeal: -1 });
+productSchema.index({ isActive: 1, price: 1 });
+
 const Product = mongoose.model('Product', productSchema);
 
 export default Product;

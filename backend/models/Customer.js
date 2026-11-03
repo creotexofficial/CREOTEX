@@ -78,6 +78,9 @@ customerSchema.virtual('id').get(function () {
   return this.customId || this._id.toHexString();
 });
 
+customerSchema.index({ status: 1, createdAt: -1 });
+customerSchema.index({ tier: 1 });
+
 const Customer = mongoose.model('Customer', customerSchema);
 
 export default Customer;

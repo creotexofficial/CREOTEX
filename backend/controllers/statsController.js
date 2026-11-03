@@ -5,9 +5,6 @@ import Product from '../models/Product.js';
 import User from '../models/User.js';
 import Customer from '../models/Customer.js';
 import Coupon from '../models/Coupon.js';
-import Datasheet from '../models/Datasheet.js';
-import StoreSettings from '../models/StoreSettings.js';
-import RobotBuilderConfig from '../models/RobotBuilder.js';
 
 // Helper to format bytes into readable units
 const formatBytes = (bytes, decimals = 2) => {
@@ -23,73 +20,64 @@ const formatBytes = (bytes, decimals = 2) => {
 // @route   GET /api/stats/dashboard
 // @access  Private/Admin
 export const getDashboardStats = asyncHandler(async (req, res) => {
-  // Parallel aggregate queries for high performance
+  // Parallel aggregate queries for high performance (zero full-collection memory dumps)
   const [
     totalProducts,
     totalUsers,
     totalCustomers,
     totalCoupons,
-    totalDatasheets,
-    orders,
+    totalOrders,
+    lowStockCount,
     recentOrders,
-    productsList,
-    usersList,
-    customersList,
-    datasheetsList,
-    couponsList,
-    settingsData,
-    builderConfigData
+    orderAggregation
   ] = await Promise.all([
     Product.countDocuments({ isActive: true }),
     User.countDocuments(),
     Customer.countDocuments(),
     Coupon.countDocuments(),
-    Datasheet.countDocuments(),
-    Order.find({}),
-    Order.find({}).sort({ createdAt: -1 }).limit(5),
-    Product.find({}),
-    User.find({}).select('-password'),
-    Customer.find({}),
-    Datasheet.find({}),
-    Coupon.find({}),
-    StoreSettings.findOne(),
-    RobotBuilderConfig.findOne()
+    Order.countDocuments(),
+    Product.countDocuments({ isActive: true, stock: { $lte: 10 } }),
+    Order.find({}).sort({ createdAt: -1 }).limit(5).lean(),
+    Order.aggregate([
+      {
+        $group: {
+          _id: '$orderStatus',
+          count: { $sum: 1 },
+          revenue: { $sum: '$totalAmount' }
+        }
+      }
+    ])
   ]);
 
-  // Aggregate Order KPIs
+  // Aggregate Order KPIs from aggregation pipeline
   let totalRevenue = 0;
   let processingOrders = 0;
   let shippedOrders = 0;
   let deliveredOrders = 0;
   let cancelledOrders = 0;
 
-  orders.forEach((order) => {
-    totalRevenue += order.totalAmount || 0;
-    if (order.orderStatus === 'Processing' || order.orderStatus === 'Pending') {
-      processingOrders++;
-    } else if (order.orderStatus === 'Shipped') {
-      shippedOrders++;
-    } else if (order.orderStatus === 'Delivered') {
-      deliveredOrders++;
-    } else if (order.orderStatus === 'Cancelled') {
-      cancelledOrders++;
+  (orderAggregation || []).forEach(group => {
+    totalRevenue += group.revenue || 0;
+    const status = (group._id || '').toLowerCase();
+    if (status === 'processing' || status === 'pending') {
+      processingOrders += group.count;
+    } else if (status === 'shipped') {
+      shippedOrders += group.count;
+    } else if (status === 'delivered') {
+      deliveredOrders += group.count;
+    } else if (status === 'cancelled') {
+      cancelledOrders += group.count;
     }
   });
 
-  // Calculate low stock products
-  const lowStockCount = await Product.countDocuments({
-    isActive: true,
-    stock: { $lte: 10 }
-  });
-
-  // Calculate REAL Database Memory / Storage
+  // Calculate Database Memory / Storage
   let dbStorage = {
     dataSizeBytes: 0,
     storageSizeBytes: 0,
     totalSizeBytes: 0,
     formattedSize: '0 KB',
-    totalRecords: totalProducts + totalUsers + totalCustomers + totalCoupons + totalDatasheets + orders.length,
-    collectionsCount: 8,
+    totalRecords: totalProducts + totalUsers + totalCustomers + totalCoupons + totalOrders,
+    collectionsCount: 6,
     isLiveMongo: false,
     source: 'Local MongoDB / In-Memory JSON'
   };
@@ -108,34 +96,22 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
         formattedSize: formatBytes(realDataSize > 0 ? realDataSize : realStorageSize),
         formattedStorageSize: formatBytes(realStorageSize),
         totalRecords: stats.objects || dbStorage.totalRecords,
-        collectionsCount: stats.collections || 8,
+        collectionsCount: stats.collections || 6,
         indexSizeBytes: stats.indexSize || 0,
         isLiveMongo: true,
         source: 'MongoDB Live Engine'
       };
     } else {
-      // Calculate accurate UTF-8 byte length from stored documents payload
-      const fullPayload = {
-        products: productsList,
-        users: usersList,
-        customers: customersList,
-        orders,
-        datasheets: datasheetsList,
-        coupons: couponsList,
-        settings: settingsData,
-        builder: builderConfigData
-      };
-      const jsonStr = JSON.stringify(fullPayload);
-      const byteLength = Buffer.byteLength(jsonStr, 'utf8');
-
+      // Fast lightweight estimate based on record count without memory spikes
+      const estimatedBytes = dbStorage.totalRecords * 1024;
       dbStorage = {
-        dataSizeBytes: byteLength,
-        storageSizeBytes: byteLength,
-        totalSizeBytes: byteLength,
-        formattedSize: formatBytes(byteLength),
-        formattedStorageSize: formatBytes(byteLength),
+        dataSizeBytes: estimatedBytes,
+        storageSizeBytes: estimatedBytes,
+        totalSizeBytes: estimatedBytes,
+        formattedSize: formatBytes(estimatedBytes),
+        formattedStorageSize: formatBytes(estimatedBytes),
         totalRecords: dbStorage.totalRecords,
-        collectionsCount: 8,
+        collectionsCount: 6,
         isLiveMongo: false,
         source: 'Creotex Application DB'
       };
@@ -149,7 +125,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     data: {
       metrics: {
         totalRevenue: Math.round(totalRevenue * 100) / 100,
-        totalOrders: orders.length,
+        totalOrders,
         totalProducts,
         totalCustomers: totalCustomers || totalUsers,
         totalUsers,
@@ -170,4 +146,3 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     }
   });
 });
-
